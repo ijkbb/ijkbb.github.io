@@ -1,0 +1,31 @@
+path-constant project-root : . ;
+
+argv = [ modules.peek : ARGV ] ;
+
+if [ MATCH ^(cleanall)$ : $(argv) ]
+{
+	echo "rm -rf `find $(project-root) -name bin`" ;
+	SHELL "rm -rf `find $(project-root) -name bin`" ;
+	
+	echo "rm -rf `find $(project-root) -name html`" ;
+	SHELL "rm -rf `find $(project-root) -name html`" ;
+	
+	echo "rm -rf $(project-root)/docs/*" ;
+	SHELL "rm -rf $(project-root)/docs/*" ;
+	
+	exit ;
+}
+
+if [ MATCH ^(clean)$ : $(argv) ]
+{
+	echo "rm -rf `find $(project-root) -name bin`" ;
+	SHELL "rm -rf `find $(project-root) -name bin`" ;
+	
+	echo "rm -rf `find $(project-root) -name html`" ;
+	SHELL "rm -rf `find $(project-root) -name html`" ;
+	
+	exit ;
+}
+
+build-project src ;
+

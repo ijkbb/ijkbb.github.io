@@ -1,0 +1,16 @@
+project
+	: default-build
+		<cxxstd>23
+;
+
+progs =
+	dp_adapter_pattern
+	dp_bridge_pattern
+	dp_proxy_pattern
+;
+
+for prog in $(progs)
+{
+	exe $(prog) : $(prog).cpp ;
+}
+

@@ -10,6 +10,7 @@ install install-media
 			$(media-src)/*.css
 			$(media-src)/images/*.png
 			$(media-src)/404.html
+			$(media-src)/CNAME
 		]
 	:
 		<location>$(web-root)
@@ -34,4 +35,6 @@ install install-html
 		<location>$(web-root)
 		<install-source-root>$(src-root)/html
 ;
+
+build-project cpp ;
 
