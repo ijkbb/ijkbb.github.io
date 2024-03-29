@@ -1,0 +1,36 @@
+path-constant src-root : ./ ;
+path-constant web-root : ../docs ;
+path-constant media-src : ./media ;
+
+xml xml-index : index.qbk ;
+
+install install-media
+	:
+		[ glob
+			$(media-src)/*.css
+			$(media-src)/images/*.png
+		]
+	:
+		<location>$(web-root)
+		<install-source-root>$(media-src)
+;
+
+boostbook html
+	:
+		xml-index
+	:
+		<xsl:param>"chunk.first.sections=1"
+		<dependency>install-media
+;
+
+install install-html
+	:
+		[ glob
+			$(src-root)/html/*.html
+			$(src-root)/html/*.manifest
+		]
+	:
+		<location>$(web-root)
+		<install-source-root>$(src-root)/html
+;
+
