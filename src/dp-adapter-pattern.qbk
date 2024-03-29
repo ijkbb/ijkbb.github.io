@@ -1,0 +1,107 @@
+[/
+	Copyright 2024 xilahua.top
+
+	Distributed under the Boost Software License, Version 1.0.
+	(See accompanying file LICENSE_1_0.txt or copy at
+	http://www.boost.org/LICENSE_1_0.txt)
+]
+
+[article Adapter Pattern @cpp
+	[quickbook 1.7]
+]
+
+[h1 适配器模式 - cpp]
+
+cpp/c++ 设计模式之适配器模式
+
+假如我们有一套系统，要把它们安装对接到另外一套系统上，可是两套系统完全不兼容，接口不一致。怎么办？我们可以做一个适配器，这个适配器做两件事：一件事是提供另外一套系统的接口，一件事是实际上会调用要用到的那一套系统的功能，这样两套系统就对接在一起了。
+
+[h1 cpp 适配器模式代码实现]
+
+在我们的游戏中，
+
+导弹 missile 提供索敌的功能：seek
+
+加农炮 cannon 提供开火的功能： fire
+
+要把导弹对接到加农炮底座上，这时开火 fire 时，实质上调用了索敌 seek ，可以称其为导弹加农炮。
+
+[* c++ 代码适配器模式]
+
+[~adapter-pattern-cpp.cpp]
+
+[!c++]
+```
+#include <iostream>
+
+namespace wp
+{
+
+// 导弹
+class missile
+{
+public:
+	virtual ~missile() = default;
+public:
+	virtual void seek() const
+	{
+		std::cout << "导弹正在索敌 ..." << std::endl;
+	}
+};
+
+// 加农炮
+class cannon
+{
+public:
+	virtual ~cannon() = default;
+public:
+	virtual void fire() const = 0;
+};
+
+// 导弹大炮适配器：让大炮具有了导弹的功能，但是继续保持大炮的接口不变
+class missile_cannon_adapter: virtual private wp::missile, virtual public wp::cannon
+{
+public:
+	// 大炮的接口（开火），导弹的功能（索敌）
+	void fire() const override
+	{
+		std::cout << "导弹到大炮的适配器被调用了：";
+		this->seek();
+	}
+};
+
+}	// namespace wp
+
+int main()
+{
+	wp::cannon * cannon = new wp::missile_cannon_adapter{};
+	cannon->fire();
+	delete cannon;
+	
+	// 正确：适配器类引用可以转化成加农炮类引用
+	static_assert(std::convertible_to<wp::missile_cannon_adapter &, wp::cannon &>);
+	
+	// 正确：适配器类引用不可以转化成导弹类引用
+	static_assert(! std::convertible_to<wp::missile_cannon_adapter &, wp::missile &>);
+}
+```
+
+[h2 程序输出]
+
+[!teletype]
+```
+/*
+导弹到大炮的适配器被调用了：导弹正在索敌 ...
+*/
+```
+
+[h1 相关链接]
+
+[link bridge_pattern_cpp c++桥接模式]
+
+[link proxy_pattern_cpp c++代理模式]
+
+[h1 首页]
+
+息拉滑: [@https://xilahua.top xilahua.top]
+
