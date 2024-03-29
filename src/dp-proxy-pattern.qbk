@@ -1,0 +1,162 @@
+[/
+	Copyright 2024 xilahua.top
+
+	Distributed under the Boost Software License, Version 1.0.
+	(See accompanying file LICENSE_1_0.txt or copy at
+	http://www.boost.org/LICENSE_1_0.txt)
+]
+
+[article Proxy Pattern @cpp
+	[quickbook 1.7]
+]
+
+[h1 代理模式 - cpp]
+
+cpp/c++ 设计模式之代理模式
+
+我们在编程时有时会遇到这样一个问题，对于已有的系统, 我们发现有些不足，需要增加或者修改一些代码， 但是我们又不想改变已有的系统，因为它们很“浑圆一体”。这时可以使用代理模式，增加代理代码，而不需要动原来的代码。然后通过对代理代码的访问，来间接访问真正的目标。
+
+[h1 cpp 代码实现]
+
+c++ 代理模式
+
+还是以导弹为例子。
+
+假定原初的代码里，导弹 missile 有 索敌 seek 方法。后来发现，在做 seek 行为之前，最好先检查一下导弹的状态。于是可以设计一个代理类，增加一个方法 ready, 它会检查并返回导弹的状态，状态良好才会做 seek 行为。
+
+missile - 导弹
+cruise missile - 巡航导弹
+swarm missile - 蜂群导弹
+
+c++ 代理模式代码比较简单
+
+[note
+	[role green 可以把本文所说的武器、导弹等等等等看成游戏里的概念或者哲学概念，而不是现实里的军事概念，本文对此称呼不负责任。]
+]
+
+[* c++ 代理模式 proxy pattern 例子]
+
+[~proxy-pattern-cpp.cpp]
+
+[!c++]
+```
+#include <iostream>
+
+namespace wp
+{
+
+class missile
+{
+public:
+	virtual ~missile() = default;
+	virtual void seek() const = 0;
+};
+
+// 巡航导弹
+class cruise_missile: virtual public wp::missile
+{
+public:
+	void seek() const override
+	{
+		std::cout << "巡航导弹正在索敌 ..." << std::endl;
+	}
+};
+
+// 蜂群导弹
+class swarm_missile: virtual public wp::missile
+{
+public:
+	void seek() const override
+	{
+		std::cout << "蜂群导弹正在索敌 ..." << std::endl;
+	}
+};
+
+// 巡航导弹代理
+class cruise_missile_proxy: virtual public wp::missile
+{
+protected:
+	wp::cruise_missile * missile;
+	bool is_ready;
+public:
+	cruise_missile_proxy():
+		missile{new wp::cruise_missile}
+	{
+	}
+	cruise_missile_proxy(const wp::cruise_missile & missile__):
+		missile{new wp::cruise_missile{missile__}}
+	{
+	}
+public:
+	virtual ~cruise_missile_proxy()
+	{
+		delete missile;
+	}
+public:
+	void seek() const override
+	{
+		if (this->ready())
+		{
+			std::cout << "Cruise missile is ready!" << std::endl;
+			missile->seek();
+		}
+	}
+
+	bool ready() const
+	{
+		return is_ready;
+	}
+	void make_ready()
+	{
+		is_ready = true;
+	}
+};
+
+class missile_manager
+{
+public:
+	void operator()() const
+	{
+		auto m1 = wp::cruise_missile{};
+		auto m2 = wp::swarm_missile{};
+		auto m3 = wp::cruise_missile_proxy{m1};
+		
+		this->launch(m1);
+		this->launch(m2);
+		
+		m3.make_ready();
+		this->launch(m3);
+	}
+	void launch(wp::missile & missile) const
+	{
+		missile.seek();
+	}
+};
+
+}	// namespace wp
+
+int main()
+{
+	wp::missile_manager mm;
+	mm();
+}
+```
+
+[h2 程序输出：]
+
+[!teletype]
+```
+巡航导弹正在索敌 ...
+蜂群导弹正在索敌 ...
+Cruise missile is ready!
+巡航导弹正在索敌 ...
+```
+
+[h1 相关链接]
+
+[link bridge_pattern_cpp c++桥接模式]
+
+[h1 首页]
+
+息拉滑: [@https://xilahua.top xilahua.top]
+

@@ -46,106 +46,6 @@ guided weapon : 制导武器
 
 [!c++]
 ```
-#include <iostream>
-
-namespace wp
-{
-
-////////////////////////////////////////////////////////////
-// 导弹基：
-// wp::missile
-
-// 导弹, 基类
-class missile
-{
-public:
-	virtual ~missile() = default;
-	virtual void seek() const = 0;
-};
-
-// 巡航导弹
-class cruise_missile: virtual public wp::missile
-{
-public:
-	void seek() const override
-	{
-		std::cout << "巡航导弹正在索敌 ..." << std::endl;
-	}
-};
-
-// 蜂群导弹
-class swarm_missile: virtual public wp::missile
-{
-public:
-	void seek() const override
-	{
-		std::cout << "蜂群导弹正在索敌 ..." << std::endl;
-	}
-};
-
-////////////////////////////////////////////////////////////
-// 武器基：
-// wp::weapon
-
-class weapon
-{
-protected:
-	// 非常左值引用作为类的数据成员，需要绑定外部对象
-	wp::missile & missile;
-public:
-	weapon(wp::missile & missile__):
-		missile{missile__}
-	{
-	}
-public:
-	// 调用 wp::weapon 的 seek 方法，实际上会转到调用 wp::missile 的 seek 方法
-	virtual void seek() const
-	{
-		std::cout << "武器桥接到导弹了：";
-		missile.seek();
-	}
-};
-
-class guided_weapon: virtual public wp::weapon
-{
-public:
-	guided_weapon(wp::missile & missile__):
-		wp::weapon{missile__}	// 基类构造函数
-	{
-	}
-public:
-	void seek() const override
-	{
-		std::cout << "制导武器桥接到导弹了：";
-		missile.seek();
-	}
-};
-
-}	// namespace wp
-
-int main()
-{
-	wp::cruise_missile m1;
-	wp::swarm_missile m2;
-
-	wp::weapon w1{m1};
-	wp::weapon w2{m2};
-
-	wp::guided_weapon w3{m1};
-	wp::guided_weapon w4{m2};
-
-	std::cout << "========\n导弹发动 ...\n";
-	m1.seek();
-	m2.seek();
-
-	std::cout << "========\n武器发动 ...\n";
-	w1.seek();
-	w2.seek();
-
-	std::cout << "========\n制导武器发动 ...\n";
-	w3.seek();
-	w4.seek();
-}
 ```
 
 [h2 程序输出：]
@@ -176,7 +76,13 @@ int main()
 * 如果基类里有 virtual 成员函数，那么指针或者引用的反向绑定也是多态 - 下行
 * 其它未提及的情况，比如侧行绑定请阅读文档，不再赘述
 
+[h1 相关链接]
+
+[link proxy_pattern_cpp c++ 代理模式]
+
 [h1 首页]
 
 息拉滑: [@https://xilahua.top xilahua.top]
+
+///////////////////
 
