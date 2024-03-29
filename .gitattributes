@@ -1,0 +1,6 @@
+*.html linguist-detectable=false
+*.css linguist-detectable=false
+jamroot B2 Build
+jamfile B2 Build
+*.qbk Boost Quickbook
+
