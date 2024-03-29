@@ -1,0 +1,221 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Bridge Pattern @cpp</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="息拉滑 @cpp">
+<link rel="up" href="design_patterns_cpp.html" title="Design Patterns @cpp">
+<link rel="prev" href="design_patterns_cpp.html" title="Design Patterns @cpp">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="design_patterns_cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="design_patterns_cpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a>
+</div>
+<div class="article">
+<div class="titlepage">
+<div><div><h2 class="title">
+<a name="bridge_pattern_cpp"></a>Bridge Pattern @cpp</h2></div></div>
+<hr>
+</div>
+<h2>
+<a name="bridge_pattern_cpp.h0"></a>
+        <span class="phrase"><a name="bridge_pattern_cpp.cpp"></a></span><a class="link" href="bridge_pattern_cpp.html#bridge_pattern_cpp.cpp">桥接模式
+        - cpp</a>
+      </h2>
+<p>
+        cpp/c++ 设计模式之桥接模式
+      </p>
+<p>
+        桥接模式是一种 c++ 设计模式，它分离了业务逻辑的抽象和实现，并桥接它们。抽象和实现两个部分可以分别独立的变化和更新，而不需要改变另一个部分。
+      </p>
+<p>
+        c++ 桥接模式代码比较简单，定义两套类，一套类的基以另一套类的基为成员，各自的继承类并不需要关心基类。
+      </p>
+<h2>
+<a name="bridge_pattern_cpp.h1"></a>
+        <span class="phrase"><a name="bridge_pattern_cpp.cpp0"></a></span><a class="link" href="bridge_pattern_cpp.html#bridge_pattern_cpp.cpp0">cpp
+        桥接模式代码例子</a>
+      </h2>
+<p>
+        众所周知，导弹是一种武器，我们可以把导弹叫做武器的实现，把武器叫做导弹的抽象，这只是一种比喻。
+      </p>
+<p>
+        导弹也有很多种：巡航导弹、洲际导弹、蜂群导弹，...
+        。
+      </p>
+<p>
+        武器也可以分类：制导武器、静态武器、... 。
+      </p>
+<p>
+        missile : 导弹
+      </p>
+<p>
+        cruise missile : 巡航导弹
+      </p>
+<p>
+        swarm missile : 蜂群导弹
+      </p>
+<p>
+        weapon : 武器
+      </p>
+<p>
+        guided weapon : 制导武器
+      </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+          <span class="green">可以把本文所说的武器、导弹等等等等看成游戏里的概念或者哲学概念，而不是现实里的军事概念，本文对此称呼不负责任。</span>
+        </p></td></tr>
+</table></div>
+<p>
+        <span class="bold"><strong>bridge pattern 桥接模式 c++ 代码</strong></span>
+      </p>
+<p>
+        <em class="replaceable"><code>bridge-pattern-cpp.cpp</code></em>
+      </p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+
+<span class="keyword">namespace</span> <span class="identifier">wp</span>
+<span class="special">{</span>
+
+<span class="comment">////////////////////////////////////////////////////////////</span>
+<span class="comment">// 导弹基：</span>
+<span class="comment">// wp::missile</span>
+
+<span class="comment">// 导弹, 基类</span>
+<span class="keyword">class</span> <span class="identifier">missile</span>
+<span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="keyword">virtual</span> <span class="special">~</span><span class="identifier">missile</span><span class="special">()</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+	<span class="keyword">virtual</span> <span class="keyword">void</span> <span class="identifier">seek</span><span class="special">()</span> <span class="keyword">const</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">};</span>
+
+<span class="comment">// 巡航导弹</span>
+<span class="keyword">class</span> <span class="identifier">cruise_missile</span><span class="special">:</span> <span class="keyword">virtual</span> <span class="keyword">public</span> <span class="identifier">wp</span><span class="special">::</span><span class="identifier">missile</span>
+<span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="keyword">void</span> <span class="identifier">seek</span><span class="special">()</span> <span class="keyword">const</span> <span class="identifier">override</span>
+	<span class="special">{</span>
+		<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"巡航导弹正在索敌 ..."</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+	<span class="special">}</span>
+<span class="special">};</span>
+
+<span class="comment">// 蜂群导弹</span>
+<span class="keyword">class</span> <span class="identifier">swarm_missile</span><span class="special">:</span> <span class="keyword">virtual</span> <span class="keyword">public</span> <span class="identifier">wp</span><span class="special">::</span><span class="identifier">missile</span>
+<span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="keyword">void</span> <span class="identifier">seek</span><span class="special">()</span> <span class="keyword">const</span> <span class="identifier">override</span>
+	<span class="special">{</span>
+		<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"蜂群导弹正在索敌 ..."</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+	<span class="special">}</span>
+<span class="special">};</span>
+
+<span class="comment">////////////////////////////////////////////////////////////</span>
+<span class="comment">// 武器基：</span>
+<span class="comment">// wp::weapon</span>
+
+<span class="keyword">class</span> <span class="identifier">weapon</span>
+<span class="special">{</span>
+<span class="keyword">protected</span><span class="special">:</span>
+	<span class="comment">// 非常左值引用作为类的数据成员，需要绑定外部对象</span>
+	<span class="identifier">wp</span><span class="special">::</span><span class="identifier">missile</span> <span class="special">&amp;</span> <span class="identifier">missile</span><span class="special">;</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="identifier">weapon</span><span class="special">(</span><span class="identifier">wp</span><span class="special">::</span><span class="identifier">missile</span> <span class="special">&amp;</span> <span class="identifier">missile__</span><span class="special">):</span>
+		<span class="identifier">missile</span><span class="special">{</span><span class="identifier">missile__</span><span class="special">}</span>
+	<span class="special">{</span>
+	<span class="special">}</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="comment">// 调用 wp::weapon 的 seek 方法，实际上会转到调用 wp::missile 的 seek 方法</span>
+	<span class="keyword">virtual</span> <span class="keyword">void</span> <span class="identifier">seek</span><span class="special">()</span> <span class="keyword">const</span>
+	<span class="special">{</span>
+		<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"武器桥接到导弹了："</span><span class="special">;</span>
+		<span class="identifier">missile</span><span class="special">.</span><span class="identifier">seek</span><span class="special">();</span>
+	<span class="special">}</span>
+<span class="special">};</span>
+
+<span class="keyword">class</span> <span class="identifier">guided_weapon</span><span class="special">:</span> <span class="keyword">virtual</span> <span class="keyword">public</span> <span class="identifier">wp</span><span class="special">::</span><span class="identifier">weapon</span>
+<span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="identifier">guided_weapon</span><span class="special">(</span><span class="identifier">wp</span><span class="special">::</span><span class="identifier">missile</span> <span class="special">&amp;</span> <span class="identifier">missile__</span><span class="special">):</span>
+		<span class="identifier">wp</span><span class="special">::</span><span class="identifier">weapon</span><span class="special">{</span><span class="identifier">missile__</span><span class="special">}</span>	<span class="comment">// 基类构造函数</span>
+	<span class="special">{</span>
+	<span class="special">}</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="keyword">void</span> <span class="identifier">seek</span><span class="special">()</span> <span class="keyword">const</span> <span class="identifier">override</span>
+	<span class="special">{</span>
+		<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"制导武器桥接到导弹了："</span><span class="special">;</span>
+		<span class="identifier">missile</span><span class="special">.</span><span class="identifier">seek</span><span class="special">();</span>
+	<span class="special">}</span>
+<span class="special">};</span>
+
+<span class="special">}</span>	<span class="comment">// namespace wp</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">()</span>
+<span class="special">{</span>
+	<span class="identifier">wp</span><span class="special">::</span><span class="identifier">cruise_missile</span> <span class="identifier">m1</span><span class="special">;</span>
+	<span class="identifier">wp</span><span class="special">::</span><span class="identifier">swarm_missile</span> <span class="identifier">m2</span><span class="special">;</span>
+
+	<span class="identifier">wp</span><span class="special">::</span><span class="identifier">weapon</span> <span class="identifier">w1</span><span class="special">{</span><span class="identifier">m1</span><span class="special">};</span>
+	<span class="identifier">wp</span><span class="special">::</span><span class="identifier">weapon</span> <span class="identifier">w2</span><span class="special">{</span><span class="identifier">m2</span><span class="special">};</span>
+
+	<span class="identifier">wp</span><span class="special">::</span><span class="identifier">guided_weapon</span> <span class="identifier">w3</span><span class="special">{</span><span class="identifier">m1</span><span class="special">};</span>
+	<span class="identifier">wp</span><span class="special">::</span><span class="identifier">guided_weapon</span> <span class="identifier">w4</span><span class="special">{</span><span class="identifier">m2</span><span class="special">};</span>
+
+	<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"========\n导弹发动 ...\n"</span><span class="special">;</span>
+	<span class="identifier">m1</span><span class="special">.</span><span class="identifier">seek</span><span class="special">();</span>
+	<span class="identifier">m2</span><span class="special">.</span><span class="identifier">seek</span><span class="special">();</span>
+
+	<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"========\n武器发动 ...\n"</span><span class="special">;</span>
+	<span class="identifier">w1</span><span class="special">.</span><span class="identifier">seek</span><span class="special">();</span>
+	<span class="identifier">w2</span><span class="special">.</span><span class="identifier">seek</span><span class="special">();</span>
+
+	<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"========\n制导武器发动 ...\n"</span><span class="special">;</span>
+	<span class="identifier">w3</span><span class="special">.</span><span class="identifier">seek</span><span class="special">();</span>
+	<span class="identifier">w4</span><span class="special">.</span><span class="identifier">seek</span><span class="special">();</span>
+<span class="special">}</span>
+</pre>
+<h3>
+<a name="bridge_pattern_cpp.h2"></a>
+        <span class="phrase"><a name="bridge_pattern_cpp._"></a></span><a class="link" href="bridge_pattern_cpp.html#bridge_pattern_cpp._">程序输出：</a>
+      </h3>
+<pre class="programlisting"><span class="comment">/*
+========
+导弹发动 ...
+巡航导弹正在索敌 ...
+蜂群导弹正在索敌 ...
+========
+武器发动 ...
+武器桥接到导弹了：巡航导弹正在索敌 ...
+武器桥接到导弹了：蜂群导弹正在索敌 ...
+========
+制导武器发动 ...
+制导武器桥接到导弹了：巡航导弹正在索敌 ...
+制导武器桥接到导弹了：蜂群导弹正在索敌 ...
+*/</span>
+</pre>
+<h2>
+<a name="bridge_pattern_cpp.h3"></a>
+        <span class="phrase"><a name="bridge_pattern_cpp._0"></a></span><a class="link" href="bridge_pattern_cpp.html#bridge_pattern_cpp._0">首页</a>
+      </h2>
+<p>
+        息拉滑: <a href="https://xilahua.top" target="_top">xilahua.top</a>
+      </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"><p><small>Last revised: March 29, 2024 at 03:18:16 GMT</small></p></td>
+<td align="right"><div class="copyright-footer">Copyright © 2024 xilahua.top<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="design_patterns_cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="design_patterns_cpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a>
+</div>
+</body>
+</html>

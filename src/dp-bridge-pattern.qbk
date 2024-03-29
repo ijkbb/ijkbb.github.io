@@ -1,0 +1,173 @@
+[/
+	Copyright 2024 xilahua.top
+
+	Distributed under the Boost Software License, Version 1.0.
+	(See accompanying file LICENSE_1_0.txt or copy at
+	http://www.boost.org/LICENSE_1_0.txt)
+]
+
+[article Bridge Pattern @cpp
+	[quickbook 1.7]
+]
+
+[h1 桥接模式 - cpp]
+
+cpp/c++ 设计模式之桥接模式
+
+桥接模式是一种 c++ 设计模式，它分离了业务逻辑的抽象和实现，并桥接它们。抽象和实现两个部分可以分别独立的变化和更新，而不需要改变另一个部分。
+
+c++ 桥接模式代码比较简单，定义两套类，一套类的基以另一套类的基为成员，各自的继承类并不需要关心基类。
+
+[h1 cpp 桥接模式代码例子]
+
+众所周知，导弹是一种武器，我们可以把导弹叫做武器的实现，把武器叫做导弹的抽象，这只是一种比喻。
+
+导弹也有很多种：巡航导弹、洲际导弹、蜂群导弹，... 。
+
+武器也可以分类：制导武器、静态武器、... 。
+
+missile : 导弹
+
+cruise missile : 巡航导弹
+
+swarm missile : 蜂群导弹
+
+weapon : 武器
+
+guided weapon : 制导武器
+
+[note
+	[role green 可以把本文所说的武器、导弹等等等等看成游戏里的概念或者哲学概念，而不是现实里的军事概念，本文对此称呼不负责任。]
+]
+
+[* bridge pattern 桥接模式 c++ 代码]
+
+[~bridge-pattern-cpp.cpp]
+
+[!c++]
+```
+#include <iostream>
+
+namespace wp
+{
+
+////////////////////////////////////////////////////////////
+// 导弹基：
+// wp::missile
+
+// 导弹, 基类
+class missile
+{
+public:
+	virtual ~missile() = default;
+	virtual void seek() const = 0;
+};
+
+// 巡航导弹
+class cruise_missile: virtual public wp::missile
+{
+public:
+	void seek() const override
+	{
+		std::cout << "巡航导弹正在索敌 ..." << std::endl;
+	}
+};
+
+// 蜂群导弹
+class swarm_missile: virtual public wp::missile
+{
+public:
+	void seek() const override
+	{
+		std::cout << "蜂群导弹正在索敌 ..." << std::endl;
+	}
+};
+
+////////////////////////////////////////////////////////////
+// 武器基：
+// wp::weapon
+
+class weapon
+{
+protected:
+	// 非常左值引用作为类的数据成员，需要绑定外部对象
+	wp::missile & missile;
+public:
+	weapon(wp::missile & missile__):
+		missile{missile__}
+	{
+	}
+public:
+	// 调用 wp::weapon 的 seek 方法，实际上会转到调用 wp::missile 的 seek 方法
+	virtual void seek() const
+	{
+		std::cout << "武器桥接到导弹了：";
+		missile.seek();
+	}
+};
+
+class guided_weapon: virtual public wp::weapon
+{
+public:
+	guided_weapon(wp::missile & missile__):
+		wp::weapon{missile__}	// 基类构造函数
+	{
+	}
+public:
+	void seek() const override
+	{
+		std::cout << "制导武器桥接到导弹了：";
+		missile.seek();
+	}
+};
+
+}	// namespace wp
+
+int main()
+{
+	wp::cruise_missile m1;
+	wp::swarm_missile m2;
+
+	wp::weapon w1{m1};
+	wp::weapon w2{m2};
+
+	wp::guided_weapon w3{m1};
+	wp::guided_weapon w4{m2};
+
+	std::cout << "========\n导弹发动 ...\n";
+	m1.seek();
+	m2.seek();
+
+	std::cout << "========\n武器发动 ...\n";
+	w1.seek();
+	w2.seek();
+
+	std::cout << "========\n制导武器发动 ...\n";
+	w3.seek();
+	w4.seek();
+}
+```
+
+[h2 程序输出：]
+
+```
+/*
+========
+导弹发动 ...
+巡航导弹正在索敌 ...
+蜂群导弹正在索敌 ...
+========
+武器发动 ...
+武器桥接到导弹了：巡航导弹正在索敌 ...
+武器桥接到导弹了：蜂群导弹正在索敌 ...
+========
+制导武器发动 ...
+制导武器桥接到导弹了：巡航导弹正在索敌 ...
+制导武器桥接到导弹了：蜂群导弹正在索敌 ...
+*/
+```
+
+[h1 首页]
+
+息拉滑: [@https://xilahua.top xilahua.top]
+
