@@ -10,9 +10,9 @@
 	[quickbook 1.7]
 ]
 
-[include dp-bridge-pattern.qbk]
-[include dp-proxy-pattern.qbk]
-[include dp-adapter-pattern.qbk]
+[include dp_bridge_pattern.qbk]
+[include dp_proxy_pattern.qbk]
+[include dp_adapter_pattern.qbk]
 
 [h1 设计模式 - cpp]
 

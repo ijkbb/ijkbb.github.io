@@ -9,6 +9,7 @@ install install-media
 		[ glob
 			$(media-src)/*.css
 			$(media-src)/images/*.png
+			$(media-src)/404.html
 		]
 	:
 		<location>$(web-root)
