@@ -197,16 +197,38 @@
 制导武器桥接到导弹了：蜂群导弹正在索敌 ...
 */</span>
 </pre>
-<h2>
+<h3>
 <a name="bridge_pattern_cpp.h3"></a>
-        <span class="phrase"><a name="bridge_pattern_cpp._0"></a></span><a class="link" href="bridge_pattern_cpp.html#bridge_pattern_cpp._0">首页</a>
+        <span class="phrase"><a name="bridge_pattern_cpp._0"></a></span><a class="link" href="bridge_pattern_cpp.html#bridge_pattern_cpp._0">补充说明</a>
+      </h3>
+<p>
+        代码例子里用到了多态。
+      </p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+            基类对象的指针指向了继承类对象是多态 - 上行
+          </li>
+<li class="listitem">
+            基类对象引用绑定到了继承类对象是多态 - 上行
+          </li>
+<li class="listitem">
+            如果基类里有 virtual 成员函数，那么指针或者引用的反向绑定也是多态
+            - 下行
+          </li>
+<li class="listitem">
+            其它未提及的情况，比如侧行绑定请阅读文档，不再赘述
+          </li>
+</ul></div>
+<h2>
+<a name="bridge_pattern_cpp.h4"></a>
+        <span class="phrase"><a name="bridge_pattern_cpp._1"></a></span><a class="link" href="bridge_pattern_cpp.html#bridge_pattern_cpp._1">首页</a>
       </h2>
 <p>
         息拉滑: <a href="https://xilahua.top" target="_top">xilahua.top</a>
       </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: March 29, 2024 at 03:18:16 GMT</small></p></td>
+<td align="left"><p><small>Last revised: March 29, 2024 at 03:32:26 GMT</small></p></td>
 <td align="right"><div class="copyright-footer">Copyright © 2024 xilahua.top<p>
         Distributed under the Boost Software License, Version 1.0. (See accompanying
         file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
