@@ -1,0 +1,43 @@
+[/
+	Copyright 2024 xilahua.top
+
+	Distributed under the Boost Software License, Version 1.0.
+	(See accompanying file LICENSE_1_0.txt or copy at
+	http://www.boost.org/LICENSE_1_0.txt)
+]
+
+[article boost::signals2 missile reviewer @cpp
+	[quickbook 1.7]
+]
+
+[h1 boost::signals2 导弹和审查员 - cpp]
+
+cpp/c++ boost::signals2 
+
+boost::signals2 是一种设计模式观察者模式的实现。boost::signals2 用一种简单的方法实现了信号的任意发送，在代码中非常好用。
+
+[h1 cpp 代码实现]
+
+c++ 信号，boost::signals2
+
+以游戏中的导弹为例子。
+
+在本代码中，以导弹和审查员为例，导弹就是我们的 signal 源，当它被发射后， 就会将信息发送给审查员。
+
+missile - 导弹
+
+[* c++ boost::signals2 例子]
+
+[import ./cpp/sig2_missile_reviewer.cpp]
+[sig2_missile_reviewer_cpp]
+
+[h1 相关链接]
+
+[link bridge_pattern_cpp c++桥接模式]
+
+[link adapter_pattern_cpp c++适配器模式]
+
+[h1 首页]
+
+息拉滑: [@https://xilahua.top xilahua.top]
+
