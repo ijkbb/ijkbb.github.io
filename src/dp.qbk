@@ -13,6 +13,7 @@
 [include dp_bridge_pattern.qbk]
 [include dp_proxy_pattern.qbk]
 [include dp_adapter_pattern.qbk]
+[include dp_strategy_pattern.qbk]
 
 [h1 设计模式 - cpp]
 

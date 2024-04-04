@@ -16,6 +16,8 @@ cpp/c++ boost::signals2
 
 boost::signals2 是一种设计模式观察者模式的实现。boost::signals2 用一种简单的方法实现了信号的任意发送，在代码中非常好用。
 
+3月 - xilahua.top
+
 [h1 cpp 代码实现]
 
 c++ 信号，boost::signals2
