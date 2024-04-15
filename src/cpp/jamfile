@@ -1,9 +1,15 @@
+lib cobalt : : <name>boost_cobalt ;
+
 project
+	: requirements
+		<library>cobalt
 	: default-build
 		<cxxstd>23
 ;
 
 progs =
+	cobalt_hello
+	cobalt_race
 	dp_adapter_pattern
 	dp_bridge_pattern
 	dp_proxy_pattern

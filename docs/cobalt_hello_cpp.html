@@ -1,0 +1,136 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Cobalt Hello @cpp</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="息拉滑 @cpp">
+<link rel="up" href="boost_cobalt_cpp.html" title="boost::cobalt @cpp">
+<link rel="prev" href="boost_cobalt_cpp.html" title="boost::cobalt @cpp">
+<link rel="next" href="cobalt_race_cpp.html" title="cobalt::race @cpp">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="boost_cobalt_cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="boost_cobalt_cpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="cobalt_race_cpp.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="article">
+<div class="titlepage">
+<div><div><h2 class="title">
+<a name="cobalt_hello_cpp"></a>Cobalt Hello @cpp</h2></div></div>
+<hr>
+</div>
+<h2>
+<a name="cobalt_hello_cpp.h0"></a>
+        <span class="phrase"><a name="cobalt_hello_cpp.boost_cobalt"></a></span><a class="link" href="cobalt_hello_cpp.html#cobalt_hello_cpp.boost_cobalt">boost::cobalt</a>
+      </h2>
+<p>
+        Cobalt 是一个 c++20 协程的 boost 库，提供了非常有用又简单的协程调用，供用户使用，开源免费。有了它，写
+        c++ 协程就像写 std::cout 那么简单，不必为复杂的设计而烦恼。
+      </p>
+<p>
+        4月15日 - xilahua.top
+      </p>
+<h2>
+<a name="cobalt_hello_cpp.h1"></a>
+        <span class="phrase"><a name="cobalt_hello_cpp.co_main"></a></span><a class="link" href="cobalt_hello_cpp.html#cobalt_hello_cpp.co_main">co_main</a>
+      </h2>
+<p>
+        我们的 main 函数都 co 了.
+      </p>
+<h2>
+<a name="cobalt_hello_cpp.h2"></a>
+        <span class="phrase"><a name="cobalt_hello_cpp.cobalt_generator"></a></span><a class="link" href="cobalt_hello_cpp.html#cobalt_hello_cpp.cobalt_generator">cobalt::generator</a>
+      </h2>
+<p>
+        cobalt::generator 有点像 std::generator，不完全相同。它们都是时间轴上的多值协程容器。惰性的。
+      </p>
+<h2>
+<a name="cobalt_hello_cpp.h3"></a>
+        <span class="phrase"><a name="cobalt_hello_cpp.cobalt_promise"></a></span><a class="link" href="cobalt_hello_cpp.html#cobalt_hello_cpp.cobalt_promise">cobalt::promise</a>
+      </h2>
+<p>
+        单值的，相对而言。惰性的。
+      </p>
+<h2>
+<a name="cobalt_hello_cpp.h4"></a>
+        <span class="phrase"><a name="cobalt_hello_cpp.cobalt_cpp"></a></span><a class="link" href="cobalt_hello_cpp.html#cobalt_hello_cpp.cobalt_cpp">cobalt
+        cpp 例子</a>
+      </h2>
+<p>
+        cobalt c++ 例子
+      </p>
+<p>
+        <em class="replaceable"><code>文件名：<span class="blue">cobalt_hello.cpp</span></code></em>
+      </p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">cobalt</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+
+<span class="keyword">namespace</span> <span class="identifier">cobalt</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">cobalt</span><span class="special">;</span>
+
+<span class="keyword">class</span> <span class="identifier">rab_pot</span>
+<span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="identifier">cobalt</span><span class="special">::</span><span class="identifier">generator</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">generator</span><span class="special">()</span> <span class="keyword">const</span>
+	<span class="special">{</span>
+		<span class="keyword">for</span> <span class="special">(</span><span class="keyword">int</span> <span class="identifier">i</span><span class="special">=</span><span class="number">0</span><span class="special">;</span> <span class="identifier">i</span><span class="special">&lt;</span><span class="number">7</span><span class="special">;</span> <span class="special">++</span><span class="identifier">i</span><span class="special">)</span>
+			<span class="identifier">co_yield</span> <span class="identifier">i</span><span class="special">;</span>
+		<span class="identifier">co_return</span> <span class="special">-</span><span class="number">1</span><span class="special">;</span>
+	<span class="special">}</span>
+	<span class="identifier">cobalt</span><span class="special">::</span><span class="identifier">promise</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">promise</span><span class="special">()</span> <span class="keyword">const</span>
+	<span class="special">{</span>
+		<span class="identifier">co_return</span> <span class="number">9</span><span class="special">;</span>
+	<span class="special">}</span>
+<span class="special">};</span>
+
+<span class="identifier">cobalt</span><span class="special">::</span><span class="identifier">main</span> <span class="identifier">co_main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[])</span>
+<span class="special">{</span>
+	<span class="keyword">auto</span> <span class="identifier">rp</span> <span class="special">=</span> <span class="identifier">rab_pot</span><span class="special">{};</span>
+	<span class="keyword">auto</span> <span class="identifier">g</span> <span class="special">=</span> <span class="identifier">rp</span><span class="special">.</span><span class="identifier">generator</span><span class="special">();</span>
+	<span class="keyword">auto</span> <span class="identifier">p</span> <span class="special">=</span> <span class="identifier">rp</span><span class="special">.</span><span class="identifier">promise</span><span class="special">();</span>
+	<span class="keyword">while</span> <span class="special">(</span><span class="identifier">g</span><span class="special">)</span>
+		<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">co_await</span> <span class="identifier">g</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+	<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">co_await</span> <span class="identifier">p</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+	<span class="identifier">co_return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<h3>
+<a name="cobalt_hello_cpp.h5"></a>
+        <span class="phrase"><a name="cobalt_hello_cpp._"></a></span><a class="link" href="cobalt_hello_cpp.html#cobalt_hello_cpp._">输出：</a>
+      </h3>
+<pre class="programlisting">0
+1
+2
+3
+4
+5
+6
+-1
+9
+</pre>
+<h2>
+<a name="cobalt_hello_cpp.h6"></a>
+        <span class="phrase"><a name="cobalt_hello_cpp._0"></a></span><a class="link" href="cobalt_hello_cpp.html#cobalt_hello_cpp._0">相关链接</a>
+      </h2>
+<p>
+        <a class="link" href="cobalt_race_cpp.html" title="cobalt::race @cpp">cobalt::race</a>
+      </p>
+<h2>
+<a name="cobalt_hello_cpp.h7"></a>
+        <span class="phrase"><a name="cobalt_hello_cpp._1"></a></span><a class="link" href="cobalt_hello_cpp.html#cobalt_hello_cpp._1">首页</a>
+      </h2>
+<p>
+        息拉滑: <a href="https://xilahua.top" target="_top">xilahua.top</a>
+      </p>
+</div>
+<div class="copyright-footer">Copyright © 2024 xilahua.top<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+      </p>
+</div>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="boost_cobalt_cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="boost_cobalt_cpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="cobalt_race_cpp.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

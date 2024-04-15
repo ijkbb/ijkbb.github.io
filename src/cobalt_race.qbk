@@ -1,0 +1,35 @@
+[/
+	Copyright 2024 xilahua.top
+
+	Distributed under the Boost Software License, Version 1.0.
+	(See accompanying file LICENSE_1_0.txt or copy at
+	http://www.boost.org/LICENSE_1_0.txt)
+]
+
+[article cobalt::race @cpp
+	[quickbook 1.7]
+]
+
+[h1 boost::cobalt::race]
+
+c++
+
+cobalt::race 数据竞赛，它以伪随机的方式等待数据集中的之一，以避免饥饿。
+
+4月15日 - xilahua.top
+
+[h1 cobalt::race cpp 例子]
+
+cobalt::race c++ 例子
+
+[import ./cpp/cobalt_race.cpp]
+[cobalt_race_cpp]
+
+[h1 相关链接]
+
+[link cobalt_hello_cpp boost::cobalt hello]
+
+[h1 首页]
+
+息拉滑: [@https://xilahua.top xilahua.top]
+
