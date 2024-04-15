@@ -1,0 +1,39 @@
+[/
+	Copyright 2024 xilahua.top
+
+	Distributed under the Boost Software License, Version 1.0.
+	(See accompanying file LICENSE_1_0.txt or copy at
+	http://www.boost.org/LICENSE_1_0.txt)
+]
+
+[article cobalt::awaitable @cpp
+	[quickbook 1.7]
+]
+
+[h1 boost::cobalt::awaitable concept - cpp]
+
+cobalt::awaitable c++ concept
+
+cobalt::awaitable 是一个 c++ concept，要求一个类型必须是一个 awaitable 类型，即可 co_await 表达式。
+
+4月15日 - xilahua.top
+
+[h1 cobalt::awaitable c++ 代码例子]
+
+显然，cobalt::promise, cobalt::generator 都满足 cobalt::awaitable
+
+[* c++ boost::cobalt::awaitable 例子]
+
+[import ./cpp/cobalt_awaitable.cpp]
+[cobalt_awaitable_cpp]
+
+[h1 相关链接]
+
+[link cobalt_hello_cpp boost::cobalt hello @cpp]
+
+[link cobalt_race_cpp boost::cobalt::race @cpp]
+
+[h1 首页]
+
+息拉滑: [@https://xilahua.top xilahua.top]
+

@@ -12,6 +12,7 @@
 
 [include cobalt_hello.qbk]
 [include cobalt_race.qbk]
+[include cobalt_awaitable.qbk]
 
 [h1 boost::cobalt - cpp]
 

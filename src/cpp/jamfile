@@ -10,6 +10,7 @@ project
 progs =
 	cobalt_hello
 	cobalt_race
+	cobalt_awaitable
 	dp_adapter_pattern
 	dp_bridge_pattern
 	dp_proxy_pattern

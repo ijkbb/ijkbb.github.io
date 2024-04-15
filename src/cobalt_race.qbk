@@ -27,7 +27,9 @@ cobalt::race c++ 例子
 
 [h1 相关链接]
 
-[link cobalt_hello_cpp boost::cobalt hello]
+[link cobalt_hello_cpp boost::cobalt hello c++ boost @cpp]
+
+[link cobalt_awaitable_cpp cobalt::awaitable c++ boost @cpp]
 
 [h1 首页]
 
