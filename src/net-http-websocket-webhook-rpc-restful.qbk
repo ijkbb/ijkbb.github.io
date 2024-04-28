@@ -1,0 +1,111 @@
+[/
+	Copyright 2024 xilahua.top
+
+	Distributed under the Boost Software License, Version 1.0.
+	(See accompanying file LICENSE_1_0.txt or copy at
+	http://www.boost.org/LICENSE_1_0.txt)
+]
+
+[article http websocket rpc restful 的区别 @cpp
+	[quickbook 1.7]
+]
+
+[h1 http websocket rpc restful 的区别 cpp 编程]
+
+http websocket rpc restful 的区别 c++ 编程
+
+[h1 http]
+
+http 是对 socket 的简单封装，本质上 http 就是 socket，跟 socket 通讯的过程一致。http 就是定义了发送和接收消息数据的结构的 socket，相应的 socket 通讯没有定义消息数据的结构，结构可以任意。
+
+在 c++ boost::asio 库中，可以使用 socket 通讯，而不调用 http 库，这样在 asio socket 通讯中，用 http 的数据头和体的格式的数据作为 socket 通讯的数据，这样也是 http 通讯。
+
+http 通讯过程分成客户端解析主机/服务器等待连接、建立连接、客户端发送请求/服务端接收请求、客户端接收响应/服务端发送响应、关闭连接这么几个阶段。
+
+[h2 无连接]
+
+无连接是指限制每次连接只处理一个请求。服务器处理完客户的请求，并收到客户的应答后，即断开连接。采用这种方式可以节省传输时间。
+
+[h2 无状态]
+
+无状态是指协议对于事务处理没有记忆能力，服务器不知道客户端是什么状态。即我们给服务器发送 HTTP 请求之后，服务器根据请求，会给我们发送数据过来，但是，发送完，不会记录任何信息。http 是一个无状态协议，这意味着每个请求都是独立的。
+
+[h2 单向]
+
+http 连接是单向的，只能是客户端向服务端发起连接，而不能服务端向客户端发起连接。
+
+[h1 websocket]
+
+websocket 是 http 协议的升级，在 http 连接的过程中，增加了一次握手，在http 建立连接升级过程中，使之成为约定的 websocket 连接。c++ boost::beast 库之 websocket 通过升级异步调用成了 websocket 协议。
+
+websocket 在客户端和服务端建立了双向的、全双工的通讯通道，以进行实时数据流式传播。跟 http 请求响应模式不同的是，websocket 让服务端和客户端都可以在任何时候实施数据传输，以便于及时(instant)更新和推送通知。这种架构非常适合于需要实时合作的应用、聊天应用、股市 tickers、和多玩家游戏。 c++ boost beast 有很好的 websocket 股市 ticker 的代码例子。
+
+[h2 服务端连接]
+
+服务端接受了客户端的 websocket 握手请求，就会与客户端建立持久的连接。
+
+[h2 实时通讯]
+
+一旦 websocket 连接建立，客户端和服务端都可以在任何时候发送消息给彼此，而不需要客户端重新实施请求(request)，启用了实时的、双向的通讯。
+
+[h1 rpc]
+
+rpc 是将服务端的远程资源调用像本机调用一样。http 是一次连接一次请求的模式，如果资源分配在多个服务器，就需要依次向每个服务器发送 http 请求，rpc 更像是对它们的封装。
+
+rpc - Remote Procedure Call 远程过程调用，是一种这样的通讯协议，一个程序能够请求和使用另一个在另一台网络上的计算机上的程序，而不需要了解网络 的细节。RPC 用于调用远程系统上的其它进程就像本机调用一样。一个过程调用有时也被叫做函数调用或者子协程调用。使用 c++ boost::asio boost::beast 可以很容易写 rpc 程序。
+
+[h1 RESTFUL]
+
+Restful 或者 rest 并不是一种协议，也不是一个标准，它是一种架构风格。在开发过程中，API 开发者可以用各种方式实现 REST 。
+
+REST 是缩略词： REpresentational State Transfer 表示状态转移，是一种分布式超媒体系统的架构风格。
+
+在 c++ boost::asio 协议群的基础上，可以实现 RESTFUL，restful 不是一种协议，也不是标准。
+
+[h2 REST 六大原则]
+
+[h3 1. 统一界面]
+
+REST 定义了持久连接和统一界面，以便客户端和服务器交互。比如，基于 http 的 rest api 利用了标准的 http 方法(GET, POST, PUT, DELETE)和 URI 来识别资源。
+
+[h3 2. 客户端服务端]
+
+分离用户界面 - 客户端，和数据存储 - 服务端，改经了用户界面跨越多个服务端的便携性，简化了服务端组件达到可伸缩性。
+
+[h3 3. 无状态]
+
+客户端每次请求都必须包含所有的必要信息。服务端不允许利用上一次存储的语境信息。因此，客户端必须完整的保留会话 session 。
+
+[h3 4. 可缓存标记]
+
+可缓存标记约定要求一个响应必须隐式的或者显示的标记自己为可缓存的还是不可缓存的。
+
+如果响应是可缓存的，客户端应用可以在以后等效的请求和指定的时间期限内，重复使用响应数据。
+
+[h3 5. 层叠系统]
+
+层叠系统风格让架构由很多层组成。在一个层叠系统中，每一层都只能与与它对接的层交互，而不能跃层交互。
+
+例如，MVC 是一种层叠系统。
+
+[h3 6. 代码随需应变 (可选的)]
+
+客户端可以以 applet 或者 script 的形式下载和执行代码。
+
+[h1 综上所述]
+
+* http 适用于请求一次，即获得资源，然后关闭连接的情况，比如我们的网页浏览。
+* websocket 适用于需要实时和反复收发消息的情况，比如聊天室、多玩家游戏。
+* rpc 适用于远程过程调用，比如我在我的程序里调用了一个函数，这个函数不是本机的，而是远程服务器的。
+* restful 不是协议也不是标准，而是一种架构风格。
+
+在实际的应用和项目中，它们可以组合使用，一个项目用几个或者全部。
+
+[h1 相关链接]
+
+[link boost_cobalt_cpp boost::cobalt c++]
+
+[h1 首页]
+
+息拉滑: [@https://xilahua.top xilahua.top]
+
