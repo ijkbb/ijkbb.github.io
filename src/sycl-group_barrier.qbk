@@ -1,0 +1,40 @@
+[/
+	Copyright 2024 xilahua.top
+
+	Distributed under the Boost Software License, Version 1.0.
+	(See accompanying file LICENSE_1_0.txt or copy at
+	http://www.boost.org/LICENSE_1_0.txt)
+]
+
+[article sycl::group_barrier @cpp
+	[quickbook 1.7]
+]
+
+[h1 sycl::group_barrier 组屏障 - cpp]
+
+sycl::group_barrier 组屏障, cpp/c++
+
+当 sycl 每个工作组中的工作项并行的完成了它们的任务后， 如果需要同步它们的步伐，就可以使用屏障， 即调用 sycl::group_barrier, 第一个参数是从 item 对象中取得的工作组 .get_group, 第二个参数是屏障作用的范围，一般是 sycl::memory_scope::work_group。
+
+sycl::group_barrier 同步一个工作组中的所有工作项，使用组屏障。
+
+```
+{ // 工作项作用域
+	// 一些工作 ...
+
+	// 读写了 sycl 局部内存 ...	(一般写后需要同步，读可免)
+	sycl::group_barrier(item.get_group(), sycl::memory_scope::work_group);
+
+	// 又一些工作 ...
+} // 离开工作项作用域
+```
+
+[h1 sycl::group_barrier cpp 代码例子]
+
+[import ./cpp/sycl/sycl_group_barrier.cpp]
+[sycl_group_barrier_cpp]
+
+[h1 相关链接]
+
+[link sycl_gpu_cpp sycl gpu 编程 - c++]
+

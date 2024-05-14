@@ -1,0 +1,9 @@
+bin_dir=./bin
+
+mkdir -p ${bin_dir}
+
+for prog in sycl_group_barrier; do
+	echo "Compiling ${prog} ..."
+	dpcpp ${prog}.cpp -std=c++23 -o ${bin_dir}/${prog}
+done
+

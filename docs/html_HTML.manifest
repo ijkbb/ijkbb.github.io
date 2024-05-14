@@ -1,4 +1,6 @@
 index.html
+sycl_gpu_cpp.html
+sycl_group_barrier_cpp.html
 boost_cobalt_cpp.html
 cobalt_hello_cpp.html
 cobalt_race_cpp.html

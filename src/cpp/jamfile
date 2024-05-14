@@ -23,3 +23,6 @@ for prog in $(progs)
 	exe $(prog) : $(prog).cpp ;
 }
 
+#echo "Building all sycl programs ..." ;
+#SHELL "cd $(project-root)/src/cpp/sycl; ./build-sycl" ;
+
