@@ -16,6 +16,7 @@ progs =
 	dp_proxy_pattern
 	dp_strategy_pattern
 	sig2_missile_reviewer
+	math_dft
 ;
 
 for prog in $(progs)

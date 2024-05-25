@@ -1,6 +1,7 @@
 path-constant src-root : ./ ;
 path-constant web-root : ../docs ;
 path-constant media-src : ./media ;
+path-constant site-media-src : ./site-media ;
 
 xml xml-index : index.qbk ;
 
@@ -34,6 +35,16 @@ install install-html
 	:
 		<location>$(web-root)
 		<install-source-root>$(src-root)/html
+;
+
+install install-site-media
+	:
+		[ glob
+			$(site-media-src)/math-dft/*
+		]
+	:
+		<location>$(web-root)/site-media
+		<install-source-root>$(site-media-src)
 ;
 
 build-project cpp ;
