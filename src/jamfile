@@ -2,6 +2,7 @@ path-constant src-root : ./ ;
 path-constant web-root : ../docs ;
 path-constant media-src : ./media ;
 path-constant site-media-src : ./site-media ;
+path-constant static-html-src : ./static-html ;
 
 xml xml-index : index.qbk ;
 
@@ -23,6 +24,8 @@ boostbook html
 		xml-index
 	:
 		<xsl:param>"chunk.first.sections=1"
+		<xsl:param>"boost.mathjax=1"
+		<xsl:param>"boost.mathjax.script=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 		<dependency>install-media
 ;
 
@@ -46,6 +49,17 @@ install install-site-media
 		<location>$(web-root)/site-media
 		<install-source-root>$(site-media-src)
 ;
+
+install install-static-html
+	:
+		[ glob
+			$(static-html-src)/*
+		]
+	:
+		<location>$(web-root)/static
+		<install-source-root>$(static-html-src)
+;
+
 
 build-project cpp ;
 

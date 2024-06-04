@@ -1,0 +1,106 @@
+<html>
+<head>
+<meta charset="utf-8" />
+<title>寻找和定义复数的除法(群论)</title>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<div id="body" style="font-size:20px; margin-left:auto; margin-right:auto; max-width:1280px;border:1px solid #37f;padding:25px;border-radius:5px;min-height:600px;">
+
+<div style="text-align:center">
+<h1>寻找和定义复数的除法(群论)</h1>
+<p>@cpp</p>
+</div>
+
+
+<h2>复数乘法群 \( (Z, \times) \)</h2>
+
+<p>
+我们知道，实数上的除法可以看作乘法的逆运算，比如：
+</p>
+
+<div style="margin-left:auto;margin-right:auto;max-width:500px">
+
+\( \frac{1}{7} = 7^{-1} \)
+<br />
+\( \frac{3}{5} = 5^{-1} \times 3 \\
+\)
+
+</div>
+
+<p>那么，复数上的除法是否可以找到类似的操作呢? 试试看。</p>
+
+<p>首先我们定义一个不含 0 的复数乘法群 \( (Z, \times) \)，发现这个乘法群满足群论四个基本要求：</p>
+
+<ul>
+<li><b>封闭性</b>：复数与复数的乘法仍然是复数。
+<li><b>结合律</b>：\( Z_1 * Z_2 * Z_3 = Z_1 * (Z_2 * Z_3) \), 显然复数乘法运算满足结合律。
+<li><b>单位元</b>：复数 1 （也就是实数 1）与这个集合中的任意一个复数左乘和右乘都等于那个复数，因而 1 是复数的单位元，且只能找到一个这样的单位元。
+<li><b>逆元</b>： <br />
+解： 任取一个复数 \( Z = a + bi \) <br />
+显然 a, b 不同时为 0, 因为前面已经说过，是不含 0 的复数群，<br />
+Z 的共轭复数为 \( Z^* = a - bi \)<br />
+Z 的逆为 \( Z_2 = \frac{a}{a^2 + b^2} - \frac{b}{a^2+b^2} i \) <br />
+\( Z Z_2 = \frac{a^2}{a^2+b^2} + \frac{b^2}{a^2+b^2} - a\frac{b}{a^2+b^2}i + bi \frac{a}{a^2+b^2} \) <br />
+\( \quad = 1 \) <br />
+同理得到 \( Z_2 Z = 1 \)<br />
+因而不含0的复数的集合满足逆元。<br />
+我们可以把复数 Z 的逆元记作 \( Z^{-1} \)，不难发现 \( Z^{-1} = \frac{Z^*}{|Z|^2} \) <br />
+\( ZZ^{-1} = Z^{-1}Z = 1 \quad (Z \neq 0) \)<br />
+</ul>
+
+<p>得到，复数的逆等于它的共轭复数处以它的模长的平方。</p>
+
+<p>另外，复数乘法满足交换律。</p>
+
+<h2>复数的除法：逆元</h2>
+
+前小节已经证明了不含0的复数乘法群满足群论的四条基本性质，因而我们就可以将复数的除法定义为复数的逆元，显然 0 不能当作除数。
+
+<h3>复数除法如何计算:</h3>
+
+\( Z_2 \) <br />
+\( Z_2^{-1} = \frac{Z_2^*}{|Z_2|^2} \) <br />
+\( \frac{Z_1}{Z_2} = Z_2^{-1}Z_1 = Z_1 Z_2^{-1} = \frac{Z_1 Z_2^*}{|Z_2|^2} \)<br />
+
+根据欧拉恒等式，<br />
+\( Z_1 = \rho_1 e^{i\theta_1} \) <br />
+\( Z_2 = \rho_2 e^{i\theta_2} \) <br />
+\(Z_2^* = \rho_2(\cos{\theta_2} - i\sin{\theta_2}) = \rho_2(\cos{(-\theta_2)} + i\sin{(-\theta_2)}) = \rho_2 e^{-i\theta_2} \)<br />
+\(Z_1 Z_2^* = \rho_1 \rho_2 e^{i(\theta_1 - \theta_2)} \)<br />
+\(|Z_2|^2 = \rho_2^2 \)<br />
+
+<div style="font-size:30px;margin:30px;">
+由此可得指数形式的复数除法运算：<br />
+<div style="border:1px solid #000;text-align:center;max-width:400px;padding:25px;border-radius:5px;">
+\( \frac{Z_1}{Z_2} = \frac{Z_1 Z_2^*}{|Z_2|^2} = \frac{\rho_1}{\rho_2}e^{i(\theta_1 - \theta_2)} \)<br />
+</div>
+<span style="font-size:17px">(注意 模长 \(\rho_2 \neq 0, 即 \rho_2 > 0 \) )</span>
+</div>
+
+
+<div style="font-size:30px;margin:30px;">
+跟指数形式的复数乘法运算作对比：<br />
+<div style="border:1px solid #000;text-align:center;max-width:400px;padding:25px;border-radius:5px;">
+\(Z_1 Z_2 = \rho_1\rho_2 e^ {i (\theta_1 + \theta_2)} \) <br />
+</div>
+<span style="font-size:17px">(复数乘法是可以接受模长为 0 的)</span>
+</div>
+
+<span style="font-size:25px;border:1px solid #000;border-radius:5px;padding:10px;">
+到此可以统一复数的乘法和除法表述，复数乘除法是复数的模长的乘除法以及复数幅角的加减法。
+</span>
+</p>
+
+<div style="clear:both"></div>
+<hr />
+
+<div style="text-align:center">
+<p>
+<a href="https://xilahua.top">息拉滑 @cpp</a>
+</p>
+</div>
+
+</div>
+</body>
+</html>
