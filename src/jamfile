@@ -3,6 +3,7 @@ path-constant web-root : ../docs ;
 path-constant media-src : ./media ;
 path-constant site-media-src : ./site-media ;
 path-constant static-html-src : ./static-html ;
+path-constant mathjax-src : ./mathjax ;
 
 xml xml-index : index.qbk ;
 
@@ -60,6 +61,22 @@ install install-static-html
 		<install-source-root>$(static-html-src)
 ;
 
+install install-mathjax
+	:
+		[
+			glob-tree-ex
+					$(mathjax-src)
+				:
+					*.js
+					*.json
+					*.md
+					*.woff
+				
+		]
+	:
+		<location>$(web-root)/mathjax
+		<install-source-root>$(mathjax-src)
+;
 
 build-project cpp ;
 
