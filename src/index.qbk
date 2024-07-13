@@ -1,14 +1,14 @@
 [/
-	Copyright 2024 xilahua.top
+	Copyright 2024 www.heimaoyi.tiv.cc
 
 	Distributed under the Boost Software License, Version 1.0.
 	(See accompanying file LICENSE_1_0.txt or copy at
 	http://www.boost.org/LICENSE_1_0.txt)
 ]
 
-[book 息拉滑 @cpp
+[book 黑猫衣 @cpp
 	[quickbook 1.7]
-	[copyright 2024 xilahua.top]
+	[copyright 2024 www.heimaoyi.tiv.cc]
 	[license
 		Distributed under the Boost Software License, Version 1.0.
 		(See accompanying file LICENSE_1_0.txt or copy at
@@ -23,11 +23,11 @@
 [include net.qbk]
 [include math.qbk]
 
-[h1 关于息拉滑 - xilahua.top]
+[h1 关于黑猫衣 - www.heimaoyi.tiv.cc]
 
-[h2 关于息拉滑]
+[h2 关于黑猫衣]
 
-更新后的息拉滑网站将以 c++ 编程为主题。
+更新后的黑猫衣网站将以 c++ 编程为主题。
 
 [h2 FAQ]
 
@@ -65,8 +65,8 @@ Fortunately, there are lots of good books that do teach how to use C++! See thes
 
 [h1 记住本站]
 
-息拉滑：
-[@https://xilahua.top xilahua.top]
+黑猫衣：
+[@https://www.heimaoyi.tiv.cc www.heimaoyi.tiv.cc]
 
 [br]
 [br]

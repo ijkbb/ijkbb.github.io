@@ -1,5 +1,5 @@
 [/
-	Copyright 2024 xilahua.top
+	Copyright 2024 www.heimaoyi.tiv.cc
 
 	Distributed under the Boost Software License, Version 1.0.
 	(See accompanying file LICENSE_1_0.txt or copy at
@@ -16,7 +16,7 @@ cpp/c++ 设计模式之代理模式
 
 我们在编程时有时会遇到这样一个问题，对于已有的系统, 我们发现有些不足，需要增加或者修改一些代码， 但是我们又不想改变已有的系统，因为它们很“浑圆一体”。这时可以使用代理模式，增加代理代码，而不需要动原来的代码。然后通过对代理代码的访问，来间接访问真正的目标。
 
-3月 - xilahua.top
+3月 - www.heimaoyi.tiv.cc
 
 [h1 cpp 代码实现]
 
@@ -47,5 +47,5 @@ c++ 代理模式代码比较简单
 
 [h1 首页]
 
-息拉滑: [@https://xilahua.top xilahua.top]
+黑猫衣: [@https://www.heimaoyi.tiv.cc www.heimaoyi.tiv.cc]
 

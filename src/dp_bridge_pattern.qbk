@@ -1,5 +1,5 @@
 [/
-	Copyright 2024 xilahua.top
+	Copyright 2024 www.heimaoyi.tiv.cc
 
 	Distributed under the Boost Software License, Version 1.0.
 	(See accompanying file LICENSE_1_0.txt or copy at
@@ -18,7 +18,7 @@ cpp/c++ 设计模式之桥接模式
 
 c++ 桥接模式代码比较简单，定义两套类，一套类的基以另一套类的基为成员，各自的继承类并不需要关心基类。
 
-3月 - xilahua.top
+3月 - www.heimaoyi.tiv.cc
 
 [h1 cpp 桥接模式代码例子]
 
@@ -62,5 +62,5 @@ guided weapon : 制导武器
 
 [h1 首页]
 
-息拉滑: [@https://xilahua.top xilahua.top]
+黑猫衣: [@https://www.heimaoyi.tiv.cc www.heimaoyi.tiv.cc]
 

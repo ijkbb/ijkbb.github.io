@@ -1,5 +1,5 @@
 [/
-	Copyright 2024 xilahua.top
+	Copyright 2024 www.heimaoyi.tiv.cc
 
 	Distributed under the Boost Software License, Version 1.0.
 	(See accompanying file LICENSE_1_0.txt or copy at
@@ -14,7 +14,7 @@
 
 Cobalt 是一个 c++20 协程的 boost 库，提供了非常有用又简单的协程调用，供用户使用，开源免费。有了它，写 c++ 协程就像写 std::cout 那么简单，不必为复杂的设计而烦恼。
 
-4月15日 - xilahua.top
+4月15日 - www.heimaoyi.tiv.cc
 
 [h1 co_main]
 
@@ -43,5 +43,5 @@ cobalt c++ 例子
 
 [h1 首页]
 
-息拉滑: [@https://xilahua.top xilahua.top]
+黑猫衣: [@https://www.heimaoyi.tiv.cc www.heimaoyi.tiv.cc]
 

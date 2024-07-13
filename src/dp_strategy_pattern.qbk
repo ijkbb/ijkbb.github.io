@@ -1,5 +1,5 @@
 [/
-	Copyright 2024 xilahua.top
+	Copyright 2024 www.heimaoyi.tiv.cc
 
 	Distributed under the Boost Software License, Version 1.0.
 	(See accompanying file LICENSE_1_0.txt or copy at
@@ -16,7 +16,7 @@ cpp/c++ 设计模式之策略模式。
 
 策略模式将算法的实现和使用分离，当想要更换新算法时，使用接口保持不变。
 
-4月4日 - xilahua.top
+4月4日 - www.heimaoyi.tiv.cc
 
 [h1 cpp 策略模式代码实现]
 
@@ -35,5 +35,5 @@ cpp/c++ 设计模式之策略模式。
 
 [h1 首页]
 
-息拉滑: [@https://xilahua.top xilahua.top]
+黑猫衣: [@https://www.heimaoyi.tiv.cc www.heimaoyi.tiv.cc]
 
