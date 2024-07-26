@@ -4,7 +4,7 @@
 首页
 ----------------------------------------
 
-https://www.heimaoyi.tiv.cc
+https://fayige.top
 
 
 

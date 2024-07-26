@@ -1,14 +1,14 @@
 [/
-	Copyright 2024 www.heimaoyi.tiv.cc
+	Copyright 2024 fayige.top
 
 	Distributed under the Boost Software License, Version 1.0.
 	(See accompanying file LICENSE_1_0.txt or copy at
 	http://www.boost.org/LICENSE_1_0.txt)
 ]
 
-[book 黑猫蚁 @cpp
+[book 发一格 @cpp
 	[quickbook 1.7]
-	[copyright 2024 www.heimaoyi.tiv.cc]
+	[copyright 2024 fayige.top]
 	[license
 		Distributed under the Boost Software License, Version 1.0.
 		(See accompanying file LICENSE_1_0.txt or copy at
@@ -23,14 +23,13 @@
 [include net.qbk]
 [include math.qbk]
 
-[h1 关于黑猫蚁 - www.heimaoyi.tiv.cc]
+[h1 关于发一格 - fayige.top]
 
-[h2 关于黑猫蚁]
+[h2 关于发一格]
 
-更新后的黑猫蚁网站将以 c++ 编程为主题。
+更新后的发一格网站将以 c++ 编程为主题。
 
-* [role red heimaoyi.tiv.cc] ([@https://www.heimaoyi.tiv.cc #])
-* [role red www.heimaoyi.tiv.cc] ([@https://www.heimaoyi.tiv.cc #])
+* [role red fayige.top] ([@https://fayige.top #])
 
 [h2 github]
 
@@ -72,8 +71,8 @@ Fortunately, there are lots of good books that do teach how to use C++! See thes
 
 [h1 记住本站]
 
-黑猫蚁：
-[@https://www.heimaoyi.tiv.cc www.heimaoyi.tiv.cc]
+发一格：
+[@https://fayige.top fayige.top]
 
 [h1 相关链接]
 
