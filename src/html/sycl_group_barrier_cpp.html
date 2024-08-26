@@ -1,0 +1,197 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>sycl::group_barrier @cpp</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="发一格 @cpp">
+<link rel="up" href="sycl_gpu_cpp.html" title="sycl gpu 编程 @cpp">
+<link rel="prev" href="sycl_gpu_cpp.html" title="sycl gpu 编程 @cpp">
+<link rel="next" href="boost_cobalt_cpp.html" title="boost::cobalt @cpp">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="sycl_gpu_cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="sycl_gpu_cpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="boost_cobalt_cpp.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="article">
+<div class="titlepage">
+<div><div><h2 class="title">
+<a name="sycl_group_barrier_cpp"></a>sycl::group_barrier @cpp</h2></div></div>
+<hr>
+</div>
+<h2>
+<a name="sycl_group_barrier_cpp.h0"></a>
+        <span class="phrase"><a name="sycl_group_barrier_cpp.sycl_group_barrier_cpp"></a></span><a class="link" href="sycl_group_barrier_cpp.html#sycl_group_barrier_cpp.sycl_group_barrier_cpp">sycl::group_barrier
+        组屏障 - cpp</a>
+      </h2>
+<p>
+        sycl::group_barrier 组屏障, cpp/c++
+      </p>
+<p>
+        当 sycl 每个工作组中的工作项并行的完成了它们的任务后，
+        如果需要同步它们的步伐，就可以使用屏障， 即调用 sycl::group_barrier,
+        第一个参数是从 item 对象中取得的工作组 .get_group, 第二个参数是屏障作用的范围，一般是
+        sycl::memory_scope::work_group。
+      </p>
+<p>
+        sycl::group_barrier 同步一个工作组中的所有工作项，使用组屏障。
+      </p>
+<pre class="programlisting"><span class="special">{</span> <span class="comment">// 工作项作用域</span>
+	<span class="comment">// 一些工作 ...</span>
+
+	<span class="comment">// 读写了 sycl 局部内存 ...	(一般写后需要同步，读可免)</span>
+	<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">group_barrier</span><span class="special">(</span><span class="identifier">item</span><span class="special">.</span><span class="identifier">get_group</span><span class="special">(),</span> <span class="identifier">sycl</span><span class="special">::</span><span class="identifier">memory_scope</span><span class="special">::</span><span class="identifier">work_group</span><span class="special">);</span>
+
+	<span class="comment">// 又一些工作 ...</span>
+<span class="special">}</span> <span class="comment">// 离开工作项作用域</span>
+</pre>
+<h2>
+<a name="sycl_group_barrier_cpp.h1"></a>
+        <span class="phrase"><a name="sycl_group_barrier_cpp.sycl_group_barrier_cpp0"></a></span><a class="link" href="sycl_group_barrier_cpp.html#sycl_group_barrier_cpp.sycl_group_barrier_cpp0">sycl::group_barrier
+        cpp 代码例子</a>
+      </h2>
+<p>
+        <em class="replaceable"><code>文件名：<span class="blue">sycl_group_barrier.cpp</span></code></em>
+      </p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">sycl</span><span class="special">/</span><span class="identifier">sycl</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">numeric</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iomanip</span><span class="special">&gt;</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">()</span>
+<span class="special">{</span>
+	<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">queue</span> <span class="identifier">queue</span><span class="special">{</span><span class="identifier">sycl</span><span class="special">::</span><span class="identifier">cpu_selector_v</span><span class="special">};</span>
+	
+	<span class="keyword">constexpr</span> <span class="keyword">int</span> <span class="identifier">xsize</span> <span class="special">=</span> <span class="number">8</span><span class="special">;</span>
+	<span class="keyword">constexpr</span> <span class="keyword">int</span> <span class="identifier">ysize</span> <span class="special">=</span> <span class="number">9</span><span class="special">;</span>
+	<span class="keyword">constexpr</span> <span class="keyword">int</span> <span class="identifier">size</span> <span class="special">=</span> <span class="identifier">xsize</span><span class="special">*</span><span class="identifier">ysize</span><span class="special">;</span>
+	<span class="keyword">constexpr</span> <span class="keyword">int</span> <span class="identifier">lxsize</span> <span class="special">=</span> <span class="number">4</span><span class="special">;</span>
+	<span class="keyword">constexpr</span> <span class="keyword">int</span> <span class="identifier">lysize</span> <span class="special">=</span> <span class="number">3</span><span class="special">;</span>
+	
+	<span class="keyword">float</span> <span class="special">*</span> <span class="identifier">v0</span> <span class="special">=</span> <span class="identifier">sycl</span><span class="special">::</span><span class="identifier">malloc_shared</span><span class="special">&lt;</span><span class="keyword">float</span><span class="special">&gt;(</span><span class="identifier">size</span><span class="special">,</span> <span class="identifier">queue</span><span class="special">);</span>
+	<span class="keyword">float</span> <span class="special">*</span> <span class="identifier">v1</span> <span class="special">=</span> <span class="identifier">sycl</span><span class="special">::</span><span class="identifier">malloc_shared</span><span class="special">&lt;</span><span class="keyword">float</span><span class="special">&gt;(</span><span class="identifier">size</span><span class="special">,</span> <span class="identifier">queue</span><span class="special">);</span>
+	<span class="keyword">float</span> <span class="special">*</span> <span class="identifier">result</span> <span class="special">=</span> <span class="identifier">sycl</span><span class="special">::</span><span class="identifier">malloc_device</span><span class="special">&lt;</span><span class="keyword">float</span><span class="special">&gt;(</span><span class="identifier">size</span><span class="special">,</span> <span class="identifier">queue</span><span class="special">);</span>
+	<span class="identifier">std</span><span class="special">::</span><span class="identifier">iota</span><span class="special">(</span><span class="identifier">v0</span><span class="special">,</span> <span class="identifier">v0</span><span class="special">+</span><span class="identifier">size</span><span class="special">,</span> <span class="number">1.5f</span><span class="special">);</span>
+	<span class="identifier">std</span><span class="special">::</span><span class="identifier">iota</span><span class="special">(</span><span class="identifier">v1</span><span class="special">,</span> <span class="identifier">v1</span><span class="special">+</span><span class="identifier">size</span><span class="special">,</span> <span class="special">-</span><span class="number">100.44f</span><span class="special">);</span>
+	
+	<span class="keyword">constexpr</span> <span class="keyword">int</span> <span class="identifier">lm_offset</span> <span class="special">=</span> <span class="number">10</span><span class="special">;</span>
+	
+	<span class="identifier">queue</span><span class="special">.</span><span class="identifier">submit</span><span class="special">(</span>
+		<span class="special">[&amp;]</span> <span class="special">(</span><span class="identifier">sycl</span><span class="special">::</span><span class="identifier">handler</span> <span class="special">&amp;</span> <span class="identifier">handler</span><span class="special">)</span>
+		<span class="special">{</span>
+			<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">local_accessor</span><span class="special">&lt;</span><span class="keyword">float</span><span class="special">,</span> <span class="number">2</span><span class="special">&gt;</span> <span class="identifier">lm</span><span class="special">{</span><span class="identifier">sycl</span><span class="special">::</span><span class="identifier">range</span><span class="special">&lt;</span><span class="number">2</span><span class="special">&gt;{</span><span class="identifier">lysize</span><span class="special">,</span> <span class="identifier">lxsize</span><span class="special">*</span><span class="identifier">lm_offset</span><span class="special">},</span> <span class="identifier">handler</span><span class="special">};</span>
+			<span class="identifier">handler</span><span class="special">.</span><span class="identifier">parallel_for</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">kname1</span><span class="special">&gt;(</span>
+				<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">nd_range</span><span class="special">&lt;</span><span class="number">2</span><span class="special">&gt;{</span>
+					<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">range</span><span class="special">&lt;</span><span class="number">2</span><span class="special">&gt;{</span><span class="identifier">ysize</span><span class="special">,</span> <span class="identifier">xsize</span><span class="special">},</span>
+					<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">range</span><span class="special">&lt;</span><span class="number">2</span><span class="special">&gt;{</span><span class="identifier">lysize</span><span class="special">,</span> <span class="identifier">lxsize</span><span class="special">}</span>
+				<span class="special">},</span>
+				<span class="special">[=]</span> <span class="special">(</span><span class="identifier">sycl</span><span class="special">::</span><span class="identifier">nd_item</span><span class="special">&lt;</span><span class="number">2</span><span class="special">&gt;</span> <span class="identifier">item</span><span class="special">)</span>
+				<span class="special">{</span>
+					<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">id</span><span class="special">&lt;</span><span class="number">1</span><span class="special">&gt;</span> <span class="identifier">gidy</span> <span class="special">=</span> <span class="identifier">item</span><span class="special">.</span><span class="identifier">get_global_id</span><span class="special">(</span><span class="number">0</span><span class="special">);</span>
+					<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">id</span><span class="special">&lt;</span><span class="number">1</span><span class="special">&gt;</span> <span class="identifier">gidx</span> <span class="special">=</span> <span class="identifier">item</span><span class="special">.</span><span class="identifier">get_global_id</span><span class="special">(</span><span class="number">1</span><span class="special">);</span>
+					<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">id</span><span class="special">&lt;</span><span class="number">1</span><span class="special">&gt;</span> <span class="identifier">lidy</span> <span class="special">=</span> <span class="identifier">item</span><span class="special">.</span><span class="identifier">get_local_id</span><span class="special">(</span><span class="number">0</span><span class="special">);</span>
+					<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">id</span><span class="special">&lt;</span><span class="number">1</span><span class="special">&gt;</span> <span class="identifier">lidx</span> <span class="special">=</span> <span class="identifier">item</span><span class="special">.</span><span class="identifier">get_local_id</span><span class="special">(</span><span class="number">1</span><span class="special">);</span>
+					
+					<span class="keyword">float</span> <span class="special">&amp;</span> <span class="identifier">lm0</span> <span class="special">=</span> <span class="identifier">lm</span><span class="special">[</span><span class="identifier">lidy</span><span class="special">][</span><span class="identifier">lidx</span><span class="special">*</span><span class="identifier">lm_offset</span><span class="special">+</span><span class="number">0</span><span class="special">];</span>
+					<span class="keyword">float</span> <span class="special">&amp;</span> <span class="identifier">lm1</span> <span class="special">=</span> <span class="identifier">lm</span><span class="special">[</span><span class="identifier">lidy</span><span class="special">][</span><span class="identifier">lidx</span><span class="special">*</span><span class="identifier">lm_offset</span><span class="special">+</span><span class="number">1</span><span class="special">];</span>
+					<span class="keyword">float</span> <span class="special">&amp;</span> <span class="identifier">lm2</span> <span class="special">=</span> <span class="identifier">lm</span><span class="special">[</span><span class="identifier">lidy</span><span class="special">][</span><span class="identifier">lidx</span><span class="special">*</span><span class="identifier">lm_offset</span><span class="special">+</span><span class="number">2</span><span class="special">];</span>
+					
+					<span class="identifier">lm0</span> <span class="special">=</span> <span class="identifier">v0</span><span class="special">[</span><span class="identifier">gidy</span><span class="special">*</span><span class="identifier">xsize</span><span class="special">+</span><span class="identifier">gidx</span><span class="special">];</span>
+					<span class="identifier">lm1</span> <span class="special">=</span> <span class="identifier">v1</span><span class="special">[</span><span class="identifier">gidy</span><span class="special">*</span><span class="identifier">xsize</span><span class="special">+</span><span class="identifier">gidx</span><span class="special">];</span>
+					<span class="identifier">lm2</span> <span class="special">=</span> <span class="number">0.0f</span><span class="special">;</span>
+					
+					<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">group_barrier</span><span class="special">(</span><span class="identifier">item</span><span class="special">.</span><span class="identifier">get_group</span><span class="special">(),</span> <span class="identifier">sycl</span><span class="special">::</span><span class="identifier">memory_scope</span><span class="special">::</span><span class="identifier">work_group</span><span class="special">);</span>
+					
+					<span class="identifier">lm2</span> <span class="special">=</span> <span class="identifier">lm0</span> <span class="special">+</span> <span class="identifier">lm1</span><span class="special">;</span>
+					<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">group_barrier</span><span class="special">(</span><span class="identifier">item</span><span class="special">.</span><span class="identifier">get_group</span><span class="special">(),</span> <span class="identifier">sycl</span><span class="special">::</span><span class="identifier">memory_scope</span><span class="special">::</span><span class="identifier">work_group</span><span class="special">);</span>
+					
+					<span class="identifier">result</span><span class="special">[</span><span class="identifier">gidy</span><span class="special">*</span><span class="identifier">xsize</span> <span class="special">+</span> <span class="identifier">gidx</span><span class="special">]</span> <span class="special">=</span> <span class="identifier">lm2</span><span class="special">;</span>
+				<span class="special">}</span>
+			<span class="special">);</span>
+		<span class="special">}</span>
+	<span class="special">);</span>
+	<span class="identifier">queue</span><span class="special">.</span><span class="identifier">wait</span><span class="special">();</span>
+	
+	<span class="keyword">float</span> <span class="special">*</span> <span class="identifier">host_result</span> <span class="special">=</span> <span class="keyword">new</span> <span class="keyword">float</span><span class="special">[</span><span class="identifier">size</span><span class="special">];</span>
+	<span class="identifier">queue</span><span class="special">.</span><span class="identifier">copy</span><span class="special">(</span><span class="identifier">result</span><span class="special">,</span> <span class="identifier">host_result</span><span class="special">,</span> <span class="identifier">size</span><span class="special">);</span>
+	
+	<span class="keyword">auto</span> <span class="identifier">print</span> <span class="special">=</span> <span class="special">[&amp;]</span> <span class="special">(</span><span class="keyword">const</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">string</span> <span class="special">&amp;</span> <span class="identifier">label</span><span class="special">,</span> <span class="keyword">float</span> <span class="special">*</span> <span class="identifier">data</span><span class="special">)</span>
+	<span class="special">{</span>
+		<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">label</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+		<span class="keyword">for</span> <span class="special">(</span><span class="keyword">int</span> <span class="identifier">j</span><span class="special">=</span><span class="number">0</span><span class="special">;</span> <span class="identifier">j</span><span class="special">&lt;</span><span class="identifier">ysize</span><span class="special">;</span> <span class="special">++</span><span class="identifier">j</span><span class="special">)</span>
+		<span class="special">{</span>
+			<span class="keyword">for</span> <span class="special">(</span><span class="keyword">int</span> <span class="identifier">i</span><span class="special">=</span><span class="number">0</span><span class="special">;</span> <span class="identifier">i</span><span class="special">&lt;</span><span class="identifier">xsize</span><span class="special">;</span> <span class="special">++</span><span class="identifier">i</span><span class="special">)</span>
+			<span class="special">{</span>
+				<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">setprecision</span><span class="special">(</span><span class="number">3</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">data</span><span class="special">[</span><span class="identifier">j</span><span class="special">*</span><span class="identifier">xsize</span><span class="special">+</span><span class="identifier">i</span><span class="special">]</span> <span class="special">&lt;&lt;</span> <span class="char">' '</span><span class="special">;</span>
+			<span class="special">}</span>
+			<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+		<span class="special">}</span>
+		<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+	<span class="special">};</span>
+	
+	<span class="identifier">print</span><span class="special">(</span><span class="string">"v0:"</span><span class="special">,</span> <span class="identifier">v0</span><span class="special">);</span>
+	<span class="identifier">print</span><span class="special">(</span><span class="string">"v1:"</span><span class="special">,</span> <span class="identifier">v1</span><span class="special">);</span>
+	<span class="identifier">print</span><span class="special">(</span><span class="string">"host_result:"</span><span class="special">,</span> <span class="identifier">host_result</span><span class="special">);</span>
+	
+	<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">free</span><span class="special">(</span><span class="identifier">v0</span><span class="special">,</span> <span class="identifier">queue</span><span class="special">);</span>
+	<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">free</span><span class="special">(</span><span class="identifier">v1</span><span class="special">,</span> <span class="identifier">queue</span><span class="special">);</span>
+	<span class="identifier">sycl</span><span class="special">::</span><span class="identifier">free</span><span class="special">(</span><span class="identifier">result</span><span class="special">,</span> <span class="identifier">queue</span><span class="special">);</span>
+	<span class="keyword">delete</span> <span class="special">[]</span> <span class="identifier">host_result</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<h3>
+<a name="sycl_group_barrier_cpp.h2"></a>
+        <span class="phrase"><a name="sycl_group_barrier_cpp._"></a></span><a class="link" href="sycl_group_barrier_cpp.html#sycl_group_barrier_cpp._">输出：</a>
+      </h3>
+<pre class="programlisting"><span class="identifier">v0</span><span class="special">:</span>
+<span class="number">1.5</span> <span class="number">2.5</span> <span class="number">3.5</span> <span class="number">4.5</span> <span class="number">5.5</span> <span class="number">6.5</span> <span class="number">7.5</span> <span class="number">8.5</span>
+<span class="number">9.5</span> <span class="number">10.5</span> <span class="number">11.5</span> <span class="number">12.5</span> <span class="number">13.5</span> <span class="number">14.5</span> <span class="number">15.5</span> <span class="number">16.5</span>
+<span class="number">17.5</span> <span class="number">18.5</span> <span class="number">19.5</span> <span class="number">20.5</span> <span class="number">21.5</span> <span class="number">22.5</span> <span class="number">23.5</span> <span class="number">24.5</span>
+<span class="number">25.5</span> <span class="number">26.5</span> <span class="number">27.5</span> <span class="number">28.5</span> <span class="number">29.5</span> <span class="number">30.5</span> <span class="number">31.5</span> <span class="number">32.5</span>
+<span class="number">33.5</span> <span class="number">34.5</span> <span class="number">35.5</span> <span class="number">36.5</span> <span class="number">37.5</span> <span class="number">38.5</span> <span class="number">39.5</span> <span class="number">40.5</span>
+<span class="number">41.5</span> <span class="number">42.5</span> <span class="number">43.5</span> <span class="number">44.5</span> <span class="number">45.5</span> <span class="number">46.5</span> <span class="number">47.5</span> <span class="number">48.5</span>
+<span class="number">49.5</span> <span class="number">50.5</span> <span class="number">51.5</span> <span class="number">52.5</span> <span class="number">53.5</span> <span class="number">54.5</span> <span class="number">55.5</span> <span class="number">56.5</span>
+<span class="number">57.5</span> <span class="number">58.5</span> <span class="number">59.5</span> <span class="number">60.5</span> <span class="number">61.5</span> <span class="number">62.5</span> <span class="number">63.5</span> <span class="number">64.5</span>
+<span class="number">65.5</span> <span class="number">66.5</span> <span class="number">67.5</span> <span class="number">68.5</span> <span class="number">69.5</span> <span class="number">70.5</span> <span class="number">71.5</span> <span class="number">72.5</span>
+
+<span class="identifier">v1</span><span class="special">:</span>
+<span class="special">-</span><span class="number">100</span> <span class="special">-</span><span class="number">99.4</span> <span class="special">-</span><span class="number">98.4</span> <span class="special">-</span><span class="number">97.4</span> <span class="special">-</span><span class="number">96.4</span> <span class="special">-</span><span class="number">95.4</span> <span class="special">-</span><span class="number">94.4</span> <span class="special">-</span><span class="number">93.4</span>
+<span class="special">-</span><span class="number">92.4</span> <span class="special">-</span><span class="number">91.4</span> <span class="special">-</span><span class="number">90.4</span> <span class="special">-</span><span class="number">89.4</span> <span class="special">-</span><span class="number">88.4</span> <span class="special">-</span><span class="number">87.4</span> <span class="special">-</span><span class="number">86.4</span> <span class="special">-</span><span class="number">85.4</span>
+<span class="special">-</span><span class="number">84.4</span> <span class="special">-</span><span class="number">83.4</span> <span class="special">-</span><span class="number">82.4</span> <span class="special">-</span><span class="number">81.4</span> <span class="special">-</span><span class="number">80.4</span> <span class="special">-</span><span class="number">79.4</span> <span class="special">-</span><span class="number">78.4</span> <span class="special">-</span><span class="number">77.4</span>
+<span class="special">-</span><span class="number">76.4</span> <span class="special">-</span><span class="number">75.4</span> <span class="special">-</span><span class="number">74.4</span> <span class="special">-</span><span class="number">73.4</span> <span class="special">-</span><span class="number">72.4</span> <span class="special">-</span><span class="number">71.4</span> <span class="special">-</span><span class="number">70.4</span> <span class="special">-</span><span class="number">69.4</span>
+<span class="special">-</span><span class="number">68.4</span> <span class="special">-</span><span class="number">67.4</span> <span class="special">-</span><span class="number">66.4</span> <span class="special">-</span><span class="number">65.4</span> <span class="special">-</span><span class="number">64.4</span> <span class="special">-</span><span class="number">63.4</span> <span class="special">-</span><span class="number">62.4</span> <span class="special">-</span><span class="number">61.4</span>
+<span class="special">-</span><span class="number">60.4</span> <span class="special">-</span><span class="number">59.4</span> <span class="special">-</span><span class="number">58.4</span> <span class="special">-</span><span class="number">57.4</span> <span class="special">-</span><span class="number">56.4</span> <span class="special">-</span><span class="number">55.4</span> <span class="special">-</span><span class="number">54.4</span> <span class="special">-</span><span class="number">53.4</span>
+<span class="special">-</span><span class="number">52.4</span> <span class="special">-</span><span class="number">51.4</span> <span class="special">-</span><span class="number">50.4</span> <span class="special">-</span><span class="number">49.4</span> <span class="special">-</span><span class="number">48.4</span> <span class="special">-</span><span class="number">47.4</span> <span class="special">-</span><span class="number">46.4</span> <span class="special">-</span><span class="number">45.4</span>
+<span class="special">-</span><span class="number">44.4</span> <span class="special">-</span><span class="number">43.4</span> <span class="special">-</span><span class="number">42.4</span> <span class="special">-</span><span class="number">41.4</span> <span class="special">-</span><span class="number">40.4</span> <span class="special">-</span><span class="number">39.4</span> <span class="special">-</span><span class="number">38.4</span> <span class="special">-</span><span class="number">37.4</span>
+<span class="special">-</span><span class="number">36.4</span> <span class="special">-</span><span class="number">35.4</span> <span class="special">-</span><span class="number">34.4</span> <span class="special">-</span><span class="number">33.4</span> <span class="special">-</span><span class="number">32.4</span> <span class="special">-</span><span class="number">31.4</span> <span class="special">-</span><span class="number">30.4</span> <span class="special">-</span><span class="number">29.4</span>
+
+<span class="identifier">host_result</span><span class="special">:</span>
+<span class="special">-</span><span class="number">98.9</span> <span class="special">-</span><span class="number">96.9</span> <span class="special">-</span><span class="number">94.9</span> <span class="special">-</span><span class="number">92.9</span> <span class="special">-</span><span class="number">90.9</span> <span class="special">-</span><span class="number">88.9</span> <span class="special">-</span><span class="number">86.9</span> <span class="special">-</span><span class="number">84.9</span>
+<span class="special">-</span><span class="number">82.9</span> <span class="special">-</span><span class="number">80.9</span> <span class="special">-</span><span class="number">78.9</span> <span class="special">-</span><span class="number">76.9</span> <span class="special">-</span><span class="number">74.9</span> <span class="special">-</span><span class="number">72.9</span> <span class="special">-</span><span class="number">70.9</span> <span class="special">-</span><span class="number">68.9</span>
+<span class="special">-</span><span class="number">66.9</span> <span class="special">-</span><span class="number">64.9</span> <span class="special">-</span><span class="number">62.9</span> <span class="special">-</span><span class="number">60.9</span> <span class="special">-</span><span class="number">58.9</span> <span class="special">-</span><span class="number">56.9</span> <span class="special">-</span><span class="number">54.9</span> <span class="special">-</span><span class="number">52.9</span>
+<span class="special">-</span><span class="number">50.9</span> <span class="special">-</span><span class="number">48.9</span> <span class="special">-</span><span class="number">46.9</span> <span class="special">-</span><span class="number">44.9</span> <span class="special">-</span><span class="number">42.9</span> <span class="special">-</span><span class="number">40.9</span> <span class="special">-</span><span class="number">38.9</span> <span class="special">-</span><span class="number">36.9</span>
+<span class="special">-</span><span class="number">34.9</span> <span class="special">-</span><span class="number">32.9</span> <span class="special">-</span><span class="number">30.9</span> <span class="special">-</span><span class="number">28.9</span> <span class="special">-</span><span class="number">26.9</span> <span class="special">-</span><span class="number">24.9</span> <span class="special">-</span><span class="number">22.9</span> <span class="special">-</span><span class="number">20.9</span>
+<span class="special">-</span><span class="number">18.9</span> <span class="special">-</span><span class="number">16.9</span> <span class="special">-</span><span class="number">14.9</span> <span class="special">-</span><span class="number">12.9</span> <span class="special">-</span><span class="number">10.9</span> <span class="special">-</span><span class="number">8.94</span> <span class="special">-</span><span class="number">6.94</span> <span class="special">-</span><span class="number">4.94</span>
+<span class="special">-</span><span class="number">2.94</span> <span class="special">-</span><span class="number">0.94</span> <span class="number">1.06</span> <span class="number">3.06</span> <span class="number">5.06</span> <span class="number">7.06</span> <span class="number">9.06</span> <span class="number">11.1</span>
+<span class="number">13.1</span> <span class="number">15.1</span> <span class="number">17.1</span> <span class="number">19.1</span> <span class="number">21.1</span> <span class="number">23.1</span> <span class="number">25.1</span> <span class="number">27.1</span>
+<span class="number">29.1</span> <span class="number">31.1</span> <span class="number">33.1</span> <span class="number">35.1</span> <span class="number">37.1</span> <span class="number">39.1</span> <span class="number">41.1</span> <span class="number">43.1</span>
+</pre>
+<h2>
+<a name="sycl_group_barrier_cpp.h3"></a>
+        <span class="phrase"><a name="sycl_group_barrier_cpp._0"></a></span><a class="link" href="sycl_group_barrier_cpp.html#sycl_group_barrier_cpp._0">相关链接</a>
+      </h2>
+<p>
+        <a class="link" href="sycl_gpu_cpp.html" title="sycl gpu 编程 @cpp">sycl gpu 编程 - c++</a>
+      </p>
+</div>
+<div class="copyright-footer">Copyright © 2024 fayige.top<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+      </p>
+</div>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="sycl_gpu_cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="sycl_gpu_cpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="boost_cobalt_cpp.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

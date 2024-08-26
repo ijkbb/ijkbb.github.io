@@ -1,0 +1,211 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Proxy Pattern @cpp</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="发一格 @cpp">
+<link rel="up" href="design_patterns_cpp.html" title="Design Patterns @cpp">
+<link rel="prev" href="bridge_pattern_cpp.html" title="Bridge Pattern @cpp">
+<link rel="next" href="adapter_pattern_cpp.html" title="Adapter Pattern @cpp">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="bridge_pattern_cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="design_patterns_cpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="adapter_pattern_cpp.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="article">
+<div class="titlepage">
+<div><div><h2 class="title">
+<a name="proxy_pattern_cpp"></a>Proxy Pattern @cpp</h2></div></div>
+<hr>
+</div>
+<h2>
+<a name="proxy_pattern_cpp.h0"></a>
+        <span class="phrase"><a name="proxy_pattern_cpp.cpp"></a></span><a class="link" href="proxy_pattern_cpp.html#proxy_pattern_cpp.cpp">代理模式
+        - cpp</a>
+      </h2>
+<p>
+        cpp/c++ 设计模式之代理模式
+      </p>
+<p>
+        我们在编程时有时会遇到这样一个问题，对于已有的系统,
+        我们发现有些不足，需要增加或者修改一些代码， 但是我们又不想改变已有的系统，因为它们很“浑圆一体”。这时可以使用代理模式，增加代理代码，而不需要动原来的代码。然后通过对代理代码的访问，来间接访问真正的目标。
+      </p>
+<p>
+        3月 - fayige.top
+      </p>
+<h2>
+<a name="proxy_pattern_cpp.h1"></a>
+        <span class="phrase"><a name="proxy_pattern_cpp.cpp0"></a></span><a class="link" href="proxy_pattern_cpp.html#proxy_pattern_cpp.cpp0">cpp
+        代码实现</a>
+      </h2>
+<p>
+        c++ 代理模式
+      </p>
+<p>
+        还是以游戏中的导弹为例子。
+      </p>
+<p>
+        假定原初的代码里，导弹 missile 有 索敌 seek 方法。后来发现，在做
+        seek 行为之前，最好先检查一下导弹的状态。于是可以设计一个代理类，增加一个方法
+        ready, 它会检查并返回导弹的状态，状态良好才会做 seek
+        行为。
+      </p>
+<p>
+        missile - 导弹
+      </p>
+<p>
+        cruise missile - 巡航导弹
+      </p>
+<p>
+        swarm missile - 蜂群导弹
+      </p>
+<p>
+        c++ 代理模式代码比较简单
+      </p>
+<p>
+        <span class="bold"><strong>c++ 代理模式 proxy pattern 例子</strong></span>
+      </p>
+<p>
+        <em class="replaceable"><code>文件名：<span class="blue">dp_proxy_pattern.cpp</span></code></em>
+      </p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+
+<span class="keyword">namespace</span> <span class="identifier">wp</span>
+<span class="special">{</span>
+
+<span class="keyword">class</span> <span class="identifier">missile</span>
+<span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="keyword">virtual</span> <span class="special">~</span><span class="identifier">missile</span><span class="special">()</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+	<span class="keyword">virtual</span> <span class="keyword">void</span> <span class="identifier">seek</span><span class="special">()</span> <span class="keyword">const</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">};</span>
+
+<span class="comment">// 巡航导弹</span>
+<span class="keyword">class</span> <span class="identifier">cruise_missile</span><span class="special">:</span> <span class="keyword">virtual</span> <span class="keyword">public</span> <span class="identifier">wp</span><span class="special">::</span><span class="identifier">missile</span>
+<span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="keyword">void</span> <span class="identifier">seek</span><span class="special">()</span> <span class="keyword">const</span> <span class="identifier">override</span>
+	<span class="special">{</span>
+		<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"巡航导弹正在索敌 ..."</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+	<span class="special">}</span>
+<span class="special">};</span>
+
+<span class="comment">// 蜂群导弹</span>
+<span class="keyword">class</span> <span class="identifier">swarm_missile</span><span class="special">:</span> <span class="keyword">virtual</span> <span class="keyword">public</span> <span class="identifier">wp</span><span class="special">::</span><span class="identifier">missile</span>
+<span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="keyword">void</span> <span class="identifier">seek</span><span class="special">()</span> <span class="keyword">const</span> <span class="identifier">override</span>
+	<span class="special">{</span>
+		<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"蜂群导弹正在索敌 ..."</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+	<span class="special">}</span>
+<span class="special">};</span>
+
+<span class="comment">// 巡航导弹代理</span>
+<span class="keyword">class</span> <span class="identifier">cruise_missile_proxy</span><span class="special">:</span> <span class="keyword">virtual</span> <span class="keyword">public</span> <span class="identifier">wp</span><span class="special">::</span><span class="identifier">missile</span>
+<span class="special">{</span>
+<span class="keyword">protected</span><span class="special">:</span>
+	<span class="identifier">wp</span><span class="special">::</span><span class="identifier">cruise_missile</span> <span class="special">*</span> <span class="identifier">missile</span><span class="special">;</span>
+	<span class="keyword">bool</span> <span class="identifier">is_ready</span><span class="special">;</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="identifier">cruise_missile_proxy</span><span class="special">():</span>
+		<span class="identifier">missile</span><span class="special">{</span><span class="keyword">new</span> <span class="identifier">wp</span><span class="special">::</span><span class="identifier">cruise_missile</span><span class="special">}</span>
+	<span class="special">{</span>
+	<span class="special">}</span>
+	<span class="identifier">cruise_missile_proxy</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">wp</span><span class="special">::</span><span class="identifier">cruise_missile</span> <span class="special">&amp;</span> <span class="identifier">missile__</span><span class="special">):</span>
+		<span class="identifier">missile</span><span class="special">{</span><span class="keyword">new</span> <span class="identifier">wp</span><span class="special">::</span><span class="identifier">cruise_missile</span><span class="special">{</span><span class="identifier">missile__</span><span class="special">}}</span>
+	<span class="special">{</span>
+	<span class="special">}</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="keyword">virtual</span> <span class="special">~</span><span class="identifier">cruise_missile_proxy</span><span class="special">()</span>
+	<span class="special">{</span>
+		<span class="keyword">delete</span> <span class="identifier">missile</span><span class="special">;</span>
+	<span class="special">}</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="keyword">void</span> <span class="identifier">seek</span><span class="special">()</span> <span class="keyword">const</span> <span class="identifier">override</span>
+	<span class="special">{</span>
+		<span class="keyword">if</span> <span class="special">(</span><span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">ready</span><span class="special">())</span>
+		<span class="special">{</span>
+			<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Cruise missile is ready!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+			<span class="identifier">missile</span><span class="special">-&gt;</span><span class="identifier">seek</span><span class="special">();</span>
+		<span class="special">}</span>
+	<span class="special">}</span>
+
+	<span class="keyword">bool</span> <span class="identifier">ready</span><span class="special">()</span> <span class="keyword">const</span>
+	<span class="special">{</span>
+		<span class="keyword">return</span> <span class="identifier">is_ready</span><span class="special">;</span>
+	<span class="special">}</span>
+	<span class="keyword">void</span> <span class="identifier">make_ready</span><span class="special">()</span>
+	<span class="special">{</span>
+		<span class="identifier">is_ready</span> <span class="special">=</span> <span class="keyword">true</span><span class="special">;</span>
+	<span class="special">}</span>
+<span class="special">};</span>
+
+<span class="keyword">class</span> <span class="identifier">missile_manager</span>
+<span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="keyword">void</span> <span class="keyword">operator</span><span class="special">()()</span> <span class="keyword">const</span>
+	<span class="special">{</span>
+		<span class="keyword">auto</span> <span class="identifier">m1</span> <span class="special">=</span> <span class="identifier">wp</span><span class="special">::</span><span class="identifier">cruise_missile</span><span class="special">{};</span>
+		<span class="keyword">auto</span> <span class="identifier">m2</span> <span class="special">=</span> <span class="identifier">wp</span><span class="special">::</span><span class="identifier">swarm_missile</span><span class="special">{};</span>
+		<span class="keyword">auto</span> <span class="identifier">m3</span> <span class="special">=</span> <span class="identifier">wp</span><span class="special">::</span><span class="identifier">cruise_missile_proxy</span><span class="special">{</span><span class="identifier">m1</span><span class="special">};</span>
+		
+		<span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">launch</span><span class="special">(</span><span class="identifier">m1</span><span class="special">);</span>
+		<span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">launch</span><span class="special">(</span><span class="identifier">m2</span><span class="special">);</span>
+		
+		<span class="identifier">m3</span><span class="special">.</span><span class="identifier">make_ready</span><span class="special">();</span>
+		<span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">launch</span><span class="special">(</span><span class="identifier">m3</span><span class="special">);</span>
+	<span class="special">}</span>
+	<span class="keyword">void</span> <span class="identifier">launch</span><span class="special">(</span><span class="identifier">wp</span><span class="special">::</span><span class="identifier">missile</span> <span class="special">&amp;</span> <span class="identifier">missile</span><span class="special">)</span> <span class="keyword">const</span>
+	<span class="special">{</span>
+		<span class="identifier">missile</span><span class="special">.</span><span class="identifier">seek</span><span class="special">();</span>
+	<span class="special">}</span>
+<span class="special">};</span>
+
+<span class="special">}</span>	<span class="comment">// namespace wp</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">()</span>
+<span class="special">{</span>
+	<span class="identifier">wp</span><span class="special">::</span><span class="identifier">missile_manager</span> <span class="identifier">mm</span><span class="special">;</span>
+	<span class="identifier">mm</span><span class="special">();</span>
+<span class="special">}</span>
+</pre>
+<h3>
+<a name="proxy_pattern_cpp.h2"></a>
+        <span class="phrase"><a name="proxy_pattern_cpp._"></a></span><a class="link" href="proxy_pattern_cpp.html#proxy_pattern_cpp._">程序输出：</a>
+      </h3>
+<pre class="programlisting">巡航导弹正在索敌 ...
+蜂群导弹正在索敌 ...
+Cruise missile is ready!
+巡航导弹正在索敌 ...
+</pre>
+<h2>
+<a name="proxy_pattern_cpp.h3"></a>
+        <span class="phrase"><a name="proxy_pattern_cpp._0"></a></span><a class="link" href="proxy_pattern_cpp.html#proxy_pattern_cpp._0">相关链接</a>
+      </h2>
+<p>
+        <a class="link" href="bridge_pattern_cpp.html" title="Bridge Pattern @cpp">c++桥接模式</a>
+      </p>
+<p>
+        <a class="link" href="adapter_pattern_cpp.html" title="Adapter Pattern @cpp">c++适配器模式</a>
+      </p>
+<h2>
+<a name="proxy_pattern_cpp.h4"></a>
+        <span class="phrase"><a name="proxy_pattern_cpp._1"></a></span><a class="link" href="proxy_pattern_cpp.html#proxy_pattern_cpp._1">首页</a>
+      </h2>
+<p>
+        发一格: <a href="https://fayige.top" target="_top">fayige.top</a>
+      </p>
+</div>
+<div class="copyright-footer">Copyright © 2024 fayige.top<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+      </p>
+</div>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="bridge_pattern_cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="design_patterns_cpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="adapter_pattern_cpp.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

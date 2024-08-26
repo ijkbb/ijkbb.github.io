@@ -1,0 +1,1731 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//Boost//DTD BoostBook XML V1.0//EN" "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<book id="cpp" last-revision="$Date: 2024/08/26 22:57:05 $" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>发一格 @cpp</title>
+  <bookinfo>
+    <copyright>
+      <year>2024</year> <holder>fayige.top</holder>
+    </copyright>
+    <legalnotice id="cpp.legal">
+      <para>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+      </para>
+    </legalnotice>
+  </bookinfo>
+  <article id="sycl_gpu_cpp" last-revision="$Date: 2024/08/26 22:57:05 $" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <title>sycl gpu 编程 @cpp</title>
+    <article id="sycl_group_barrier_cpp" last-revision="$Date: 2024/08/26 22:57:05 $"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+      <title>sycl::group_barrier @cpp</title>
+      <bridgehead renderas="sect1" id="sycl_group_barrier_cpp.h0">
+        <phrase id="sycl_group_barrier_cpp.sycl_group_barrier_cpp"/><link linkend="sycl_group_barrier_cpp.sycl_group_barrier_cpp">sycl::group_barrier
+        组屏障 - cpp</link>
+      </bridgehead>
+      <para>
+        sycl::group_barrier 组屏障, cpp/c++
+      </para>
+      <para>
+        当 sycl 每个工作组中的工作项并行的完成了它们的任务后，
+        如果需要同步它们的步伐，就可以使用屏障， 即调用 sycl::group_barrier,
+        第一个参数是从 item 对象中取得的工作组 .get_group, 第二个参数是屏障作用的范围，一般是
+        sycl::memory_scope::work_group。
+      </para>
+      <para>
+        sycl::group_barrier 同步一个工作组中的所有工作项，使用组屏障。
+      </para>
+<programlisting><phrase role="special">{</phrase> <phrase role="comment">// 工作项作用域</phrase>
+	<phrase role="comment">// 一些工作 ...</phrase>
+
+	<phrase role="comment">// 读写了 sycl 局部内存 ...	(一般写后需要同步，读可免)</phrase>
+	<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">group_barrier</phrase><phrase role="special">(</phrase><phrase role="identifier">item</phrase><phrase role="special">.</phrase><phrase role="identifier">get_group</phrase><phrase role="special">(),</phrase> <phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">memory_scope</phrase><phrase role="special">::</phrase><phrase role="identifier">work_group</phrase><phrase role="special">);</phrase>
+
+	<phrase role="comment">// 又一些工作 ...</phrase>
+<phrase role="special">}</phrase> <phrase role="comment">// 离开工作项作用域</phrase>
+</programlisting>
+      <bridgehead renderas="sect1" id="sycl_group_barrier_cpp.h1">
+        <phrase id="sycl_group_barrier_cpp.sycl_group_barrier_cpp0"/><link linkend="sycl_group_barrier_cpp.sycl_group_barrier_cpp0">sycl::group_barrier
+        cpp 代码例子</link>
+      </bridgehead>
+      <para>
+        <replaceable>文件名：<phrase role="blue">sycl_group_barrier.cpp</phrase></replaceable>
+      </para>
+<programlisting><phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">sycl</phrase><phrase role="special">/</phrase><phrase role="identifier">sycl</phrase><phrase role="special">.</phrase><phrase role="identifier">hpp</phrase><phrase role="special">&gt;</phrase>
+<phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">numeric</phrase><phrase role="special">&gt;</phrase>
+<phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">iomanip</phrase><phrase role="special">&gt;</phrase>
+
+<phrase role="keyword">int</phrase> <phrase role="identifier">main</phrase><phrase role="special">()</phrase>
+<phrase role="special">{</phrase>
+	<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">queue</phrase> <phrase role="identifier">queue</phrase><phrase role="special">{</phrase><phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">cpu_selector_v</phrase><phrase role="special">};</phrase>
+	
+	<phrase role="keyword">constexpr</phrase> <phrase role="keyword">int</phrase> <phrase role="identifier">xsize</phrase> <phrase role="special">=</phrase> <phrase role="number">8</phrase><phrase role="special">;</phrase>
+	<phrase role="keyword">constexpr</phrase> <phrase role="keyword">int</phrase> <phrase role="identifier">ysize</phrase> <phrase role="special">=</phrase> <phrase role="number">9</phrase><phrase role="special">;</phrase>
+	<phrase role="keyword">constexpr</phrase> <phrase role="keyword">int</phrase> <phrase role="identifier">size</phrase> <phrase role="special">=</phrase> <phrase role="identifier">xsize</phrase><phrase role="special">*</phrase><phrase role="identifier">ysize</phrase><phrase role="special">;</phrase>
+	<phrase role="keyword">constexpr</phrase> <phrase role="keyword">int</phrase> <phrase role="identifier">lxsize</phrase> <phrase role="special">=</phrase> <phrase role="number">4</phrase><phrase role="special">;</phrase>
+	<phrase role="keyword">constexpr</phrase> <phrase role="keyword">int</phrase> <phrase role="identifier">lysize</phrase> <phrase role="special">=</phrase> <phrase role="number">3</phrase><phrase role="special">;</phrase>
+	
+	<phrase role="keyword">float</phrase> <phrase role="special">*</phrase> <phrase role="identifier">v0</phrase> <phrase role="special">=</phrase> <phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">malloc_shared</phrase><phrase role="special">&lt;</phrase><phrase role="keyword">float</phrase><phrase role="special">&gt;(</phrase><phrase role="identifier">size</phrase><phrase role="special">,</phrase> <phrase role="identifier">queue</phrase><phrase role="special">);</phrase>
+	<phrase role="keyword">float</phrase> <phrase role="special">*</phrase> <phrase role="identifier">v1</phrase> <phrase role="special">=</phrase> <phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">malloc_shared</phrase><phrase role="special">&lt;</phrase><phrase role="keyword">float</phrase><phrase role="special">&gt;(</phrase><phrase role="identifier">size</phrase><phrase role="special">,</phrase> <phrase role="identifier">queue</phrase><phrase role="special">);</phrase>
+	<phrase role="keyword">float</phrase> <phrase role="special">*</phrase> <phrase role="identifier">result</phrase> <phrase role="special">=</phrase> <phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">malloc_device</phrase><phrase role="special">&lt;</phrase><phrase role="keyword">float</phrase><phrase role="special">&gt;(</phrase><phrase role="identifier">size</phrase><phrase role="special">,</phrase> <phrase role="identifier">queue</phrase><phrase role="special">);</phrase>
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">iota</phrase><phrase role="special">(</phrase><phrase role="identifier">v0</phrase><phrase role="special">,</phrase> <phrase role="identifier">v0</phrase><phrase role="special">+</phrase><phrase role="identifier">size</phrase><phrase role="special">,</phrase> <phrase role="number">1.5f</phrase><phrase role="special">);</phrase>
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">iota</phrase><phrase role="special">(</phrase><phrase role="identifier">v1</phrase><phrase role="special">,</phrase> <phrase role="identifier">v1</phrase><phrase role="special">+</phrase><phrase role="identifier">size</phrase><phrase role="special">,</phrase> <phrase role="special">-</phrase><phrase role="number">100.44f</phrase><phrase role="special">);</phrase>
+	
+	<phrase role="keyword">constexpr</phrase> <phrase role="keyword">int</phrase> <phrase role="identifier">lm_offset</phrase> <phrase role="special">=</phrase> <phrase role="number">10</phrase><phrase role="special">;</phrase>
+	
+	<phrase role="identifier">queue</phrase><phrase role="special">.</phrase><phrase role="identifier">submit</phrase><phrase role="special">(</phrase>
+		<phrase role="special">[&amp;]</phrase> <phrase role="special">(</phrase><phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">handler</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">handler</phrase><phrase role="special">)</phrase>
+		<phrase role="special">{</phrase>
+			<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">local_accessor</phrase><phrase role="special">&lt;</phrase><phrase role="keyword">float</phrase><phrase role="special">,</phrase> <phrase role="number">2</phrase><phrase role="special">&gt;</phrase> <phrase role="identifier">lm</phrase><phrase role="special">{</phrase><phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">range</phrase><phrase role="special">&lt;</phrase><phrase role="number">2</phrase><phrase role="special">&gt;{</phrase><phrase role="identifier">lysize</phrase><phrase role="special">,</phrase> <phrase role="identifier">lxsize</phrase><phrase role="special">*</phrase><phrase role="identifier">lm_offset</phrase><phrase role="special">},</phrase> <phrase role="identifier">handler</phrase><phrase role="special">};</phrase>
+			<phrase role="identifier">handler</phrase><phrase role="special">.</phrase><phrase role="identifier">parallel_for</phrase><phrase role="special">&lt;</phrase><phrase role="keyword">class</phrase> <phrase role="identifier">kname1</phrase><phrase role="special">&gt;(</phrase>
+				<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">nd_range</phrase><phrase role="special">&lt;</phrase><phrase role="number">2</phrase><phrase role="special">&gt;{</phrase>
+					<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">range</phrase><phrase role="special">&lt;</phrase><phrase role="number">2</phrase><phrase role="special">&gt;{</phrase><phrase role="identifier">ysize</phrase><phrase role="special">,</phrase> <phrase role="identifier">xsize</phrase><phrase role="special">},</phrase>
+					<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">range</phrase><phrase role="special">&lt;</phrase><phrase role="number">2</phrase><phrase role="special">&gt;{</phrase><phrase role="identifier">lysize</phrase><phrase role="special">,</phrase> <phrase role="identifier">lxsize</phrase><phrase role="special">}</phrase>
+				<phrase role="special">},</phrase>
+				<phrase role="special">[=]</phrase> <phrase role="special">(</phrase><phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">nd_item</phrase><phrase role="special">&lt;</phrase><phrase role="number">2</phrase><phrase role="special">&gt;</phrase> <phrase role="identifier">item</phrase><phrase role="special">)</phrase>
+				<phrase role="special">{</phrase>
+					<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">id</phrase><phrase role="special">&lt;</phrase><phrase role="number">1</phrase><phrase role="special">&gt;</phrase> <phrase role="identifier">gidy</phrase> <phrase role="special">=</phrase> <phrase role="identifier">item</phrase><phrase role="special">.</phrase><phrase role="identifier">get_global_id</phrase><phrase role="special">(</phrase><phrase role="number">0</phrase><phrase role="special">);</phrase>
+					<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">id</phrase><phrase role="special">&lt;</phrase><phrase role="number">1</phrase><phrase role="special">&gt;</phrase> <phrase role="identifier">gidx</phrase> <phrase role="special">=</phrase> <phrase role="identifier">item</phrase><phrase role="special">.</phrase><phrase role="identifier">get_global_id</phrase><phrase role="special">(</phrase><phrase role="number">1</phrase><phrase role="special">);</phrase>
+					<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">id</phrase><phrase role="special">&lt;</phrase><phrase role="number">1</phrase><phrase role="special">&gt;</phrase> <phrase role="identifier">lidy</phrase> <phrase role="special">=</phrase> <phrase role="identifier">item</phrase><phrase role="special">.</phrase><phrase role="identifier">get_local_id</phrase><phrase role="special">(</phrase><phrase role="number">0</phrase><phrase role="special">);</phrase>
+					<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">id</phrase><phrase role="special">&lt;</phrase><phrase role="number">1</phrase><phrase role="special">&gt;</phrase> <phrase role="identifier">lidx</phrase> <phrase role="special">=</phrase> <phrase role="identifier">item</phrase><phrase role="special">.</phrase><phrase role="identifier">get_local_id</phrase><phrase role="special">(</phrase><phrase role="number">1</phrase><phrase role="special">);</phrase>
+					
+					<phrase role="keyword">float</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">lm0</phrase> <phrase role="special">=</phrase> <phrase role="identifier">lm</phrase><phrase role="special">[</phrase><phrase role="identifier">lidy</phrase><phrase role="special">][</phrase><phrase role="identifier">lidx</phrase><phrase role="special">*</phrase><phrase role="identifier">lm_offset</phrase><phrase role="special">+</phrase><phrase role="number">0</phrase><phrase role="special">];</phrase>
+					<phrase role="keyword">float</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">lm1</phrase> <phrase role="special">=</phrase> <phrase role="identifier">lm</phrase><phrase role="special">[</phrase><phrase role="identifier">lidy</phrase><phrase role="special">][</phrase><phrase role="identifier">lidx</phrase><phrase role="special">*</phrase><phrase role="identifier">lm_offset</phrase><phrase role="special">+</phrase><phrase role="number">1</phrase><phrase role="special">];</phrase>
+					<phrase role="keyword">float</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">lm2</phrase> <phrase role="special">=</phrase> <phrase role="identifier">lm</phrase><phrase role="special">[</phrase><phrase role="identifier">lidy</phrase><phrase role="special">][</phrase><phrase role="identifier">lidx</phrase><phrase role="special">*</phrase><phrase role="identifier">lm_offset</phrase><phrase role="special">+</phrase><phrase role="number">2</phrase><phrase role="special">];</phrase>
+					
+					<phrase role="identifier">lm0</phrase> <phrase role="special">=</phrase> <phrase role="identifier">v0</phrase><phrase role="special">[</phrase><phrase role="identifier">gidy</phrase><phrase role="special">*</phrase><phrase role="identifier">xsize</phrase><phrase role="special">+</phrase><phrase role="identifier">gidx</phrase><phrase role="special">];</phrase>
+					<phrase role="identifier">lm1</phrase> <phrase role="special">=</phrase> <phrase role="identifier">v1</phrase><phrase role="special">[</phrase><phrase role="identifier">gidy</phrase><phrase role="special">*</phrase><phrase role="identifier">xsize</phrase><phrase role="special">+</phrase><phrase role="identifier">gidx</phrase><phrase role="special">];</phrase>
+					<phrase role="identifier">lm2</phrase> <phrase role="special">=</phrase> <phrase role="number">0.0f</phrase><phrase role="special">;</phrase>
+					
+					<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">group_barrier</phrase><phrase role="special">(</phrase><phrase role="identifier">item</phrase><phrase role="special">.</phrase><phrase role="identifier">get_group</phrase><phrase role="special">(),</phrase> <phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">memory_scope</phrase><phrase role="special">::</phrase><phrase role="identifier">work_group</phrase><phrase role="special">);</phrase>
+					
+					<phrase role="identifier">lm2</phrase> <phrase role="special">=</phrase> <phrase role="identifier">lm0</phrase> <phrase role="special">+</phrase> <phrase role="identifier">lm1</phrase><phrase role="special">;</phrase>
+					<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">group_barrier</phrase><phrase role="special">(</phrase><phrase role="identifier">item</phrase><phrase role="special">.</phrase><phrase role="identifier">get_group</phrase><phrase role="special">(),</phrase> <phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">memory_scope</phrase><phrase role="special">::</phrase><phrase role="identifier">work_group</phrase><phrase role="special">);</phrase>
+					
+					<phrase role="identifier">result</phrase><phrase role="special">[</phrase><phrase role="identifier">gidy</phrase><phrase role="special">*</phrase><phrase role="identifier">xsize</phrase> <phrase role="special">+</phrase> <phrase role="identifier">gidx</phrase><phrase role="special">]</phrase> <phrase role="special">=</phrase> <phrase role="identifier">lm2</phrase><phrase role="special">;</phrase>
+				<phrase role="special">}</phrase>
+			<phrase role="special">);</phrase>
+		<phrase role="special">}</phrase>
+	<phrase role="special">);</phrase>
+	<phrase role="identifier">queue</phrase><phrase role="special">.</phrase><phrase role="identifier">wait</phrase><phrase role="special">();</phrase>
+	
+	<phrase role="keyword">float</phrase> <phrase role="special">*</phrase> <phrase role="identifier">host_result</phrase> <phrase role="special">=</phrase> <phrase role="keyword">new</phrase> <phrase role="keyword">float</phrase><phrase role="special">[</phrase><phrase role="identifier">size</phrase><phrase role="special">];</phrase>
+	<phrase role="identifier">queue</phrase><phrase role="special">.</phrase><phrase role="identifier">copy</phrase><phrase role="special">(</phrase><phrase role="identifier">result</phrase><phrase role="special">,</phrase> <phrase role="identifier">host_result</phrase><phrase role="special">,</phrase> <phrase role="identifier">size</phrase><phrase role="special">);</phrase>
+	
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">print</phrase> <phrase role="special">=</phrase> <phrase role="special">[&amp;]</phrase> <phrase role="special">(</phrase><phrase role="keyword">const</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">string</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">label</phrase><phrase role="special">,</phrase> <phrase role="keyword">float</phrase> <phrase role="special">*</phrase> <phrase role="identifier">data</phrase><phrase role="special">)</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">label</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+		<phrase role="keyword">for</phrase> <phrase role="special">(</phrase><phrase role="keyword">int</phrase> <phrase role="identifier">j</phrase><phrase role="special">=</phrase><phrase role="number">0</phrase><phrase role="special">;</phrase> <phrase role="identifier">j</phrase><phrase role="special">&lt;</phrase><phrase role="identifier">ysize</phrase><phrase role="special">;</phrase> <phrase role="special">++</phrase><phrase role="identifier">j</phrase><phrase role="special">)</phrase>
+		<phrase role="special">{</phrase>
+			<phrase role="keyword">for</phrase> <phrase role="special">(</phrase><phrase role="keyword">int</phrase> <phrase role="identifier">i</phrase><phrase role="special">=</phrase><phrase role="number">0</phrase><phrase role="special">;</phrase> <phrase role="identifier">i</phrase><phrase role="special">&lt;</phrase><phrase role="identifier">xsize</phrase><phrase role="special">;</phrase> <phrase role="special">++</phrase><phrase role="identifier">i</phrase><phrase role="special">)</phrase>
+			<phrase role="special">{</phrase>
+				<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">setprecision</phrase><phrase role="special">(</phrase><phrase role="number">3</phrase><phrase role="special">)</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">data</phrase><phrase role="special">[</phrase><phrase role="identifier">j</phrase><phrase role="special">*</phrase><phrase role="identifier">xsize</phrase><phrase role="special">+</phrase><phrase role="identifier">i</phrase><phrase role="special">]</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="char">' '</phrase><phrase role="special">;</phrase>
+			<phrase role="special">}</phrase>
+			<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+		<phrase role="special">}</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="special">};</phrase>
+	
+	<phrase role="identifier">print</phrase><phrase role="special">(</phrase><phrase role="string">&quot;v0:&quot;</phrase><phrase role="special">,</phrase> <phrase role="identifier">v0</phrase><phrase role="special">);</phrase>
+	<phrase role="identifier">print</phrase><phrase role="special">(</phrase><phrase role="string">&quot;v1:&quot;</phrase><phrase role="special">,</phrase> <phrase role="identifier">v1</phrase><phrase role="special">);</phrase>
+	<phrase role="identifier">print</phrase><phrase role="special">(</phrase><phrase role="string">&quot;host_result:&quot;</phrase><phrase role="special">,</phrase> <phrase role="identifier">host_result</phrase><phrase role="special">);</phrase>
+	
+	<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">free</phrase><phrase role="special">(</phrase><phrase role="identifier">v0</phrase><phrase role="special">,</phrase> <phrase role="identifier">queue</phrase><phrase role="special">);</phrase>
+	<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">free</phrase><phrase role="special">(</phrase><phrase role="identifier">v1</phrase><phrase role="special">,</phrase> <phrase role="identifier">queue</phrase><phrase role="special">);</phrase>
+	<phrase role="identifier">sycl</phrase><phrase role="special">::</phrase><phrase role="identifier">free</phrase><phrase role="special">(</phrase><phrase role="identifier">result</phrase><phrase role="special">,</phrase> <phrase role="identifier">queue</phrase><phrase role="special">);</phrase>
+	<phrase role="keyword">delete</phrase> <phrase role="special">[]</phrase> <phrase role="identifier">host_result</phrase><phrase role="special">;</phrase>
+<phrase role="special">}</phrase>
+</programlisting>
+      <bridgehead renderas="sect2" id="sycl_group_barrier_cpp.h2">
+        <phrase id="sycl_group_barrier_cpp._"/><link linkend="sycl_group_barrier_cpp._">输出：</link>
+      </bridgehead>
+<programlisting><phrase role="identifier">v0</phrase><phrase role="special">:</phrase>
+<phrase role="number">1.5</phrase> <phrase role="number">2.5</phrase> <phrase role="number">3.5</phrase> <phrase role="number">4.5</phrase> <phrase role="number">5.5</phrase> <phrase role="number">6.5</phrase> <phrase role="number">7.5</phrase> <phrase role="number">8.5</phrase>
+<phrase role="number">9.5</phrase> <phrase role="number">10.5</phrase> <phrase role="number">11.5</phrase> <phrase role="number">12.5</phrase> <phrase role="number">13.5</phrase> <phrase role="number">14.5</phrase> <phrase role="number">15.5</phrase> <phrase role="number">16.5</phrase>
+<phrase role="number">17.5</phrase> <phrase role="number">18.5</phrase> <phrase role="number">19.5</phrase> <phrase role="number">20.5</phrase> <phrase role="number">21.5</phrase> <phrase role="number">22.5</phrase> <phrase role="number">23.5</phrase> <phrase role="number">24.5</phrase>
+<phrase role="number">25.5</phrase> <phrase role="number">26.5</phrase> <phrase role="number">27.5</phrase> <phrase role="number">28.5</phrase> <phrase role="number">29.5</phrase> <phrase role="number">30.5</phrase> <phrase role="number">31.5</phrase> <phrase role="number">32.5</phrase>
+<phrase role="number">33.5</phrase> <phrase role="number">34.5</phrase> <phrase role="number">35.5</phrase> <phrase role="number">36.5</phrase> <phrase role="number">37.5</phrase> <phrase role="number">38.5</phrase> <phrase role="number">39.5</phrase> <phrase role="number">40.5</phrase>
+<phrase role="number">41.5</phrase> <phrase role="number">42.5</phrase> <phrase role="number">43.5</phrase> <phrase role="number">44.5</phrase> <phrase role="number">45.5</phrase> <phrase role="number">46.5</phrase> <phrase role="number">47.5</phrase> <phrase role="number">48.5</phrase>
+<phrase role="number">49.5</phrase> <phrase role="number">50.5</phrase> <phrase role="number">51.5</phrase> <phrase role="number">52.5</phrase> <phrase role="number">53.5</phrase> <phrase role="number">54.5</phrase> <phrase role="number">55.5</phrase> <phrase role="number">56.5</phrase>
+<phrase role="number">57.5</phrase> <phrase role="number">58.5</phrase> <phrase role="number">59.5</phrase> <phrase role="number">60.5</phrase> <phrase role="number">61.5</phrase> <phrase role="number">62.5</phrase> <phrase role="number">63.5</phrase> <phrase role="number">64.5</phrase>
+<phrase role="number">65.5</phrase> <phrase role="number">66.5</phrase> <phrase role="number">67.5</phrase> <phrase role="number">68.5</phrase> <phrase role="number">69.5</phrase> <phrase role="number">70.5</phrase> <phrase role="number">71.5</phrase> <phrase role="number">72.5</phrase>
+
+<phrase role="identifier">v1</phrase><phrase role="special">:</phrase>
+<phrase role="special">-</phrase><phrase role="number">100</phrase> <phrase role="special">-</phrase><phrase role="number">99.4</phrase> <phrase role="special">-</phrase><phrase role="number">98.4</phrase> <phrase role="special">-</phrase><phrase role="number">97.4</phrase> <phrase role="special">-</phrase><phrase role="number">96.4</phrase> <phrase role="special">-</phrase><phrase role="number">95.4</phrase> <phrase role="special">-</phrase><phrase role="number">94.4</phrase> <phrase role="special">-</phrase><phrase role="number">93.4</phrase>
+<phrase role="special">-</phrase><phrase role="number">92.4</phrase> <phrase role="special">-</phrase><phrase role="number">91.4</phrase> <phrase role="special">-</phrase><phrase role="number">90.4</phrase> <phrase role="special">-</phrase><phrase role="number">89.4</phrase> <phrase role="special">-</phrase><phrase role="number">88.4</phrase> <phrase role="special">-</phrase><phrase role="number">87.4</phrase> <phrase role="special">-</phrase><phrase role="number">86.4</phrase> <phrase role="special">-</phrase><phrase role="number">85.4</phrase>
+<phrase role="special">-</phrase><phrase role="number">84.4</phrase> <phrase role="special">-</phrase><phrase role="number">83.4</phrase> <phrase role="special">-</phrase><phrase role="number">82.4</phrase> <phrase role="special">-</phrase><phrase role="number">81.4</phrase> <phrase role="special">-</phrase><phrase role="number">80.4</phrase> <phrase role="special">-</phrase><phrase role="number">79.4</phrase> <phrase role="special">-</phrase><phrase role="number">78.4</phrase> <phrase role="special">-</phrase><phrase role="number">77.4</phrase>
+<phrase role="special">-</phrase><phrase role="number">76.4</phrase> <phrase role="special">-</phrase><phrase role="number">75.4</phrase> <phrase role="special">-</phrase><phrase role="number">74.4</phrase> <phrase role="special">-</phrase><phrase role="number">73.4</phrase> <phrase role="special">-</phrase><phrase role="number">72.4</phrase> <phrase role="special">-</phrase><phrase role="number">71.4</phrase> <phrase role="special">-</phrase><phrase role="number">70.4</phrase> <phrase role="special">-</phrase><phrase role="number">69.4</phrase>
+<phrase role="special">-</phrase><phrase role="number">68.4</phrase> <phrase role="special">-</phrase><phrase role="number">67.4</phrase> <phrase role="special">-</phrase><phrase role="number">66.4</phrase> <phrase role="special">-</phrase><phrase role="number">65.4</phrase> <phrase role="special">-</phrase><phrase role="number">64.4</phrase> <phrase role="special">-</phrase><phrase role="number">63.4</phrase> <phrase role="special">-</phrase><phrase role="number">62.4</phrase> <phrase role="special">-</phrase><phrase role="number">61.4</phrase>
+<phrase role="special">-</phrase><phrase role="number">60.4</phrase> <phrase role="special">-</phrase><phrase role="number">59.4</phrase> <phrase role="special">-</phrase><phrase role="number">58.4</phrase> <phrase role="special">-</phrase><phrase role="number">57.4</phrase> <phrase role="special">-</phrase><phrase role="number">56.4</phrase> <phrase role="special">-</phrase><phrase role="number">55.4</phrase> <phrase role="special">-</phrase><phrase role="number">54.4</phrase> <phrase role="special">-</phrase><phrase role="number">53.4</phrase>
+<phrase role="special">-</phrase><phrase role="number">52.4</phrase> <phrase role="special">-</phrase><phrase role="number">51.4</phrase> <phrase role="special">-</phrase><phrase role="number">50.4</phrase> <phrase role="special">-</phrase><phrase role="number">49.4</phrase> <phrase role="special">-</phrase><phrase role="number">48.4</phrase> <phrase role="special">-</phrase><phrase role="number">47.4</phrase> <phrase role="special">-</phrase><phrase role="number">46.4</phrase> <phrase role="special">-</phrase><phrase role="number">45.4</phrase>
+<phrase role="special">-</phrase><phrase role="number">44.4</phrase> <phrase role="special">-</phrase><phrase role="number">43.4</phrase> <phrase role="special">-</phrase><phrase role="number">42.4</phrase> <phrase role="special">-</phrase><phrase role="number">41.4</phrase> <phrase role="special">-</phrase><phrase role="number">40.4</phrase> <phrase role="special">-</phrase><phrase role="number">39.4</phrase> <phrase role="special">-</phrase><phrase role="number">38.4</phrase> <phrase role="special">-</phrase><phrase role="number">37.4</phrase>
+<phrase role="special">-</phrase><phrase role="number">36.4</phrase> <phrase role="special">-</phrase><phrase role="number">35.4</phrase> <phrase role="special">-</phrase><phrase role="number">34.4</phrase> <phrase role="special">-</phrase><phrase role="number">33.4</phrase> <phrase role="special">-</phrase><phrase role="number">32.4</phrase> <phrase role="special">-</phrase><phrase role="number">31.4</phrase> <phrase role="special">-</phrase><phrase role="number">30.4</phrase> <phrase role="special">-</phrase><phrase role="number">29.4</phrase>
+
+<phrase role="identifier">host_result</phrase><phrase role="special">:</phrase>
+<phrase role="special">-</phrase><phrase role="number">98.9</phrase> <phrase role="special">-</phrase><phrase role="number">96.9</phrase> <phrase role="special">-</phrase><phrase role="number">94.9</phrase> <phrase role="special">-</phrase><phrase role="number">92.9</phrase> <phrase role="special">-</phrase><phrase role="number">90.9</phrase> <phrase role="special">-</phrase><phrase role="number">88.9</phrase> <phrase role="special">-</phrase><phrase role="number">86.9</phrase> <phrase role="special">-</phrase><phrase role="number">84.9</phrase>
+<phrase role="special">-</phrase><phrase role="number">82.9</phrase> <phrase role="special">-</phrase><phrase role="number">80.9</phrase> <phrase role="special">-</phrase><phrase role="number">78.9</phrase> <phrase role="special">-</phrase><phrase role="number">76.9</phrase> <phrase role="special">-</phrase><phrase role="number">74.9</phrase> <phrase role="special">-</phrase><phrase role="number">72.9</phrase> <phrase role="special">-</phrase><phrase role="number">70.9</phrase> <phrase role="special">-</phrase><phrase role="number">68.9</phrase>
+<phrase role="special">-</phrase><phrase role="number">66.9</phrase> <phrase role="special">-</phrase><phrase role="number">64.9</phrase> <phrase role="special">-</phrase><phrase role="number">62.9</phrase> <phrase role="special">-</phrase><phrase role="number">60.9</phrase> <phrase role="special">-</phrase><phrase role="number">58.9</phrase> <phrase role="special">-</phrase><phrase role="number">56.9</phrase> <phrase role="special">-</phrase><phrase role="number">54.9</phrase> <phrase role="special">-</phrase><phrase role="number">52.9</phrase>
+<phrase role="special">-</phrase><phrase role="number">50.9</phrase> <phrase role="special">-</phrase><phrase role="number">48.9</phrase> <phrase role="special">-</phrase><phrase role="number">46.9</phrase> <phrase role="special">-</phrase><phrase role="number">44.9</phrase> <phrase role="special">-</phrase><phrase role="number">42.9</phrase> <phrase role="special">-</phrase><phrase role="number">40.9</phrase> <phrase role="special">-</phrase><phrase role="number">38.9</phrase> <phrase role="special">-</phrase><phrase role="number">36.9</phrase>
+<phrase role="special">-</phrase><phrase role="number">34.9</phrase> <phrase role="special">-</phrase><phrase role="number">32.9</phrase> <phrase role="special">-</phrase><phrase role="number">30.9</phrase> <phrase role="special">-</phrase><phrase role="number">28.9</phrase> <phrase role="special">-</phrase><phrase role="number">26.9</phrase> <phrase role="special">-</phrase><phrase role="number">24.9</phrase> <phrase role="special">-</phrase><phrase role="number">22.9</phrase> <phrase role="special">-</phrase><phrase role="number">20.9</phrase>
+<phrase role="special">-</phrase><phrase role="number">18.9</phrase> <phrase role="special">-</phrase><phrase role="number">16.9</phrase> <phrase role="special">-</phrase><phrase role="number">14.9</phrase> <phrase role="special">-</phrase><phrase role="number">12.9</phrase> <phrase role="special">-</phrase><phrase role="number">10.9</phrase> <phrase role="special">-</phrase><phrase role="number">8.94</phrase> <phrase role="special">-</phrase><phrase role="number">6.94</phrase> <phrase role="special">-</phrase><phrase role="number">4.94</phrase>
+<phrase role="special">-</phrase><phrase role="number">2.94</phrase> <phrase role="special">-</phrase><phrase role="number">0.94</phrase> <phrase role="number">1.06</phrase> <phrase role="number">3.06</phrase> <phrase role="number">5.06</phrase> <phrase role="number">7.06</phrase> <phrase role="number">9.06</phrase> <phrase role="number">11.1</phrase>
+<phrase role="number">13.1</phrase> <phrase role="number">15.1</phrase> <phrase role="number">17.1</phrase> <phrase role="number">19.1</phrase> <phrase role="number">21.1</phrase> <phrase role="number">23.1</phrase> <phrase role="number">25.1</phrase> <phrase role="number">27.1</phrase>
+<phrase role="number">29.1</phrase> <phrase role="number">31.1</phrase> <phrase role="number">33.1</phrase> <phrase role="number">35.1</phrase> <phrase role="number">37.1</phrase> <phrase role="number">39.1</phrase> <phrase role="number">41.1</phrase> <phrase role="number">43.1</phrase>
+</programlisting>
+      <bridgehead renderas="sect1" id="sycl_group_barrier_cpp.h3">
+        <phrase id="sycl_group_barrier_cpp._0"/><link linkend="sycl_group_barrier_cpp._0">相关链接</link>
+      </bridgehead>
+      <para>
+        <link linkend="sycl_gpu_cpp">sycl gpu 编程 - c++</link>
+      </para>
+    </article>
+    <bridgehead renderas="sect1" id="sycl_gpu_cpp.h0">
+      <phrase id="sycl_gpu_cpp.sycl_gpu_cpp"/><link linkend="sycl_gpu_cpp.sycl_gpu_cpp">sycl
+      gpu 编程 - cpp</link>
+    </bridgehead>
+    <para>
+      sycl c++ gpu 编程
+    </para>
+    <bridgehead renderas="sect1" id="sycl_gpu_cpp.h1">
+      <phrase id="sycl_gpu_cpp._"/><link linkend="sycl_gpu_cpp._">首页</link>
+    </bridgehead>
+    <para>
+      发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+    </para>
+  </article>
+  <article id="boost_cobalt_cpp" last-revision="$Date: 2024/08/26 22:57:05 $" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <title>boost::cobalt @cpp</title>
+    <article id="cobalt_hello_cpp" last-revision="$Date: 2024/08/26 22:57:05 $" xmlns:xi="http://www.w3.org/2001/XInclude">
+      <title>Cobalt Hello @cpp</title>
+      <bridgehead renderas="sect1" id="cobalt_hello_cpp.h0">
+        <phrase id="cobalt_hello_cpp.boost_cobalt"/><link linkend="cobalt_hello_cpp.boost_cobalt">boost::cobalt</link>
+      </bridgehead>
+      <para>
+        Cobalt 是一个 c++20 协程的 boost 库，提供了非常有用又简单的协程调用，供用户使用，开源免费。有了它，写
+        c++ 协程就像写 std::cout 那么简单，不必为复杂的设计而烦恼。
+      </para>
+      <para>
+        4月15日 - fayige.top
+      </para>
+      <bridgehead renderas="sect1" id="cobalt_hello_cpp.h1">
+        <phrase id="cobalt_hello_cpp.co_main"/><link linkend="cobalt_hello_cpp.co_main">co_main</link>
+      </bridgehead>
+      <para>
+        我们的 main 函数都 co 了.
+      </para>
+      <bridgehead renderas="sect1" id="cobalt_hello_cpp.h2">
+        <phrase id="cobalt_hello_cpp.cobalt_generator"/><link linkend="cobalt_hello_cpp.cobalt_generator">cobalt::generator</link>
+      </bridgehead>
+      <para>
+        cobalt::generator 有点像 std::generator，不完全相同。它们都是时间轴上的多值协程容器。惰性的。
+      </para>
+      <bridgehead renderas="sect1" id="cobalt_hello_cpp.h3">
+        <phrase id="cobalt_hello_cpp.cobalt_promise"/><link linkend="cobalt_hello_cpp.cobalt_promise">cobalt::promise</link>
+      </bridgehead>
+      <para>
+        单值的，相对而言。惰性的。
+      </para>
+      <bridgehead renderas="sect1" id="cobalt_hello_cpp.h4">
+        <phrase id="cobalt_hello_cpp.cobalt_cpp"/><link linkend="cobalt_hello_cpp.cobalt_cpp">cobalt
+        cpp 例子</link>
+      </bridgehead>
+      <para>
+        cobalt c++ 例子
+      </para>
+      <para>
+        <replaceable>文件名：<phrase role="blue">cobalt_hello.cpp</phrase></replaceable>
+      </para>
+<programlisting><phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">boost</phrase><phrase role="special">/</phrase><phrase role="identifier">cobalt</phrase><phrase role="special">.</phrase><phrase role="identifier">hpp</phrase><phrase role="special">&gt;</phrase>
+<phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">iostream</phrase><phrase role="special">&gt;</phrase>
+
+<phrase role="keyword">namespace</phrase> <phrase role="identifier">cobalt</phrase> <phrase role="special">=</phrase> <phrase role="identifier">boost</phrase><phrase role="special">::</phrase><phrase role="identifier">cobalt</phrase><phrase role="special">;</phrase>
+
+<phrase role="keyword">class</phrase> <phrase role="identifier">rab_pot</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">cobalt</phrase><phrase role="special">::</phrase><phrase role="identifier">generator</phrase><phrase role="special">&lt;</phrase><phrase role="keyword">int</phrase><phrase role="special">&gt;</phrase> <phrase role="identifier">generator</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">for</phrase> <phrase role="special">(</phrase><phrase role="keyword">int</phrase> <phrase role="identifier">i</phrase><phrase role="special">=</phrase><phrase role="number">0</phrase><phrase role="special">;</phrase> <phrase role="identifier">i</phrase><phrase role="special">&lt;</phrase><phrase role="number">7</phrase><phrase role="special">;</phrase> <phrase role="special">++</phrase><phrase role="identifier">i</phrase><phrase role="special">)</phrase>
+			<phrase role="identifier">co_yield</phrase> <phrase role="identifier">i</phrase><phrase role="special">;</phrase>
+		<phrase role="identifier">co_return</phrase> <phrase role="special">-</phrase><phrase role="number">1</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+	<phrase role="identifier">cobalt</phrase><phrase role="special">::</phrase><phrase role="identifier">promise</phrase><phrase role="special">&lt;</phrase><phrase role="keyword">int</phrase><phrase role="special">&gt;</phrase> <phrase role="identifier">promise</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">co_return</phrase> <phrase role="number">9</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="identifier">cobalt</phrase><phrase role="special">::</phrase><phrase role="identifier">main</phrase> <phrase role="identifier">co_main</phrase><phrase role="special">(</phrase><phrase role="keyword">int</phrase> <phrase role="identifier">argc</phrase><phrase role="special">,</phrase> <phrase role="keyword">char</phrase> <phrase role="special">*</phrase> <phrase role="identifier">argv</phrase><phrase role="special">[])</phrase>
+<phrase role="special">{</phrase>
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">rp</phrase> <phrase role="special">=</phrase> <phrase role="identifier">rab_pot</phrase><phrase role="special">{};</phrase>
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">g</phrase> <phrase role="special">=</phrase> <phrase role="identifier">rp</phrase><phrase role="special">.</phrase><phrase role="identifier">generator</phrase><phrase role="special">();</phrase>
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">p</phrase> <phrase role="special">=</phrase> <phrase role="identifier">rp</phrase><phrase role="special">.</phrase><phrase role="identifier">promise</phrase><phrase role="special">();</phrase>
+	<phrase role="keyword">while</phrase> <phrase role="special">(</phrase><phrase role="identifier">g</phrase><phrase role="special">)</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">co_await</phrase> <phrase role="identifier">g</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">co_await</phrase> <phrase role="identifier">p</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">co_return</phrase> <phrase role="number">0</phrase><phrase role="special">;</phrase>
+<phrase role="special">}</phrase>
+</programlisting>
+      <bridgehead renderas="sect2" id="cobalt_hello_cpp.h5">
+        <phrase id="cobalt_hello_cpp._"/><link linkend="cobalt_hello_cpp._">输出：</link>
+      </bridgehead>
+<programlisting>0
+1
+2
+3
+4
+5
+6
+-1
+9
+</programlisting>
+      <bridgehead renderas="sect1" id="cobalt_hello_cpp.h6">
+        <phrase id="cobalt_hello_cpp._0"/><link linkend="cobalt_hello_cpp._0">相关链接</link>
+      </bridgehead>
+      <para>
+        <link linkend="cobalt_race_cpp">cobalt::race c++ boost @cpp</link>
+      </para>
+      <para>
+        <link linkend="cobalt_awaitable_cpp">cobalt::awaitable c++ boost @cpp</link>
+      </para>
+      <bridgehead renderas="sect1" id="cobalt_hello_cpp.h7">
+        <phrase id="cobalt_hello_cpp._1"/><link linkend="cobalt_hello_cpp._1">首页</link>
+      </bridgehead>
+      <para>
+        发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+      </para>
+    </article>
+    <article id="cobalt_race_cpp" last-revision="$Date: 2024/08/26 22:57:05 $" xmlns:xi="http://www.w3.org/2001/XInclude">
+      <title>cobalt::race @cpp</title>
+      <bridgehead renderas="sect1" id="cobalt_race_cpp.h0">
+        <phrase id="cobalt_race_cpp.boost_cobalt_race"/><link linkend="cobalt_race_cpp.boost_cobalt_race">boost::cobalt::race</link>
+      </bridgehead>
+      <para>
+        c++
+      </para>
+      <para>
+        cobalt::race 数据竞赛，它以伪随机的方式等待数据集中的之一，以避免饥饿。
+      </para>
+      <para>
+        4月15日 - fayige.top
+      </para>
+      <bridgehead renderas="sect1" id="cobalt_race_cpp.h1">
+        <phrase id="cobalt_race_cpp.cobalt_race_cpp"/><link linkend="cobalt_race_cpp.cobalt_race_cpp">cobalt::race
+        cpp 例子</link>
+      </bridgehead>
+      <para>
+        cobalt::race c++ 例子
+      </para>
+      <para>
+        <replaceable>文件名：<phrase role="blue">cobalt_race.cpp</phrase></replaceable>
+      </para>
+<programlisting><phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">boost</phrase><phrase role="special">/</phrase><phrase role="identifier">cobalt</phrase><phrase role="special">.</phrase><phrase role="identifier">hpp</phrase><phrase role="special">&gt;</phrase>
+<phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">iostream</phrase><phrase role="special">&gt;</phrase>
+
+<phrase role="keyword">namespace</phrase> <phrase role="identifier">cobalt</phrase> <phrase role="special">=</phrase> <phrase role="identifier">boost</phrase><phrase role="special">::</phrase><phrase role="identifier">cobalt</phrase><phrase role="special">;</phrase>
+
+<phrase role="keyword">class</phrase> <phrase role="identifier">generator_set</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">cobalt</phrase><phrase role="special">::</phrase><phrase role="identifier">generator</phrase><phrase role="special">&lt;</phrase><phrase role="keyword">int</phrase><phrase role="special">&gt;</phrase> <phrase role="identifier">source_1</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">for</phrase> <phrase role="special">(</phrase><phrase role="keyword">int</phrase> <phrase role="identifier">i</phrase><phrase role="special">=</phrase><phrase role="number">0</phrase><phrase role="special">;</phrase> <phrase role="identifier">i</phrase><phrase role="special">&lt;</phrase><phrase role="number">10</phrase><phrase role="special">;</phrase> <phrase role="special">++</phrase><phrase role="identifier">i</phrase><phrase role="special">)</phrase>
+			<phrase role="identifier">co_yield</phrase> <phrase role="identifier">i</phrase><phrase role="special">;</phrase>
+		<phrase role="identifier">co_return</phrase> <phrase role="number">100</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+	<phrase role="identifier">cobalt</phrase><phrase role="special">::</phrase><phrase role="identifier">generator</phrase><phrase role="special">&lt;</phrase><phrase role="keyword">double</phrase><phrase role="special">&gt;</phrase> <phrase role="identifier">source_2</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">for</phrase> <phrase role="special">(</phrase><phrase role="keyword">double</phrase> <phrase role="identifier">i</phrase><phrase role="special">=</phrase><phrase role="number">0.7</phrase><phrase role="special">;</phrase> <phrase role="identifier">i</phrase><phrase role="special">&lt;</phrase><phrase role="number">10.7</phrase><phrase role="special">;</phrase> <phrase role="special">++</phrase><phrase role="identifier">i</phrase><phrase role="special">)</phrase>
+			<phrase role="identifier">co_yield</phrase> <phrase role="identifier">i</phrase><phrase role="special">;</phrase>
+		<phrase role="identifier">co_return</phrase> <phrase role="number">1000.7</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="identifier">cobalt</phrase><phrase role="special">::</phrase><phrase role="identifier">main</phrase> <phrase role="identifier">co_main</phrase><phrase role="special">(</phrase><phrase role="keyword">int</phrase> <phrase role="identifier">argc</phrase><phrase role="special">,</phrase> <phrase role="keyword">char</phrase> <phrase role="special">*</phrase> <phrase role="identifier">argv</phrase><phrase role="special">[])</phrase>
+<phrase role="special">{</phrase>
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">gs</phrase> <phrase role="special">=</phrase> <phrase role="identifier">generator_set</phrase><phrase role="special">{};</phrase>
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">src1</phrase> <phrase role="special">=</phrase> <phrase role="identifier">gs</phrase><phrase role="special">.</phrase><phrase role="identifier">source_1</phrase><phrase role="special">();</phrase>
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">src2</phrase> <phrase role="special">=</phrase> <phrase role="identifier">gs</phrase><phrase role="special">.</phrase><phrase role="identifier">source_2</phrase><phrase role="special">();</phrase>
+	<phrase role="keyword">while</phrase> <phrase role="special">(</phrase><phrase role="identifier">src1</phrase> <phrase role="special">&amp;&amp;</phrase> <phrase role="identifier">src2</phrase><phrase role="special">)</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">switch</phrase> <phrase role="special">(</phrase><phrase role="keyword">auto</phrase> <phrase role="identifier">res</phrase> <phrase role="special">=</phrase> <phrase role="identifier">co_await</phrase> <phrase role="identifier">cobalt</phrase><phrase role="special">::</phrase><phrase role="identifier">race</phrase><phrase role="special">(</phrase><phrase role="identifier">src1</phrase><phrase role="special">,</phrase> <phrase role="identifier">src2</phrase><phrase role="special">);</phrase> <phrase role="identifier">res</phrase><phrase role="special">.</phrase><phrase role="identifier">index</phrase><phrase role="special">())</phrase>
+		<phrase role="special">{</phrase>
+		<phrase role="keyword">case</phrase> <phrase role="number">0</phrase><phrase role="special">:</phrase>
+			<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;取出了整形值：&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">boost</phrase><phrase role="special">::</phrase><phrase role="identifier">variant2</phrase><phrase role="special">::</phrase><phrase role="identifier">get</phrase><phrase role="special">&lt;</phrase><phrase role="number">0</phrase><phrase role="special">&gt;(</phrase><phrase role="identifier">res</phrase><phrase role="special">)</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+			<phrase role="keyword">break</phrase><phrase role="special">;</phrase>
+		<phrase role="keyword">case</phrase> <phrase role="number">1</phrase><phrase role="special">:</phrase>
+			<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;取出了浮点值：&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">boost</phrase><phrase role="special">::</phrase><phrase role="identifier">variant2</phrase><phrase role="special">::</phrase><phrase role="identifier">get</phrase><phrase role="special">&lt;</phrase><phrase role="number">1</phrase><phrase role="special">&gt;(</phrase><phrase role="identifier">res</phrase><phrase role="special">)</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+			<phrase role="keyword">break</phrase><phrase role="special">;</phrase>
+		<phrase role="special">}</phrase>
+	<phrase role="special">}</phrase>
+	<phrase role="identifier">co_return</phrase> <phrase role="number">0</phrase><phrase role="special">;</phrase>
+<phrase role="special">}</phrase>
+</programlisting>
+      <bridgehead renderas="sect2" id="cobalt_race_cpp.h2">
+        <phrase id="cobalt_race_cpp._"/><link linkend="cobalt_race_cpp._">输出：</link>
+      </bridgehead>
+<programlisting>取出了整形值：0
+取出了浮点值：0.7
+取出了整形值：1
+取出了浮点值：1.7
+取出了整形值：2
+取出了浮点值：2.7
+取出了整形值：3
+取出了浮点值：3.7
+取出了整形值：4
+取出了浮点值：4.7
+取出了整形值：5
+取出了浮点值：5.7
+取出了整形值：6
+取出了浮点值：6.7
+取出了整形值：7
+取出了浮点值：7.7
+取出了整形值：8
+取出了浮点值：8.7
+取出了整形值：9
+取出了浮点值：9.7
+取出了整形值：100
+</programlisting>
+      <bridgehead renderas="sect1" id="cobalt_race_cpp.h3">
+        <phrase id="cobalt_race_cpp._0"/><link linkend="cobalt_race_cpp._0">相关链接</link>
+      </bridgehead>
+      <para>
+        <link linkend="cobalt_hello_cpp">boost::cobalt hello c++ boost @cpp</link>
+      </para>
+      <para>
+        <link linkend="cobalt_awaitable_cpp">cobalt::awaitable c++ boost @cpp</link>
+      </para>
+      <bridgehead renderas="sect1" id="cobalt_race_cpp.h4">
+        <phrase id="cobalt_race_cpp._1"/><link linkend="cobalt_race_cpp._1">首页</link>
+      </bridgehead>
+      <para>
+        发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+      </para>
+    </article>
+    <article id="cobalt_awaitable_cpp" last-revision="$Date: 2024/08/26 22:57:05 $"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+      <title>cobalt::awaitable @cpp</title>
+      <bridgehead renderas="sect1" id="cobalt_awaitable_cpp.h0">
+        <phrase id="cobalt_awaitable_cpp.boost_cobalt_awaitable_concept_c"/><link
+        linkend="cobalt_awaitable_cpp.boost_cobalt_awaitable_concept_c">boost::cobalt::awaitable
+        concept - cpp</link>
+      </bridgehead>
+      <para>
+        cobalt::awaitable c++ concept
+      </para>
+      <para>
+        cobalt::awaitable 是一个 c++ concept，要求一个类型必须是一个
+        awaitable 类型，即可 co_await 表达式。
+      </para>
+      <para>
+        4月15日 - fayige.top
+      </para>
+      <bridgehead renderas="sect1" id="cobalt_awaitable_cpp.h1">
+        <phrase id="cobalt_awaitable_cpp.cobalt_awaitable_c"/><link linkend="cobalt_awaitable_cpp.cobalt_awaitable_c">cobalt::awaitable
+        c++ 代码例子</link>
+      </bridgehead>
+      <para>
+        显然，cobalt::promise, cobalt::generator 都满足 cobalt::awaitable
+      </para>
+      <para>
+        <emphasis role="bold">c++ boost::cobalt::awaitable 例子</emphasis>
+      </para>
+      <para>
+        <replaceable>文件名：<phrase role="blue">cobalt_awaitable.cpp</phrase></replaceable>
+      </para>
+<programlisting><phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">boost</phrase><phrase role="special">/</phrase><phrase role="identifier">cobalt</phrase><phrase role="special">.</phrase><phrase role="identifier">hpp</phrase><phrase role="special">&gt;</phrase>
+<phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">iostream</phrase><phrase role="special">&gt;</phrase>
+
+<phrase role="keyword">namespace</phrase> <phrase role="identifier">cobalt</phrase> <phrase role="special">=</phrase> <phrase role="identifier">boost</phrase><phrase role="special">::</phrase><phrase role="identifier">cobalt</phrase><phrase role="special">;</phrase>
+
+<phrase role="keyword">template</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">cobalt</phrase><phrase role="special">::</phrase><phrase role="identifier">awaitable</phrase> <phrase role="identifier">type_t</phrase><phrase role="special">&gt;</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">test</phrase>
+<phrase role="special">{</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="identifier">cobalt</phrase><phrase role="special">::</phrase><phrase role="identifier">main</phrase> <phrase role="identifier">co_main</phrase><phrase role="special">(</phrase><phrase role="keyword">int</phrase> <phrase role="identifier">argc</phrase><phrase role="special">,</phrase> <phrase role="keyword">char</phrase> <phrase role="special">*</phrase> <phrase role="identifier">argv</phrase><phrase role="special">[])</phrase>
+<phrase role="special">{</phrase>
+	<phrase role="identifier">test</phrase><phrase role="special">&lt;</phrase><phrase role="identifier">cobalt</phrase><phrase role="special">::</phrase><phrase role="identifier">promise</phrase><phrase role="special">&lt;</phrase><phrase role="keyword">int</phrase><phrase role="special">&gt;&gt;{};</phrase>
+	<phrase role="identifier">test</phrase><phrase role="special">&lt;</phrase><phrase role="identifier">cobalt</phrase><phrase role="special">::</phrase><phrase role="identifier">generator</phrase><phrase role="special">&lt;</phrase><phrase role="keyword">float</phrase><phrase role="special">&gt;&gt;{};</phrase>
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;欢迎收看，谢谢！&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">co_return</phrase> <phrase role="number">0</phrase><phrase role="special">;</phrase>
+<phrase role="special">}</phrase>
+</programlisting>
+      <bridgehead renderas="sect1" id="cobalt_awaitable_cpp.h2">
+        <phrase id="cobalt_awaitable_cpp._"/><link linkend="cobalt_awaitable_cpp._">相关链接</link>
+      </bridgehead>
+      <para>
+        <link linkend="cobalt_hello_cpp">boost::cobalt hello @cpp</link>
+      </para>
+      <para>
+        <link linkend="cobalt_race_cpp">boost::cobalt::race @cpp</link>
+      </para>
+      <bridgehead renderas="sect1" id="cobalt_awaitable_cpp.h3">
+        <phrase id="cobalt_awaitable_cpp._0"/><link linkend="cobalt_awaitable_cpp._0">首页</link>
+      </bridgehead>
+      <para>
+        发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+      </para>
+    </article>
+    <bridgehead renderas="sect1" id="boost_cobalt_cpp.h0">
+      <phrase id="boost_cobalt_cpp.boost_cobalt_cpp"/><link linkend="boost_cobalt_cpp.boost_cobalt_cpp">boost::cobalt
+      - cpp</link>
+    </bridgehead>
+    <para>
+      boost::cobalt c++ 协程库
+    </para>
+    <bridgehead renderas="sect1" id="boost_cobalt_cpp.h1">
+      <phrase id="boost_cobalt_cpp._"/><link linkend="boost_cobalt_cpp._">首页</link>
+    </bridgehead>
+    <para>
+      发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+    </para>
+  </article>
+  <article id="boost_signals2_cpp" last-revision="$Date: 2024/08/26 22:57:05 $" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <title>boost::signals2 @cpp</title>
+    <article id="boost_signals2_missile_reviewer_" last-revision="$Date: 2024/08/26 22:57:05 $"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+      <title>boost::signals2 missile reviewer @cpp</title>
+      <bridgehead renderas="sect1" id="boost_signals2_missile_reviewer_.h0">
+        <phrase id="boost_signals2_missile_reviewer_.boost_signals2_cpp"/><link linkend="boost_signals2_missile_reviewer_.boost_signals2_cpp">boost::signals2
+        导弹和审查员 - cpp</link>
+      </bridgehead>
+      <para>
+        cpp/c++ boost::signals2
+      </para>
+      <para>
+        boost::signals2 是一种设计模式观察者模式的实现。boost::signals2
+        用一种简单的方法实现了信号的任意发送，在代码中非常好用。
+      </para>
+      <para>
+        3月 - fayige.top
+      </para>
+      <bridgehead renderas="sect1" id="boost_signals2_missile_reviewer_.h1">
+        <phrase id="boost_signals2_missile_reviewer_.cpp"/><link linkend="boost_signals2_missile_reviewer_.cpp">cpp
+        代码实现</link>
+      </bridgehead>
+      <para>
+        c++ 信号，boost::signals2
+      </para>
+      <para>
+        以游戏中的导弹为例子。
+      </para>
+      <para>
+        在本代码中，以导弹和审查员为例，导弹就是我们的 signal
+        源，当它被发射后， 就会将信息发送给审查员。
+      </para>
+      <para>
+        missile - 导弹
+      </para>
+      <para>
+        <emphasis role="bold">c++ boost::signals2 例子</emphasis>
+      </para>
+      <para>
+        <replaceable>文件名：<phrase role="blue">sig2_missile_reviewer.cpp</phrase></replaceable>
+      </para>
+<programlisting><phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">boost</phrase><phrase role="special">/</phrase><phrase role="identifier">signals2</phrase><phrase role="special">.</phrase><phrase role="identifier">hpp</phrase><phrase role="special">&gt;</phrase>
+<phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">iostream</phrase><phrase role="special">&gt;</phrase>
+<phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">iomanip</phrase><phrase role="special">&gt;</phrase>		<phrase role="comment">// std::quoted</phrase>
+
+<phrase role="keyword">namespace</phrase> <phrase role="identifier">sig2</phrase> <phrase role="special">=</phrase> <phrase role="identifier">boost</phrase><phrase role="special">::</phrase><phrase role="identifier">signals2</phrase><phrase role="special">;</phrase>
+
+<phrase role="keyword">using</phrase> <phrase role="identifier">signal_type</phrase> <phrase role="special">=</phrase> <phrase role="identifier">sig2</phrase><phrase role="special">::</phrase><phrase role="identifier">signal</phrase><phrase role="special">&lt;</phrase><phrase role="keyword">void</phrase><phrase role="special">(</phrase><phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">string</phrase><phrase role="special">)&gt;;</phrase>	<phrase role="comment">// 函数对象类型 void(std::string)</phrase>
+<phrase role="keyword">using</phrase> <phrase role="identifier">slot_type</phrase> <phrase role="special">=</phrase> <phrase role="identifier">signal_type</phrase><phrase role="special">::</phrase><phrase role="identifier">slot_type</phrase><phrase role="special">;</phrase>
+<phrase role="keyword">using</phrase> <phrase role="identifier">connection_type</phrase> <phrase role="special">=</phrase> <phrase role="identifier">sig2</phrase><phrase role="special">::</phrase><phrase role="identifier">connection</phrase><phrase role="special">;</phrase>
+
+<phrase role="keyword">using</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">placeholders</phrase><phrase role="special">::</phrase><phrase role="identifier">_1</phrase><phrase role="special">;</phrase>
+
+<phrase role="keyword">namespace</phrase> <phrase role="identifier">wp</phrase>
+<phrase role="special">{</phrase>
+
+<phrase role="comment">// 导弹类</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">missile</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">protected</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">signal_type</phrase> <phrase role="identifier">sig</phrase><phrase role="special">;</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="special">~</phrase><phrase role="identifier">missile</phrase><phrase role="special">()</phrase> <phrase role="special">{}</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">connection_type</phrase> <phrase role="identifier">connect</phrase><phrase role="special">(</phrase><phrase role="keyword">const</phrase> <phrase role="identifier">slot_type</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">slot</phrase><phrase role="special">)</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">return</phrase> <phrase role="identifier">sig</phrase><phrase role="special">.</phrase><phrase role="identifier">connect</phrase><phrase role="special">(</phrase><phrase role="identifier">slot</phrase><phrase role="special">);</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">launch</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;发射导弹 ...&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+		<phrase role="identifier">sig</phrase><phrase role="special">(</phrase><phrase role="string">&quot;发送信息：导弹被发射了&quot;</phrase><phrase role="special">);</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="special">}</phrase>	<phrase role="comment">// namespace wp</phrase>
+
+<phrase role="keyword">namespace</phrase> <phrase role="identifier">viewer</phrase>
+<phrase role="special">{</phrase>
+
+<phrase role="comment">// 审查员</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">reviewer</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">protected</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">missile</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">connection_type</phrase> <phrase role="identifier">connection</phrase><phrase role="special">;</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">reviewer</phrase><phrase role="special">(</phrase><phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">missile__</phrase><phrase role="special">):</phrase>
+		<phrase role="identifier">missile</phrase><phrase role="special">{</phrase><phrase role="identifier">missile__</phrase><phrase role="special">}</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">connection</phrase> <phrase role="special">=</phrase> <phrase role="identifier">missile</phrase><phrase role="special">.</phrase><phrase role="identifier">connect</phrase><phrase role="special">(</phrase><phrase role="identifier">boost</phrase><phrase role="special">::</phrase><phrase role="identifier">bind</phrase><phrase role="special">(&amp;</phrase><phrase role="identifier">viewer</phrase><phrase role="special">::</phrase><phrase role="identifier">reviewer</phrase><phrase role="special">::</phrase><phrase role="identifier">receive</phrase><phrase role="special">,</phrase> <phrase role="keyword">this</phrase><phrase role="special">,</phrase> <phrase role="identifier">_1</phrase><phrase role="special">));</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">receive</phrase><phrase role="special">(</phrase><phrase role="keyword">const</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">string</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">msg</phrase><phrase role="special">)</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;收到信息：&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">quoted</phrase><phrase role="special">(</phrase><phrase role="identifier">msg</phrase><phrase role="special">)</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="special">}</phrase>	<phrase role="comment">// namespace viewer</phrase>
+
+<phrase role="keyword">int</phrase> <phrase role="identifier">main</phrase><phrase role="special">()</phrase>
+<phrase role="special">{</phrase>
+	<phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase> <phrase role="identifier">missile</phrase><phrase role="special">;</phrase>		<phrase role="comment">// 声明一枚导弹</phrase>
+	<phrase role="identifier">viewer</phrase><phrase role="special">::</phrase><phrase role="identifier">reviewer</phrase> <phrase role="identifier">reviewer</phrase><phrase role="special">{</phrase><phrase role="identifier">missile</phrase><phrase role="special">};</phrase>		<phrase role="comment">// 声明一名审查员</phrase>
+	<phrase role="identifier">missile</phrase><phrase role="special">.</phrase><phrase role="identifier">launch</phrase><phrase role="special">();</phrase>		<phrase role="comment">// 发射导弹，你猜会发生什么？</phrase>
+<phrase role="special">}</phrase>
+</programlisting>
+      <bridgehead renderas="sect2" id="boost_signals2_missile_reviewer_.h2">
+        <phrase id="boost_signals2_missile_reviewer_._"/><link linkend="boost_signals2_missile_reviewer_._">输出：</link>
+      </bridgehead>
+<programlisting>发射导弹 ...
+收到信息：&quot;发送信息：导弹被发射了&quot;
+</programlisting>
+      <bridgehead renderas="sect1" id="boost_signals2_missile_reviewer_.h3">
+        <phrase id="boost_signals2_missile_reviewer_._0"/><link linkend="boost_signals2_missile_reviewer_._0">相关链接</link>
+      </bridgehead>
+      <para>
+        <link linkend="bridge_pattern_cpp">c++桥接模式</link>
+      </para>
+      <para>
+        <link linkend="adapter_pattern_cpp">c++适配器模式</link>
+      </para>
+      <bridgehead renderas="sect1" id="boost_signals2_missile_reviewer_.h4">
+        <phrase id="boost_signals2_missile_reviewer_._1"/><link linkend="boost_signals2_missile_reviewer_._1">首页</link>
+      </bridgehead>
+      <para>
+        发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+      </para>
+    </article>
+    <bridgehead renderas="sect1" id="boost_signals2_cpp.h0">
+      <phrase id="boost_signals2_cpp.boost_signals2_cpp"/><link linkend="boost_signals2_cpp.boost_signals2_cpp">boost::signals2
+      - cpp</link>
+    </bridgehead>
+    <para>
+      cpp/c++ boost::signals2
+    </para>
+    <bridgehead renderas="sect1" id="boost_signals2_cpp.h1">
+      <phrase id="boost_signals2_cpp._"/><link linkend="boost_signals2_cpp._">首页</link>
+    </bridgehead>
+    <para>
+      发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+    </para>
+  </article>
+  <article id="design_patterns_cpp" last-revision="$Date: 2024/08/26 22:57:05 $"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+    <title>Design Patterns @cpp</title>
+    <article id="bridge_pattern_cpp" last-revision="$Date: 2024/08/26 22:57:05 $"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+      <title>Bridge Pattern @cpp</title>
+      <bridgehead renderas="sect1" id="bridge_pattern_cpp.h0">
+        <phrase id="bridge_pattern_cpp.cpp"/><link linkend="bridge_pattern_cpp.cpp">桥接模式
+        - cpp</link>
+      </bridgehead>
+      <para>
+        cpp/c++ 设计模式之桥接模式
+      </para>
+      <para>
+        桥接模式是一种 c++ 设计模式，它分离了业务逻辑的抽象和实现，并桥接它们。抽象和实现两个部分可以分别独立的变化和更新，而不需要改变另一个部分。
+      </para>
+      <para>
+        c++ 桥接模式代码比较简单，定义两套类，一套类的基以另一套类的基为成员，各自的继承类并不需要关心基类。
+      </para>
+      <para>
+        3月 - fayige.top
+      </para>
+      <bridgehead renderas="sect1" id="bridge_pattern_cpp.h1">
+        <phrase id="bridge_pattern_cpp.cpp0"/><link linkend="bridge_pattern_cpp.cpp0">cpp
+        桥接模式代码例子</link>
+      </bridgehead>
+      <para>
+        在游戏中，导弹是一种武器，我们可以把导弹叫做武器的实现，把武器叫做导弹的抽象，这只是一种比喻。
+      </para>
+      <para>
+        导弹也有很多种：巡航导弹、洲际导弹、蜂群导弹，...
+        。
+      </para>
+      <para>
+        武器也可以分类：制导武器、静态武器、... 。
+      </para>
+      <para>
+        missile : 导弹
+      </para>
+      <para>
+        cruise missile : 巡航导弹
+      </para>
+      <para>
+        swarm missile : 蜂群导弹
+      </para>
+      <para>
+        weapon : 武器
+      </para>
+      <para>
+        guided weapon : 制导武器
+      </para>
+      <para>
+        <emphasis role="bold">bridge pattern 桥接模式 c++ 代码</emphasis>
+      </para>
+      <para>
+        <replaceable>dp_bridge_pattern.cpp</replaceable>
+      </para>
+      <para>
+        <replaceable>文件名：<phrase role="blue">dp_bridge_pattern.cpp</phrase></replaceable>
+      </para>
+<programlisting><phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">iostream</phrase><phrase role="special">&gt;</phrase>
+
+<phrase role="keyword">namespace</phrase> <phrase role="identifier">wp</phrase>
+<phrase role="special">{</phrase>
+
+<phrase role="comment">// 导弹基</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">missile</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="special">~</phrase><phrase role="identifier">missile</phrase><phrase role="special">()</phrase> <phrase role="special">=</phrase> <phrase role="keyword">default</phrase><phrase role="special">;</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="keyword">void</phrase> <phrase role="identifier">seek</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase> <phrase role="special">=</phrase> <phrase role="number">0</phrase><phrase role="special">;</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="comment">// 巡航导弹</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">cruise_missile</phrase><phrase role="special">:</phrase> <phrase role="keyword">virtual</phrase> <phrase role="keyword">public</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">seek</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase> <phrase role="identifier">override</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;巡航导弹正在索敌 ...&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="comment">// 蜂群导弹</phrase>
+
+<phrase role="keyword">class</phrase> <phrase role="identifier">swarm_missile</phrase><phrase role="special">:</phrase> <phrase role="keyword">virtual</phrase> <phrase role="keyword">public</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">seek</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase> <phrase role="identifier">override</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;蜂群导弹正在索敌 ...&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="comment">// 武器</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">weapon</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">protected</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">missile</phrase><phrase role="special">;</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="special">~</phrase><phrase role="identifier">weapon</phrase><phrase role="special">()</phrase> <phrase role="special">=</phrase> <phrase role="keyword">default</phrase><phrase role="special">;</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">weapon</phrase><phrase role="special">(</phrase><phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">missile__</phrase><phrase role="special">):</phrase>
+		<phrase role="identifier">missile</phrase><phrase role="special">{</phrase><phrase role="identifier">missile__</phrase><phrase role="special">}</phrase>
+	<phrase role="special">{</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">attack</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;武器桥接到导弹了：&quot;</phrase><phrase role="special">;</phrase>
+		<phrase role="identifier">missile</phrase><phrase role="special">.</phrase><phrase role="identifier">seek</phrase><phrase role="special">();</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="comment">// 制导武器</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">guided_weapon</phrase><phrase role="special">:</phrase> <phrase role="keyword">virtual</phrase> <phrase role="keyword">public</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">weapon</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">guided_weapon</phrase><phrase role="special">(</phrase><phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">missile__</phrase><phrase role="special">):</phrase>
+		<phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">weapon</phrase><phrase role="special">{</phrase><phrase role="identifier">missile__</phrase><phrase role="special">}</phrase>
+	<phrase role="special">{</phrase>
+	<phrase role="special">}</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">attack</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;制导武器桥接到导弹了：&quot;</phrase><phrase role="special">;</phrase>
+		<phrase role="keyword">this</phrase><phrase role="special">-&gt;</phrase><phrase role="identifier">missile</phrase><phrase role="special">.</phrase><phrase role="identifier">seek</phrase><phrase role="special">();</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="special">}</phrase>	<phrase role="comment">// namespace wp</phrase>
+
+<phrase role="keyword">int</phrase> <phrase role="identifier">main</phrase><phrase role="special">()</phrase>
+<phrase role="special">{</phrase>
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">m1</phrase> <phrase role="special">=</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">cruise_missile</phrase><phrase role="special">{};</phrase>
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">m2</phrase> <phrase role="special">=</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">swarm_missile</phrase><phrase role="special">{};</phrase>
+
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">w1</phrase> <phrase role="special">=</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">weapon</phrase><phrase role="special">{</phrase><phrase role="identifier">m1</phrase><phrase role="special">};</phrase>
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">w2</phrase> <phrase role="special">=</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">weapon</phrase><phrase role="special">{</phrase><phrase role="identifier">m2</phrase><phrase role="special">};</phrase>
+
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">w3</phrase> <phrase role="special">=</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">guided_weapon</phrase><phrase role="special">{</phrase><phrase role="identifier">m1</phrase><phrase role="special">};</phrase>
+	<phrase role="keyword">auto</phrase> <phrase role="identifier">w4</phrase> <phrase role="special">=</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">guided_weapon</phrase><phrase role="special">{</phrase><phrase role="identifier">m2</phrase><phrase role="special">};</phrase>
+
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;==========&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;导弹即将发射 ...\n&quot;</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">m1</phrase><phrase role="special">.</phrase><phrase role="identifier">seek</phrase><phrase role="special">();</phrase>
+	<phrase role="identifier">m2</phrase><phrase role="special">.</phrase><phrase role="identifier">seek</phrase><phrase role="special">();</phrase>
+
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;\n==========&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;武器即将发射 ...\n&quot;</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">w1</phrase><phrase role="special">.</phrase><phrase role="identifier">attack</phrase><phrase role="special">();</phrase>
+	<phrase role="identifier">w2</phrase><phrase role="special">.</phrase><phrase role="identifier">attack</phrase><phrase role="special">();</phrase>
+
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;\n==========&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;武器即将发射 ...\n&quot;</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">w3</phrase><phrase role="special">.</phrase><phrase role="identifier">attack</phrase><phrase role="special">();</phrase>
+	<phrase role="identifier">w4</phrase><phrase role="special">.</phrase><phrase role="identifier">attack</phrase><phrase role="special">();</phrase>
+<phrase role="special">}</phrase>
+</programlisting>
+      <bridgehead renderas="sect2" id="bridge_pattern_cpp.h2">
+        <phrase id="bridge_pattern_cpp._"/><link linkend="bridge_pattern_cpp._">程序输出：</link>
+      </bridgehead>
+<programlisting>==========导弹即将发射 ...
+巡航导弹正在索敌 ...
+蜂群导弹正在索敌 ...
+
+==========武器即将发射 ...
+武器桥接到导弹了：巡航导弹正在索敌 ...
+武器桥接到导弹了：蜂群导弹正在索敌 ...
+
+==========武器即将发射 ...
+制导武器桥接到导弹了：巡航导弹正在索敌 ...
+制导武器桥接到导弹了：蜂群导弹正在索敌 ...
+</programlisting>
+      <bridgehead renderas="sect2" id="bridge_pattern_cpp.h3">
+        <phrase id="bridge_pattern_cpp._0"/><link linkend="bridge_pattern_cpp._0">补充说明</link>
+      </bridgehead>
+      <para>
+        代码例子里用到了多态。
+      </para>
+      <itemizedlist>
+        <listitem>
+          <simpara>
+            基类对象的指针指向了继承类对象是多态 - 上行
+          </simpara>
+        </listitem>
+        <listitem>
+          <simpara>
+            基类对象引用绑定到了继承类对象是多态 - 上行
+          </simpara>
+        </listitem>
+        <listitem>
+          <simpara>
+            如果基类里有 virtual 成员函数，那么指针或者引用的反向绑定也是多态
+            - 下行
+          </simpara>
+        </listitem>
+        <listitem>
+          <simpara>
+            其它未提及的情况，比如侧行绑定请阅读文档，不再赘述
+          </simpara>
+        </listitem>
+      </itemizedlist>
+      <bridgehead renderas="sect1" id="bridge_pattern_cpp.h4">
+        <phrase id="bridge_pattern_cpp._1"/><link linkend="bridge_pattern_cpp._1">相关链接</link>
+      </bridgehead>
+      <para>
+        <link linkend="proxy_pattern_cpp">c++代理模式</link>
+      </para>
+      <para>
+        <link linkend="adapter_pattern_cpp">c++适配器模式</link>
+      </para>
+      <bridgehead renderas="sect1" id="bridge_pattern_cpp.h5">
+        <phrase id="bridge_pattern_cpp._2"/><link linkend="bridge_pattern_cpp._2">首页</link>
+      </bridgehead>
+      <para>
+        发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+      </para>
+    </article>
+    <article id="proxy_pattern_cpp" last-revision="$Date: 2024/08/26 22:57:05 $"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+      <title>Proxy Pattern @cpp</title>
+      <bridgehead renderas="sect1" id="proxy_pattern_cpp.h0">
+        <phrase id="proxy_pattern_cpp.cpp"/><link linkend="proxy_pattern_cpp.cpp">代理模式
+        - cpp</link>
+      </bridgehead>
+      <para>
+        cpp/c++ 设计模式之代理模式
+      </para>
+      <para>
+        我们在编程时有时会遇到这样一个问题，对于已有的系统,
+        我们发现有些不足，需要增加或者修改一些代码， 但是我们又不想改变已有的系统，因为它们很“浑圆一体”。这时可以使用代理模式，增加代理代码，而不需要动原来的代码。然后通过对代理代码的访问，来间接访问真正的目标。
+      </para>
+      <para>
+        3月 - fayige.top
+      </para>
+      <bridgehead renderas="sect1" id="proxy_pattern_cpp.h1">
+        <phrase id="proxy_pattern_cpp.cpp0"/><link linkend="proxy_pattern_cpp.cpp0">cpp
+        代码实现</link>
+      </bridgehead>
+      <para>
+        c++ 代理模式
+      </para>
+      <para>
+        还是以游戏中的导弹为例子。
+      </para>
+      <para>
+        假定原初的代码里，导弹 missile 有 索敌 seek 方法。后来发现，在做
+        seek 行为之前，最好先检查一下导弹的状态。于是可以设计一个代理类，增加一个方法
+        ready, 它会检查并返回导弹的状态，状态良好才会做 seek
+        行为。
+      </para>
+      <para>
+        missile - 导弹
+      </para>
+      <para>
+        cruise missile - 巡航导弹
+      </para>
+      <para>
+        swarm missile - 蜂群导弹
+      </para>
+      <para>
+        c++ 代理模式代码比较简单
+      </para>
+      <para>
+        <emphasis role="bold">c++ 代理模式 proxy pattern 例子</emphasis>
+      </para>
+      <para>
+        <replaceable>文件名：<phrase role="blue">dp_proxy_pattern.cpp</phrase></replaceable>
+      </para>
+<programlisting><phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">iostream</phrase><phrase role="special">&gt;</phrase>
+
+<phrase role="keyword">namespace</phrase> <phrase role="identifier">wp</phrase>
+<phrase role="special">{</phrase>
+
+<phrase role="keyword">class</phrase> <phrase role="identifier">missile</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="special">~</phrase><phrase role="identifier">missile</phrase><phrase role="special">()</phrase> <phrase role="special">=</phrase> <phrase role="keyword">default</phrase><phrase role="special">;</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="keyword">void</phrase> <phrase role="identifier">seek</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase> <phrase role="special">=</phrase> <phrase role="number">0</phrase><phrase role="special">;</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="comment">// 巡航导弹</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">cruise_missile</phrase><phrase role="special">:</phrase> <phrase role="keyword">virtual</phrase> <phrase role="keyword">public</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">seek</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase> <phrase role="identifier">override</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;巡航导弹正在索敌 ...&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="comment">// 蜂群导弹</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">swarm_missile</phrase><phrase role="special">:</phrase> <phrase role="keyword">virtual</phrase> <phrase role="keyword">public</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">seek</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase> <phrase role="identifier">override</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;蜂群导弹正在索敌 ...&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="comment">// 巡航导弹代理</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">cruise_missile_proxy</phrase><phrase role="special">:</phrase> <phrase role="keyword">virtual</phrase> <phrase role="keyword">public</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">protected</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">cruise_missile</phrase> <phrase role="special">*</phrase> <phrase role="identifier">missile</phrase><phrase role="special">;</phrase>
+	<phrase role="keyword">bool</phrase> <phrase role="identifier">is_ready</phrase><phrase role="special">;</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">cruise_missile_proxy</phrase><phrase role="special">():</phrase>
+		<phrase role="identifier">missile</phrase><phrase role="special">{</phrase><phrase role="keyword">new</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">cruise_missile</phrase><phrase role="special">}</phrase>
+	<phrase role="special">{</phrase>
+	<phrase role="special">}</phrase>
+	<phrase role="identifier">cruise_missile_proxy</phrase><phrase role="special">(</phrase><phrase role="keyword">const</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">cruise_missile</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">missile__</phrase><phrase role="special">):</phrase>
+		<phrase role="identifier">missile</phrase><phrase role="special">{</phrase><phrase role="keyword">new</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">cruise_missile</phrase><phrase role="special">{</phrase><phrase role="identifier">missile__</phrase><phrase role="special">}}</phrase>
+	<phrase role="special">{</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="special">~</phrase><phrase role="identifier">cruise_missile_proxy</phrase><phrase role="special">()</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">delete</phrase> <phrase role="identifier">missile</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">seek</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase> <phrase role="identifier">override</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">if</phrase> <phrase role="special">(</phrase><phrase role="keyword">this</phrase><phrase role="special">-&gt;</phrase><phrase role="identifier">ready</phrase><phrase role="special">())</phrase>
+		<phrase role="special">{</phrase>
+			<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;Cruise missile is ready!&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+			<phrase role="identifier">missile</phrase><phrase role="special">-&gt;</phrase><phrase role="identifier">seek</phrase><phrase role="special">();</phrase>
+		<phrase role="special">}</phrase>
+	<phrase role="special">}</phrase>
+
+	<phrase role="keyword">bool</phrase> <phrase role="identifier">ready</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">return</phrase> <phrase role="identifier">is_ready</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">make_ready</phrase><phrase role="special">()</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">is_ready</phrase> <phrase role="special">=</phrase> <phrase role="keyword">true</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="keyword">class</phrase> <phrase role="identifier">missile_manager</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="keyword">operator</phrase><phrase role="special">()()</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">auto</phrase> <phrase role="identifier">m1</phrase> <phrase role="special">=</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">cruise_missile</phrase><phrase role="special">{};</phrase>
+		<phrase role="keyword">auto</phrase> <phrase role="identifier">m2</phrase> <phrase role="special">=</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">swarm_missile</phrase><phrase role="special">{};</phrase>
+		<phrase role="keyword">auto</phrase> <phrase role="identifier">m3</phrase> <phrase role="special">=</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">cruise_missile_proxy</phrase><phrase role="special">{</phrase><phrase role="identifier">m1</phrase><phrase role="special">};</phrase>
+		
+		<phrase role="keyword">this</phrase><phrase role="special">-&gt;</phrase><phrase role="identifier">launch</phrase><phrase role="special">(</phrase><phrase role="identifier">m1</phrase><phrase role="special">);</phrase>
+		<phrase role="keyword">this</phrase><phrase role="special">-&gt;</phrase><phrase role="identifier">launch</phrase><phrase role="special">(</phrase><phrase role="identifier">m2</phrase><phrase role="special">);</phrase>
+		
+		<phrase role="identifier">m3</phrase><phrase role="special">.</phrase><phrase role="identifier">make_ready</phrase><phrase role="special">();</phrase>
+		<phrase role="keyword">this</phrase><phrase role="special">-&gt;</phrase><phrase role="identifier">launch</phrase><phrase role="special">(</phrase><phrase role="identifier">m3</phrase><phrase role="special">);</phrase>
+	<phrase role="special">}</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">launch</phrase><phrase role="special">(</phrase><phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">missile</phrase><phrase role="special">)</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">missile</phrase><phrase role="special">.</phrase><phrase role="identifier">seek</phrase><phrase role="special">();</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="special">}</phrase>	<phrase role="comment">// namespace wp</phrase>
+
+<phrase role="keyword">int</phrase> <phrase role="identifier">main</phrase><phrase role="special">()</phrase>
+<phrase role="special">{</phrase>
+	<phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile_manager</phrase> <phrase role="identifier">mm</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">mm</phrase><phrase role="special">();</phrase>
+<phrase role="special">}</phrase>
+</programlisting>
+      <bridgehead renderas="sect2" id="proxy_pattern_cpp.h2">
+        <phrase id="proxy_pattern_cpp._"/><link linkend="proxy_pattern_cpp._">程序输出：</link>
+      </bridgehead>
+<programlisting>巡航导弹正在索敌 ...
+蜂群导弹正在索敌 ...
+Cruise missile is ready!
+巡航导弹正在索敌 ...
+</programlisting>
+      <bridgehead renderas="sect1" id="proxy_pattern_cpp.h3">
+        <phrase id="proxy_pattern_cpp._0"/><link linkend="proxy_pattern_cpp._0">相关链接</link>
+      </bridgehead>
+      <para>
+        <link linkend="bridge_pattern_cpp">c++桥接模式</link>
+      </para>
+      <para>
+        <link linkend="adapter_pattern_cpp">c++适配器模式</link>
+      </para>
+      <bridgehead renderas="sect1" id="proxy_pattern_cpp.h4">
+        <phrase id="proxy_pattern_cpp._1"/><link linkend="proxy_pattern_cpp._1">首页</link>
+      </bridgehead>
+      <para>
+        发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+      </para>
+    </article>
+    <article id="adapter_pattern_cpp" last-revision="$Date: 2024/08/26 22:57:05 $"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+      <title>Adapter Pattern @cpp</title>
+      <bridgehead renderas="sect1" id="adapter_pattern_cpp.h0">
+        <phrase id="adapter_pattern_cpp.cpp"/><link linkend="adapter_pattern_cpp.cpp">适配器模式
+        - cpp</link>
+      </bridgehead>
+      <para>
+        cpp/c++ 设计模式之适配器模式
+      </para>
+      <para>
+        假如我们有一套系统，要把它们安装对接到另外一套系统上，可是两套系统完全不兼容，接口不一致。怎么办？我们可以做一个适配器，这个适配器做两件事：一件事是提供另外一套系统的接口，一件事是实际上会调用要用到的那一套系统的功能，这样两套系统就对接在一起了。
+      </para>
+      <para>
+        3月 - fayige.top
+      </para>
+      <bridgehead renderas="sect1" id="adapter_pattern_cpp.h1">
+        <phrase id="adapter_pattern_cpp.cpp0"/><link linkend="adapter_pattern_cpp.cpp0">cpp
+        适配器模式代码实现</link>
+      </bridgehead>
+      <para>
+        在我们的游戏中，
+      </para>
+      <para>
+        导弹 missile 提供索敌的功能：seek
+      </para>
+      <para>
+        加农炮 cannon 提供开火的功能： fire
+      </para>
+      <para>
+        要把导弹对接到加农炮底座上，这时开火 fire 时，实质上调用了索敌
+        seek ，可以称其为导弹加农炮。
+      </para>
+      <para>
+        <emphasis role="bold">c++ 代码适配器模式</emphasis>
+      </para>
+      <para>
+        <replaceable>文件名：<phrase role="blue">dp_adapter_pattern.cpp</phrase></replaceable>
+      </para>
+<programlisting><phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">iostream</phrase><phrase role="special">&gt;</phrase>
+
+<phrase role="keyword">namespace</phrase> <phrase role="identifier">wp</phrase>
+<phrase role="special">{</phrase>
+
+<phrase role="comment">// 导弹</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">missile</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="special">~</phrase><phrase role="identifier">missile</phrase><phrase role="special">()</phrase> <phrase role="special">=</phrase> <phrase role="keyword">default</phrase><phrase role="special">;</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="keyword">void</phrase> <phrase role="identifier">seek</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;导弹正在索敌 ...&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="comment">// 加农炮</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">cannon</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="special">~</phrase><phrase role="identifier">cannon</phrase><phrase role="special">()</phrase> <phrase role="special">=</phrase> <phrase role="keyword">default</phrase><phrase role="special">;</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="keyword">void</phrase> <phrase role="identifier">fire</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase> <phrase role="special">=</phrase> <phrase role="number">0</phrase><phrase role="special">;</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="comment">// 导弹大炮适配器：让大炮具有了导弹的功能，但是继续保持大炮的接口不变</phrase>
+<phrase role="keyword">class</phrase> <phrase role="identifier">missile_cannon_adapter</phrase><phrase role="special">:</phrase> <phrase role="keyword">virtual</phrase> <phrase role="keyword">private</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase><phrase role="special">,</phrase> <phrase role="keyword">virtual</phrase> <phrase role="keyword">public</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">cannon</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="comment">// 大炮的接口（开火），导弹的功能（索敌）</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">fire</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase> <phrase role="identifier">override</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;导弹到大炮的适配器被调用了：&quot;</phrase><phrase role="special">;</phrase>
+		<phrase role="keyword">this</phrase><phrase role="special">-&gt;</phrase><phrase role="identifier">seek</phrase><phrase role="special">();</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="special">}</phrase>	<phrase role="comment">// namespace wp</phrase>
+
+<phrase role="keyword">int</phrase> <phrase role="identifier">main</phrase><phrase role="special">()</phrase>
+<phrase role="special">{</phrase>
+	<phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">cannon</phrase> <phrase role="special">*</phrase> <phrase role="identifier">cannon</phrase> <phrase role="special">=</phrase> <phrase role="keyword">new</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile_cannon_adapter</phrase><phrase role="special">{};</phrase>
+	<phrase role="identifier">cannon</phrase><phrase role="special">-&gt;</phrase><phrase role="identifier">fire</phrase><phrase role="special">();</phrase>
+	<phrase role="keyword">delete</phrase> <phrase role="identifier">cannon</phrase><phrase role="special">;</phrase>
+	
+	<phrase role="comment">// 正确：适配器类引用可以转化成加农炮类引用</phrase>
+	<phrase role="keyword">static_assert</phrase><phrase role="special">(</phrase><phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">convertible_to</phrase><phrase role="special">&lt;</phrase><phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile_cannon_adapter</phrase> <phrase role="special">&amp;,</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">cannon</phrase> <phrase role="special">&amp;&gt;);</phrase>
+	
+	<phrase role="comment">// 正确：适配器类引用不可以转化成导弹类引用</phrase>
+	<phrase role="keyword">static_assert</phrase><phrase role="special">(!</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">convertible_to</phrase><phrase role="special">&lt;</phrase><phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile_cannon_adapter</phrase> <phrase role="special">&amp;,</phrase> <phrase role="identifier">wp</phrase><phrase role="special">::</phrase><phrase role="identifier">missile</phrase> <phrase role="special">&amp;&gt;);</phrase>
+<phrase role="special">}</phrase>
+</programlisting>
+      <bridgehead renderas="sect2" id="adapter_pattern_cpp.h2">
+        <phrase id="adapter_pattern_cpp._"/><link linkend="adapter_pattern_cpp._">程序输出</link>
+      </bridgehead>
+<programlisting>导弹到大炮的适配器被调用了：导弹正在索敌 ...
+</programlisting>
+      <bridgehead renderas="sect1" id="adapter_pattern_cpp.h3">
+        <phrase id="adapter_pattern_cpp._0"/><link linkend="adapter_pattern_cpp._0">相关链接</link>
+      </bridgehead>
+      <para>
+        <link linkend="bridge_pattern_cpp">c++桥接模式</link>
+      </para>
+      <para>
+        <link linkend="proxy_pattern_cpp">c++代理模式</link>
+      </para>
+      <bridgehead renderas="sect1" id="adapter_pattern_cpp.h4">
+        <phrase id="adapter_pattern_cpp._1"/><link linkend="adapter_pattern_cpp._1">首页</link>
+      </bridgehead>
+      <para>
+        发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+      </para>
+    </article>
+    <article id="strategy_pattern_cpp" last-revision="$Date: 2024/08/26 22:57:05 $"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+      <title>Strategy Pattern @cpp</title>
+      <bridgehead renderas="sect1" id="strategy_pattern_cpp.h0">
+        <phrase id="strategy_pattern_cpp.cpp"/><link linkend="strategy_pattern_cpp.cpp">策略模式
+        - cpp</link>
+      </bridgehead>
+      <para>
+        cpp/c++ 设计模式之策略模式。
+      </para>
+      <para>
+        策略模式将算法的实现和使用分离，当想要更换新算法时，使用接口保持不变。
+      </para>
+      <para>
+        4月4日 - fayige.top
+      </para>
+      <bridgehead renderas="sect1" id="strategy_pattern_cpp.h1">
+        <phrase id="strategy_pattern_cpp.cpp0"/><link linkend="strategy_pattern_cpp.cpp0">cpp
+        策略模式代码实现</link>
+      </bridgehead>
+      <para>
+        以解数学题为例，对同一个题我们可以找到多个不同的解法。
+      </para>
+      <para>
+        <replaceable>文件名：<phrase role="blue">dp_strategy_pattern.cpp</phrase></replaceable>
+      </para>
+<programlisting><phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">iostream</phrase><phrase role="special">&gt;</phrase>
+
+<phrase role="keyword">namespace</phrase> <phrase role="identifier">pattern</phrase>
+<phrase role="special">{</phrase>
+
+<phrase role="keyword">class</phrase> <phrase role="identifier">strategy</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="special">~</phrase><phrase role="identifier">strategy</phrase><phrase role="special">()</phrase> <phrase role="special">=</phrase> <phrase role="keyword">default</phrase><phrase role="special">;</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="keyword">void</phrase> <phrase role="identifier">solve_equation</phrase><phrase role="special">()</phrase> <phrase role="special">=</phrase> <phrase role="number">0</phrase><phrase role="special">;</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="keyword">class</phrase> <phrase role="identifier">method_1</phrase><phrase role="special">:</phrase> <phrase role="keyword">virtual</phrase> <phrase role="keyword">public</phrase> <phrase role="identifier">pattern</phrase><phrase role="special">::</phrase><phrase role="identifier">strategy</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">solve_equation</phrase><phrase role="special">()</phrase> <phrase role="identifier">override</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;用方法1&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="keyword">class</phrase> <phrase role="identifier">method_2</phrase><phrase role="special">:</phrase> <phrase role="keyword">virtual</phrase> <phrase role="keyword">public</phrase> <phrase role="identifier">pattern</phrase><phrase role="special">::</phrase><phrase role="identifier">strategy</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">solve_equation</phrase><phrase role="special">()</phrase> <phrase role="identifier">override</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;用方法2&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="keyword">class</phrase> <phrase role="identifier">solution_context</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="special">~</phrase><phrase role="identifier">solution_context</phrase><phrase role="special">()</phrase> <phrase role="special">=</phrase> <phrase role="keyword">default</phrase><phrase role="special">;</phrase>
+<phrase role="keyword">protected</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">pattern</phrase><phrase role="special">::</phrase><phrase role="identifier">strategy</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">strategy</phrase><phrase role="special">;</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">solution_context</phrase><phrase role="special">(</phrase><phrase role="identifier">pattern</phrase><phrase role="special">::</phrase><phrase role="identifier">strategy</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">s__</phrase><phrase role="special">):</phrase>
+		<phrase role="identifier">strategy</phrase><phrase role="special">(</phrase><phrase role="identifier">s__</phrase><phrase role="special">)</phrase>
+	<phrase role="special">{</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="keyword">void</phrase> <phrase role="identifier">solve_equation</phrase><phrase role="special">()</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">strategy</phrase><phrase role="special">.</phrase><phrase role="identifier">solve_equation</phrase><phrase role="special">();</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="special">}</phrase>	<phrase role="comment">// namespace pattern</phrase>
+
+<phrase role="keyword">int</phrase> <phrase role="identifier">main</phrase><phrase role="special">()</phrase>
+<phrase role="special">{</phrase>
+	<phrase role="identifier">pattern</phrase><phrase role="special">::</phrase><phrase role="identifier">method_1</phrase> <phrase role="identifier">m1</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">pattern</phrase><phrase role="special">::</phrase><phrase role="identifier">method_2</phrase> <phrase role="identifier">m2</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">pattern</phrase><phrase role="special">::</phrase><phrase role="identifier">solution_context</phrase> <phrase role="identifier">s1</phrase><phrase role="special">{</phrase><phrase role="identifier">m1</phrase><phrase role="special">};</phrase>
+	<phrase role="identifier">pattern</phrase><phrase role="special">::</phrase><phrase role="identifier">solution_context</phrase> <phrase role="identifier">s2</phrase><phrase role="special">{</phrase><phrase role="identifier">m2</phrase><phrase role="special">};</phrase>
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;解方程：&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">s1</phrase><phrase role="special">.</phrase><phrase role="identifier">solve_equation</phrase><phrase role="special">();</phrase>
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;解方程：&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">s2</phrase><phrase role="special">.</phrase><phrase role="identifier">solve_equation</phrase><phrase role="special">();</phrase>
+<phrase role="special">}</phrase>
+</programlisting>
+      <bridgehead renderas="sect2" id="strategy_pattern_cpp.h2">
+        <phrase id="strategy_pattern_cpp._"/><link linkend="strategy_pattern_cpp._">程序输出</link>
+      </bridgehead>
+<programlisting>解方程：
+用方法1
+解方程：
+用方法2
+</programlisting>
+      <bridgehead renderas="sect1" id="strategy_pattern_cpp.h3">
+        <phrase id="strategy_pattern_cpp._0"/><link linkend="strategy_pattern_cpp._0">相关链接</link>
+      </bridgehead>
+      <para>
+        <link linkend="bridge_pattern_cpp">c++桥接模式</link>
+      </para>
+      <para>
+        <link linkend="proxy_pattern_cpp">c++代理模式</link>
+      </para>
+      <para>
+        <link linkend="adapter_pattern_cpp">c++适配器模式</link>
+      </para>
+      <bridgehead renderas="sect1" id="strategy_pattern_cpp.h4">
+        <phrase id="strategy_pattern_cpp._1"/><link linkend="strategy_pattern_cpp._1">首页</link>
+      </bridgehead>
+      <para>
+        发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+      </para>
+    </article>
+    <bridgehead renderas="sect1" id="design_patterns_cpp.h0">
+      <phrase id="design_patterns_cpp.cpp"/><link linkend="design_patterns_cpp.cpp">设计模式
+      - cpp</link>
+    </bridgehead>
+    <para>
+      cpp/c++ 设计模式
+    </para>
+    <bridgehead renderas="sect1" id="design_patterns_cpp.h1">
+      <phrase id="design_patterns_cpp._"/><link linkend="design_patterns_cpp._">首页</link>
+    </bridgehead>
+    <para>
+      发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+    </para>
+  </article>
+  <article id="networking_cpp" last-revision="$Date: 2024/08/26 22:57:05 $" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <title>Networking 网络编程 @cpp</title>
+    <article id="http_websocket_rpc_restful_cpp" last-revision="$Date: 2024/08/26 22:57:05 $"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+      <title>http websocket rpc restful 的区别 @cpp</title>
+      <bridgehead renderas="sect1" id="http_websocket_rpc_restful_cpp.h0">
+        <phrase id="http_websocket_rpc_restful_cpp.http_websocket_rpc_restful_cpp"/><link
+        linkend="http_websocket_rpc_restful_cpp.http_websocket_rpc_restful_cpp">http
+        websocket rpc restful 的区别 cpp 编程</link>
+      </bridgehead>
+      <para>
+        http websocket rpc restful 的区别 c++ 编程
+      </para>
+      <bridgehead renderas="sect1" id="http_websocket_rpc_restful_cpp.h1">
+        <phrase id="http_websocket_rpc_restful_cpp.http"/><link linkend="http_websocket_rpc_restful_cpp.http">http</link>
+      </bridgehead>
+      <para>
+        http 是对 socket 的简单封装，本质上 http 就是 socket，跟 socket
+        通讯的过程一致。http 就是定义了发送和接收消息数据的结构的
+        socket，相应的 socket 通讯没有定义消息数据的结构，结构可以任意。
+      </para>
+      <para>
+        在 c++ boost::asio 库中，可以使用 socket 通讯，而不调用 http
+        库，这样在 asio socket 通讯中，用 http 的数据头和体的格式的数据作为
+        socket 通讯的数据，这样也是 http 通讯。
+      </para>
+      <para>
+        http 通讯过程分成客户端解析主机/服务器等待连接、建立连接、客户端发送请求/服务端接收请求、客户端接收响应/服务端发送响应、关闭连接这么几个阶段。
+      </para>
+      <bridgehead renderas="sect2" id="http_websocket_rpc_restful_cpp.h2">
+        <phrase id="http_websocket_rpc_restful_cpp._"/><link linkend="http_websocket_rpc_restful_cpp._">无连接</link>
+      </bridgehead>
+      <para>
+        无连接是指限制每次连接只处理一个请求。服务器处理完客户的请求，并收到客户的应答后，即断开连接。采用这种方式可以节省传输时间。
+      </para>
+      <bridgehead renderas="sect2" id="http_websocket_rpc_restful_cpp.h3">
+        <phrase id="http_websocket_rpc_restful_cpp._0"/><link linkend="http_websocket_rpc_restful_cpp._0">无状态</link>
+      </bridgehead>
+      <para>
+        无状态是指协议对于事务处理没有记忆能力，服务器不知道客户端是什么状态。即我们给服务器发送
+        HTTP 请求之后，服务器根据请求，会给我们发送数据过来，但是，发送完，不会记录任何信息。http
+        是一个无状态协议，这意味着每个请求都是独立的。
+      </para>
+      <bridgehead renderas="sect2" id="http_websocket_rpc_restful_cpp.h4">
+        <phrase id="http_websocket_rpc_restful_cpp._1"/><link linkend="http_websocket_rpc_restful_cpp._1">单向</link>
+      </bridgehead>
+      <para>
+        http 连接是单向的，只能是客户端向服务端发起连接，而不能服务端向客户端发起连接。
+      </para>
+      <bridgehead renderas="sect1" id="http_websocket_rpc_restful_cpp.h5">
+        <phrase id="http_websocket_rpc_restful_cpp.websocket"/><link linkend="http_websocket_rpc_restful_cpp.websocket">websocket</link>
+      </bridgehead>
+      <para>
+        websocket 是 http 协议的升级，在 http 连接的过程中，增加了一次握手，在http
+        建立连接升级过程中，使之成为约定的 websocket 连接。c++
+        boost::beast 库之 websocket 通过升级异步调用成了 websocket 协议。
+      </para>
+      <para>
+        websocket 在客户端和服务端建立了双向的、全双工的通讯通道，以进行实时数据流式传播。跟
+        http 请求响应模式不同的是，websocket 让服务端和客户端都可以在任何时候实施数据传输，以便于及时(instant)更新和推送通知。这种架构非常适合于需要实时合作的应用、聊天应用、股市
+        tickers、和多玩家游戏。 c++ boost beast 有很好的 websocket 股市
+        ticker 的代码例子。
+      </para>
+      <bridgehead renderas="sect2" id="http_websocket_rpc_restful_cpp.h6">
+        <phrase id="http_websocket_rpc_restful_cpp._2"/><link linkend="http_websocket_rpc_restful_cpp._2">服务端连接</link>
+      </bridgehead>
+      <para>
+        服务端接受了客户端的 websocket 握手请求，就会与客户端建立持久的连接。
+      </para>
+      <bridgehead renderas="sect2" id="http_websocket_rpc_restful_cpp.h7">
+        <phrase id="http_websocket_rpc_restful_cpp._3"/><link linkend="http_websocket_rpc_restful_cpp._3">实时通讯</link>
+      </bridgehead>
+      <para>
+        一旦 websocket 连接建立，客户端和服务端都可以在任何时候发送消息给彼此，而不需要客户端重新实施请求(request)，启用了实时的、双向的通讯。
+      </para>
+      <bridgehead renderas="sect1" id="http_websocket_rpc_restful_cpp.h8">
+        <phrase id="http_websocket_rpc_restful_cpp.rpc"/><link linkend="http_websocket_rpc_restful_cpp.rpc">rpc</link>
+      </bridgehead>
+      <para>
+        rpc 是将服务端的远程资源调用像本机调用一样。http 是一次连接一次请求的模式，如果资源分配在多个服务器，就需要依次向每个服务器发送
+        http 请求，rpc 更像是对它们的封装。
+      </para>
+      <para>
+        rpc - Remote Procedure Call 远程过程调用，是一种这样的通讯协议，一个程序能够请求和使用另一个在另一台网络上的计算机上的程序，而不需要了解网络
+        的细节。RPC 用于调用远程系统上的其它进程就像本机调用一样。一个过程调用有时也被叫做函数调用或者子协程调用。使用
+        c++ boost::asio boost::beast 可以很容易写 rpc 程序。
+      </para>
+      <bridgehead renderas="sect1" id="http_websocket_rpc_restful_cpp.h9">
+        <phrase id="http_websocket_rpc_restful_cpp.restful"/><link linkend="http_websocket_rpc_restful_cpp.restful">RESTFUL</link>
+      </bridgehead>
+      <para>
+        Restful 或者 rest 并不是一种协议，也不是一个标准，它是一种架构风格。在开发过程中，API
+        开发者可以用各种方式实现 REST 。
+      </para>
+      <para>
+        REST 是缩略词： REpresentational State Transfer 表示状态转移，是一种分布式超媒体系统的架构风格。
+      </para>
+      <para>
+        在 c++ boost::asio 协议群的基础上，可以实现 RESTFUL，restful
+        不是一种协议，也不是标准。
+      </para>
+      <bridgehead renderas="sect2" id="http_websocket_rpc_restful_cpp.h10">
+        <phrase id="http_websocket_rpc_restful_cpp.rest"/><link linkend="http_websocket_rpc_restful_cpp.rest">REST
+        六大原则</link>
+      </bridgehead>
+      <bridgehead renderas="sect3" id="http_websocket_rpc_restful_cpp.h11">
+        <phrase id="http_websocket_rpc_restful_cpp.1"/><link linkend="http_websocket_rpc_restful_cpp.1">1.
+        统一界面</link>
+      </bridgehead>
+      <para>
+        REST 定义了持久连接和统一界面，以便客户端和服务器交互。比如，基于
+        http 的 rest api 利用了标准的 http 方法(GET, POST, PUT, DELETE)和
+        URI 来识别资源。
+      </para>
+      <bridgehead renderas="sect3" id="http_websocket_rpc_restful_cpp.h12">
+        <phrase id="http_websocket_rpc_restful_cpp.2"/><link linkend="http_websocket_rpc_restful_cpp.2">2.
+        客户端服务端</link>
+      </bridgehead>
+      <para>
+        分离用户界面 - 客户端，和数据存储 - 服务端，改经了用户界面跨越多个服务端的便携性，简化了服务端组件达到可伸缩性。
+      </para>
+      <bridgehead renderas="sect3" id="http_websocket_rpc_restful_cpp.h13">
+        <phrase id="http_websocket_rpc_restful_cpp.3"/><link linkend="http_websocket_rpc_restful_cpp.3">3.
+        无状态</link>
+      </bridgehead>
+      <para>
+        客户端每次请求都必须包含所有的必要信息。服务端不允许利用上一次存储的语境信息。因此，客户端必须完整的保留会话
+        session 。
+      </para>
+      <bridgehead renderas="sect3" id="http_websocket_rpc_restful_cpp.h14">
+        <phrase id="http_websocket_rpc_restful_cpp.4"/><link linkend="http_websocket_rpc_restful_cpp.4">4.
+        可缓存标记</link>
+      </bridgehead>
+      <para>
+        可缓存标记约定要求一个响应必须隐式的或者显示的标记自己为可缓存的还是不可缓存的。
+      </para>
+      <para>
+        如果响应是可缓存的，客户端应用可以在以后等效的请求和指定的时间期限内，重复使用响应数据。
+      </para>
+      <bridgehead renderas="sect3" id="http_websocket_rpc_restful_cpp.h15">
+        <phrase id="http_websocket_rpc_restful_cpp.5"/><link linkend="http_websocket_rpc_restful_cpp.5">5.
+        层叠系统</link>
+      </bridgehead>
+      <para>
+        层叠系统风格让架构由很多层组成。在一个层叠系统中，每一层都只能与与它对接的层交互，而不能跃层交互。
+      </para>
+      <para>
+        例如，MVC 是一种层叠系统。
+      </para>
+      <bridgehead renderas="sect3" id="http_websocket_rpc_restful_cpp.h16">
+        <phrase id="http_websocket_rpc_restful_cpp.6"/><link linkend="http_websocket_rpc_restful_cpp.6">6.
+        代码随需应变 (可选的)</link>
+      </bridgehead>
+      <para>
+        客户端可以以 applet 或者 script 的形式下载和执行代码。
+      </para>
+      <bridgehead renderas="sect1" id="http_websocket_rpc_restful_cpp.h17">
+        <phrase id="http_websocket_rpc_restful_cpp._4"/><link linkend="http_websocket_rpc_restful_cpp._4">综上所述</link>
+      </bridgehead>
+      <itemizedlist>
+        <listitem>
+          <simpara>
+            http 适用于请求一次，即获得资源，然后关闭连接的情况，比如我们的网页浏览。
+          </simpara>
+        </listitem>
+        <listitem>
+          <simpara>
+            websocket 适用于需要实时和反复收发消息的情况，比如聊天室、多玩家游戏。
+          </simpara>
+        </listitem>
+        <listitem>
+          <simpara>
+            rpc 适用于远程过程调用，比如我在我的程序里调用了一个函数，这个函数不是本机的，而是远程服务器的。
+          </simpara>
+        </listitem>
+        <listitem>
+          <simpara>
+            restful 不是协议也不是标准，而是一种架构风格。
+          </simpara>
+        </listitem>
+      </itemizedlist>
+      <para>
+        在实际的应用和项目中，它们可以组合使用，一个项目用几个或者全部。
+      </para>
+      <bridgehead renderas="sect1" id="http_websocket_rpc_restful_cpp.h18">
+        <phrase id="http_websocket_rpc_restful_cpp._5"/><link linkend="http_websocket_rpc_restful_cpp._5">相关链接</link>
+      </bridgehead>
+      <para>
+        <link linkend="boost_cobalt_cpp">boost::cobalt c++</link>
+      </para>
+      <bridgehead renderas="sect1" id="http_websocket_rpc_restful_cpp.h19">
+        <phrase id="http_websocket_rpc_restful_cpp._6"/><link linkend="http_websocket_rpc_restful_cpp._6">首页</link>
+      </bridgehead>
+      <para>
+        发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+      </para>
+    </article>
+    <bridgehead renderas="sect1" id="networking_cpp.h0">
+      <phrase id="networking_cpp.cpp"/><link linkend="networking_cpp.cpp">网络编程
+      - cpp</link>
+    </bridgehead>
+    <para>
+      c++ networking 网络编程
+    </para>
+    <bridgehead renderas="sect1" id="networking_cpp.h1">
+      <phrase id="networking_cpp._"/><link linkend="networking_cpp._">首页</link>
+    </bridgehead>
+    <para>
+      发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+    </para>
+  </article>
+  <article id="math_cpp" last-revision="$Date: 2024/08/26 22:57:05 $" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <title>math 数学 @cpp</title>
+    <article id="dft_cpp" last-revision="$Date: 2024/08/26 22:57:05 $" xmlns:xi="http://www.w3.org/2001/XInclude">
+      <title>离散傅里叶变换 DFT @cpp</title>
+      <bridgehead renderas="sect1" id="dft_cpp.h0">
+        <phrase id="dft_cpp.dft"/><link linkend="dft_cpp.dft">离散傅里叶变换
+        DFT</link>
+      </bridgehead>
+      <para>
+        Discrete Fourier Transform
+      </para>
+      <para>
+        离散傅里叶变换是傅里叶变换及傅里叶级数的离散形式。由于计算机只能处理离散的和有限长度的信号数据，所以
+        DFT 设计为傅里叶变换的算法实现。
+      </para>
+      <para>
+        快速傅里叶变换 FFT (Fast Fourier Transform) 基于离散傅里叶变换，本文不讲
+        FFT，后续继续。
+      </para>
+      <para>
+        2024年5月25日 - fayige.top
+      </para>
+      <bridgehead renderas="sect2" id="dft_cpp.h1">
+        <phrase id="dft_cpp.dft0"/><link linkend="dft_cpp.dft0">DFT算法</link>
+      </bridgehead>
+      <para>
+        设 {x_n}数列是需要分析的函数，由于计算机只能处理离散的信号，函数以离散的数列形式呈现，它是复数数列，也可看作向量。
+      </para>
+      <para>
+        <inlinemediaobject><imageobject><imagedata fileref="./site-media/math-dft/x-seq.png"></imagedata></imageobject></inlinemediaobject>
+      </para>
+      <para>
+        {X_k}是经过DFT变换后的输出函数，也以数列的形式呈现。
+      </para>
+      <para>
+        <inlinemediaobject><imageobject><imagedata fileref="./site-media/math-dft/big-x-seq.png"></imagedata></imageobject></inlinemediaobject>
+      </para>
+      <para>
+        将 x_n 变换成 X_k 的 DFT 算法：
+      </para>
+      <para>
+        <inlinemediaobject><imageobject><imagedata fileref="./site-media/math-dft/dft.png"></imagedata></imageobject></inlinemediaobject>
+      </para>
+      <bridgehead renderas="sect1" id="dft_cpp.h2">
+        <phrase id="dft_cpp.cpp"/><link linkend="dft_cpp.cpp">cpp 代码实现</link>
+      </bridgehead>
+      <para>
+        <emphasis role="bold">离散傅里叶变换 DFT c++</emphasis>
+      </para>
+      <para>
+        c++ 标准库 std::complex 对复数的各种运算都支持的很好，可拿来直接使用
+      </para>
+      <para>
+        c++ 输出用 std::cout
+      </para>
+      <para>
+        std::vector 也非常出色的用于离散傅里叶变换里的数列系列，数学理论中的函数在计算中以离散的数列形式实现，为
+        std::vector
+      </para>
+      <para>
+        <replaceable>文件名：<phrase role="blue">math_dft.cpp</phrase></replaceable>
+        2024-05-25
+      </para>
+<programlisting><phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">iostream</phrase><phrase role="special">&gt;</phrase>
+<phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">vector</phrase><phrase role="special">&gt;</phrase>
+<phrase role="preprocessor">#include</phrase> <phrase role="special">&lt;</phrase><phrase role="identifier">complex</phrase><phrase role="special">&gt;</phrase>
+
+<phrase role="keyword">constexpr</phrase> <phrase role="keyword">auto</phrase> <phrase role="identifier">im</phrase> <phrase role="special">=</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">complex</phrase><phrase role="special">{</phrase><phrase role="number">0.0</phrase><phrase role="special">,</phrase> <phrase role="number">1.0</phrase><phrase role="special">};</phrase>	<phrase role="comment">// 声明单位虚数，方便后续使用</phrase>
+<phrase role="keyword">using</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">numbers</phrase><phrase role="special">::</phrase><phrase role="identifier">pi</phrase><phrase role="special">;</phrase>
+
+<phrase role="keyword">class</phrase> <phrase role="identifier">dft_class</phrase>
+<phrase role="special">{</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">using</phrase> <phrase role="identifier">real_value_type</phrase> <phrase role="special">=</phrase> <phrase role="keyword">double</phrase><phrase role="special">;</phrase>
+	<phrase role="keyword">using</phrase> <phrase role="identifier">value_type</phrase> <phrase role="special">=</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">complex</phrase><phrase role="special">&lt;</phrase><phrase role="identifier">real_value_type</phrase><phrase role="special">&gt;;</phrase>
+	<phrase role="keyword">using</phrase> <phrase role="identifier">array_type</phrase> <phrase role="special">=</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">vector</phrase><phrase role="special">&lt;</phrase><phrase role="identifier">value_type</phrase><phrase role="special">&gt;;</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">virtual</phrase> <phrase role="special">~</phrase><phrase role="identifier">dft_class</phrase><phrase role="special">()</phrase> <phrase role="special">=</phrase> <phrase role="keyword">default</phrase><phrase role="special">;</phrase>
+<phrase role="keyword">protected</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">array_type</phrase> <phrase role="identifier">input</phrase><phrase role="special">;</phrase>	<phrase role="comment">// 向量里每个值都是一个复数 std::complex</phrase>
+	<phrase role="identifier">array_type</phrase> <phrase role="identifier">output</phrase><phrase role="special">;</phrase>
+	<phrase role="keyword">const</phrase> <phrase role="keyword">unsigned</phrase> <phrase role="keyword">long</phrase> <phrase role="keyword">int</phrase> <phrase role="identifier">N</phrase><phrase role="special">;</phrase>	<phrase role="comment">// N 为总项数</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">dft_class</phrase><phrase role="special">(</phrase><phrase role="keyword">const</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">initializer_list</phrase><phrase role="special">&lt;</phrase><phrase role="identifier">value_type</phrase><phrase role="special">&gt;</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">list</phrase><phrase role="special">):</phrase>
+		<phrase role="identifier">input</phrase><phrase role="special">{</phrase><phrase role="identifier">list</phrase><phrase role="special">},</phrase>
+		<phrase role="identifier">N</phrase><phrase role="special">{</phrase><phrase role="identifier">input</phrase><phrase role="special">.</phrase><phrase role="identifier">size</phrase><phrase role="special">()}</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">this</phrase><phrase role="special">-&gt;</phrase><phrase role="identifier">dft</phrase><phrase role="special">();</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="keyword">protected</phrase><phrase role="special">:</phrase>
+	<phrase role="identifier">value_type</phrase> <phrase role="identifier">dft_k</phrase><phrase role="special">(</phrase><phrase role="keyword">unsigned</phrase> <phrase role="keyword">int</phrase> <phrase role="identifier">k</phrase><phrase role="special">)</phrase>	<phrase role="comment">// 计算变换后的第 k 项</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="identifier">value_type</phrase> <phrase role="identifier">sum</phrase><phrase role="special">{</phrase><phrase role="number">0</phrase><phrase role="special">};</phrase>
+		<phrase role="keyword">for</phrase> <phrase role="special">(</phrase><phrase role="keyword">unsigned</phrase> <phrase role="keyword">int</phrase> <phrase role="identifier">n</phrase><phrase role="special">=</phrase><phrase role="number">0u</phrase><phrase role="special">;</phrase> <phrase role="identifier">n</phrase><phrase role="special">&lt;</phrase><phrase role="identifier">N</phrase><phrase role="special">;</phrase> <phrase role="special">++</phrase><phrase role="identifier">n</phrase><phrase role="special">)</phrase>
+		<phrase role="special">{</phrase>
+			<phrase role="identifier">sum</phrase> <phrase role="special">+=</phrase> <phrase role="identifier">input</phrase><phrase role="special">[</phrase><phrase role="identifier">n</phrase><phrase role="special">]</phrase> <phrase role="special">*</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">exp</phrase><phrase role="special">(</phrase><phrase role="identifier">im</phrase><phrase role="special">*(-</phrase><phrase role="number">2.0</phrase> <phrase role="special">*</phrase> <phrase role="identifier">pi</phrase> <phrase role="special">*</phrase> <phrase role="identifier">k</phrase><phrase role="special">*</phrase><phrase role="identifier">n</phrase><phrase role="special">/</phrase><phrase role="identifier">N</phrase><phrase role="special">));</phrase>
+		<phrase role="special">}</phrase>
+		<phrase role="keyword">return</phrase> <phrase role="identifier">sum</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+	<phrase role="keyword">void</phrase> <phrase role="identifier">dft</phrase><phrase role="special">()</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">for</phrase> <phrase role="special">(</phrase><phrase role="keyword">unsigned</phrase> <phrase role="keyword">int</phrase> <phrase role="identifier">k</phrase><phrase role="special">=</phrase><phrase role="number">0</phrase><phrase role="special">;</phrase> <phrase role="identifier">k</phrase><phrase role="special">&lt;</phrase><phrase role="identifier">N</phrase><phrase role="special">;</phrase> <phrase role="special">++</phrase><phrase role="identifier">k</phrase><phrase role="special">)</phrase>
+		<phrase role="special">{</phrase>
+			<phrase role="identifier">output</phrase><phrase role="special">.</phrase><phrase role="identifier">push_back</phrase><phrase role="special">(</phrase><phrase role="keyword">this</phrase><phrase role="special">-&gt;</phrase><phrase role="identifier">dft_k</phrase><phrase role="special">(</phrase><phrase role="identifier">k</phrase><phrase role="special">));</phrase>
+		<phrase role="special">}</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="keyword">public</phrase><phrase role="special">:</phrase>
+	<phrase role="keyword">const</phrase> <phrase role="identifier">array_type</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">get_dft</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">return</phrase> <phrase role="identifier">output</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+	<phrase role="keyword">const</phrase> <phrase role="identifier">array_type</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">get_input</phrase><phrase role="special">()</phrase> <phrase role="keyword">const</phrase>
+	<phrase role="special">{</phrase>
+		<phrase role="keyword">return</phrase> <phrase role="identifier">input</phrase><phrase role="special">;</phrase>
+	<phrase role="special">}</phrase>
+<phrase role="special">};</phrase>
+
+<phrase role="keyword">int</phrase> <phrase role="identifier">main</phrase><phrase role="special">()</phrase>
+<phrase role="special">{</phrase>
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;Hello c++ DFT!&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">dft_class</phrase> <phrase role="identifier">dft</phrase><phrase role="special">{</phrase>
+		<phrase role="special">{</phrase><phrase role="number">3</phrase><phrase role="special">},</phrase>
+		<phrase role="special">{</phrase><phrase role="number">1</phrase><phrase role="special">,</phrase><phrase role="number">2</phrase><phrase role="special">},</phrase>
+		<phrase role="special">{-</phrase><phrase role="number">2</phrase><phrase role="special">,</phrase><phrase role="number">1</phrase><phrase role="special">},</phrase>
+		<phrase role="special">{</phrase><phrase role="number">1</phrase><phrase role="special">,</phrase><phrase role="number">3</phrase><phrase role="special">},</phrase>
+		<phrase role="special">{</phrase><phrase role="number">0</phrase><phrase role="special">,</phrase><phrase role="number">2</phrase><phrase role="special">},</phrase>
+		<phrase role="special">{</phrase><phrase role="number">2</phrase><phrase role="special">,</phrase><phrase role="number">5</phrase><phrase role="special">},</phrase>
+		<phrase role="special">{-</phrase><phrase role="number">2</phrase><phrase role="special">,</phrase><phrase role="number">3</phrase><phrase role="special">},</phrase>
+		<phrase role="special">{-</phrase><phrase role="number">4</phrase><phrase role="special">,-</phrase><phrase role="number">1</phrase><phrase role="special">}</phrase>
+	<phrase role="special">};</phrase>
+
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;输入为：&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="keyword">for</phrase> <phrase role="special">(</phrase><phrase role="keyword">const</phrase> <phrase role="keyword">auto</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">item</phrase><phrase role="special">:</phrase> <phrase role="identifier">dft</phrase><phrase role="special">.</phrase><phrase role="identifier">get_input</phrase><phrase role="special">())</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">item</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="string">&quot;DFT 输出为：&quot;</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="keyword">for</phrase> <phrase role="special">(</phrase><phrase role="keyword">const</phrase> <phrase role="keyword">auto</phrase> <phrase role="special">&amp;</phrase> <phrase role="identifier">item</phrase><phrase role="special">:</phrase> <phrase role="identifier">dft</phrase><phrase role="special">.</phrase><phrase role="identifier">get_dft</phrase><phrase role="special">())</phrase>
+		<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">item</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+	<phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">cout</phrase> <phrase role="special">&lt;&lt;</phrase> <phrase role="identifier">std</phrase><phrase role="special">::</phrase><phrase role="identifier">endl</phrase><phrase role="special">;</phrase>
+<phrase role="special">}</phrase>
+</programlisting>
+      <bridgehead renderas="sect2" id="dft_cpp.h3">
+        <phrase id="dft_cpp._"/><link linkend="dft_cpp._">程序输出：</link>
+      </bridgehead>
+      <para>
+        注意每一项都是一个复数
+      </para>
+<programlisting>Hello c++ DFT!
+输入为：
+(3,0)
+(1,2)
+(-2,1)
+(1,3)
+(0,2)
+(2,5)
+(-2,3)
+(-4,-1)
+
+DFT 输出为：
+(-1,15)
+(-2.53553,-9.77817)
+(12,-8)
+(9.94975,0.12132)
+(-1,-3)
+(4.53553,5.77817)
+(2,4)
+(0.0502525,-4.12132)
+</programlisting>
+      <bridgehead renderas="sect1" id="dft_cpp.h4">
+        <phrase id="dft_cpp._0"/><link linkend="dft_cpp._0">相关链接</link>
+      </bridgehead>
+      <para>
+        <ulink url="https://fayige.top">首页</ulink>
+      </para>
+      <bridgehead renderas="sect1" id="dft_cpp.h5">
+        <phrase id="dft_cpp._1"/><link linkend="dft_cpp._1">首页</link>
+      </bridgehead>
+      <para>
+        发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+      </para>
+    </article>
+    <bridgehead renderas="sect1" id="math_cpp.h0">
+      <phrase id="math_cpp.cpp"/><link linkend="math_cpp.cpp">数学 - cpp</link>
+    </bridgehead>
+    <para>
+      Mathematics 数学
+    </para>
+    <bridgehead renderas="sect1" id="math_cpp.h1">
+      <phrase id="math_cpp._"/><link linkend="math_cpp._">数学笔记</link>
+    </bridgehead>
+    <para>
+      <ulink url="./static/math_complex_division.html">寻找和定义复数的除法(群论)</ulink>
+    </para>
+    <para>
+      <ulink url="./static/math_lorentz_cpp.html">洛伦兹吸引子(蝴蝶效应)
+      c++ 实现</ulink>
+    </para>
+    <para>
+      <ulink url="./static/math_diff_op_2024071401.html">微分算子法解三角函数幂函数型微分方程</ulink>
+    </para>
+    <para>
+      <ulink url="./static/math_e_x_int_op.html">e^x 泰勒展开的积分算子法推导证（严谨一点点）</ulink>
+    </para>
+    <bridgehead renderas="sect1" id="math_cpp.h2">
+      <phrase id="math_cpp._0"/><link linkend="math_cpp._0">首页</link>
+    </bridgehead>
+    <para>
+      发一格: <ulink url="https://fayige.top">fayige.top</ulink>
+    </para>
+  </article>
+  <bridgehead renderas="sect1" id="cpp.h0">
+    <phrase id="cpp.fayige_top"/><link linkend="cpp.fayige_top">发一格 - fayige.top</link>
+  </bridgehead>
+  <bridgehead renderas="sect2" id="cpp.h1">
+    <phrase id="cpp._"/><link linkend="cpp._">发一格</link>
+  </bridgehead>
+  <para>
+    发一格网站以 c++ 编程为主题。
+  </para>
+  <itemizedlist>
+    <listitem>
+      <simpara>
+        <phrase role="red">fayige.top</phrase> (<ulink url="https://fayige.top">#</ulink>)
+      </simpara>
+    </listitem>
+  </itemizedlist>
+  <bridgehead renderas="sect2" id="cpp.h2">
+    <phrase id="cpp.github"/><link linkend="cpp.github">github</link>
+  </bridgehead>
+  <para>
+    c++ 例子： <ulink url="https://github.com/ijkbb/cpp-examples">https://github.com/ijkbb/cpp-examples</ulink>
+  </para>
+  <bridgehead renderas="sect2" id="cpp.h3">
+    <phrase id="cpp.cpp"/><link linkend="cpp.cpp">cpp</link>
+  </bridgehead>
+  <para>
+    c++ 是一个高性能、通用、面向对象、简单易学、功能强大的编程语言。
+  </para>
+  <para>
+    <ulink url="https://en.cppreference.com/w/cpp">https://en.cppreference.com/w/cpp</ulink>
+  </para>
+  <bridgehead renderas="sect1" id="cpp.h4">
+    <phrase id="cpp._0"/><link linkend="cpp._0">记住本站</link>
+  </bridgehead>
+  <para>
+    发一格： <ulink url="https://fayige.top">fayige.top</ulink>
+  </para>
+  <bridgehead renderas="sect1" id="cpp.h5">
+    <phrase id="cpp._1"/><link linkend="cpp._1">相关链接</link>
+  </bridgehead>
+  <para>
+    <ulink url="https://fayige.top/sycl_group_barrier_cpp.html">sycl group barrier</ulink>
+  </para>
+  <para>
+    <ulink url="https://fayige.top/static/math_e_x_int_op.html">e^x 泰勒展开的积分算子法推导证</ulink>
+  </para>
+</book>
