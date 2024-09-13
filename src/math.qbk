@@ -10,8 +10,6 @@
 	[quickbook 1.7]
 ]
 
-[include math_dft.qbk]
-
 [h1 数学 - cpp]
 
 Mathematics 数学

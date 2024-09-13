@@ -78,5 +78,5 @@ install install-mathjax
 		<install-source-root>$(mathjax-src)
 ;
 
-build-project cpp ;
+#build-project cpp ;
 
