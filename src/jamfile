@@ -45,6 +45,7 @@ install install-site-media
 	:
 		[ glob
 			$(site-media-src)/math-dft/*
+			$(site-media-src)/math-calculus-linear/*
 		]
 	:
 		<location>$(web-root)/site-media
