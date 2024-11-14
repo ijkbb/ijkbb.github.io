@@ -33,7 +33,7 @@ cobalt::awaitable 是一个 c++ concept，要求一个类型必须是一个 awai
 
 [link cobalt_race_cpp boost::cobalt::race @cpp]
 
-[h1 首页]
+[include footer.inc.qbk]
 
-发一格: [@https://fayige.top fayige.top]
+
 

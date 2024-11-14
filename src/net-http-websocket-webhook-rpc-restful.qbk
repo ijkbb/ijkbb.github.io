@@ -105,7 +105,7 @@ REST 定义了持久连接和统一界面，以便客户端和服务器交互。
 
 [link boost_cobalt_cpp boost::cobalt c++]
 
-[h1 首页]
+[include footer.inc.qbk]
 
-发一格: [@https://fayige.top fayige.top]
+
 

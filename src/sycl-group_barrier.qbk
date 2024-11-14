@@ -38,3 +38,7 @@ sycl::group_barrier 同步一个工作组中的所有工作项，使用组屏障
 
 [link sycl_gpu_cpp sycl gpu 编程 - c++]
 
+[include footer.inc.qbk]
+
+
+
