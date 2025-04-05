@@ -6,9 +6,9 @@
 	http://www.boost.org/LICENSE_1_0.txt)
 ]
 
-[article Strategy Pattern @cpp
+[article Strategy Pattern 策略模式 @cpp
 	[quickbook 1.7]
-	[id strategy-pattern-at-cpp]
+	[id strategy-pattern-策略模式-at-cpp]
 ]
 
 [h1 策略模式 - cpp]

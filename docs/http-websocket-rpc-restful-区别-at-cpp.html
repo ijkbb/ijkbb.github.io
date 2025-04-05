@@ -17,20 +17,20 @@
 <div class="article">
 <div class="titlepage">
 <div><div><h2 class="title">
-<a name="http-websocket-rpc-restful-at-cpp"></a>http websocket rpc restful 的区别 @cpp</h2></div></div>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp"></a>http websocket rpc restful 的区别 @cpp</h2></div></div>
 <hr>
 </div>
 <h2>
-<a name="http-websocket-rpc-restful-at-cpp.h0"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp.http_websocket_rpc_restful_cpp"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp.http_websocket_rpc_restful_cpp">http
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h0"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.http_websocket_rpc_restful_cpp"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.http_websocket_rpc_restful_cpp">http
         websocket rpc restful 的区别 cpp 编程</a>
       </h2>
 <p>
         http websocket rpc restful 的区别 c++ 编程
       </p>
 <h2>
-<a name="http-websocket-rpc-restful-at-cpp.h1"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp.http"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp.http">http</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h1"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.http"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.http">http</a>
       </h2>
 <p>
         http 是对 socket 的简单封装，本质上 http 就是 socket，跟 socket
@@ -46,15 +46,15 @@
         http 通讯过程分成客户端解析主机/服务器等待连接、建立连接、客户端发送请求/服务端接收请求、客户端接收响应/服务端发送响应、关闭连接这么几个阶段。
       </p>
 <h3>
-<a name="http-websocket-rpc-restful-at-cpp.h2"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp._"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp._">无连接</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h2"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._">无连接</a>
       </h3>
 <p>
         无连接是指限制每次连接只处理一个请求。服务器处理完客户的请求，并收到客户的应答后，即断开连接。采用这种方式可以节省传输时间。
       </p>
 <h3>
-<a name="http-websocket-rpc-restful-at-cpp.h3"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp._0"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp._0">无状态</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h3"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._0"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._0">无状态</a>
       </h3>
 <p>
         无状态是指协议对于事务处理没有记忆能力，服务器不知道客户端是什么状态。即我们给服务器发送
@@ -62,15 +62,15 @@
         是一个无状态协议，这意味着每个请求都是独立的。
       </p>
 <h3>
-<a name="http-websocket-rpc-restful-at-cpp.h4"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp._1"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp._1">单向</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h4"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._1"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._1">单向</a>
       </h3>
 <p>
         http 连接是单向的，只能是客户端向服务端发起连接，而不能服务端向客户端发起连接。
       </p>
 <h2>
-<a name="http-websocket-rpc-restful-at-cpp.h5"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp.websocket"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp.websocket">websocket</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h5"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.websocket"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.websocket">websocket</a>
       </h2>
 <p>
         websocket 是 http 协议的升级，在 http 连接的过程中，增加了一次握手，在http
@@ -84,22 +84,22 @@
         ticker 的代码例子。
       </p>
 <h3>
-<a name="http-websocket-rpc-restful-at-cpp.h6"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp._2"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp._2">服务端连接</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h6"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._2"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._2">服务端连接</a>
       </h3>
 <p>
         服务端接受了客户端的 websocket 握手请求，就会与客户端建立持久的连接。
       </p>
 <h3>
-<a name="http-websocket-rpc-restful-at-cpp.h7"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp._3"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp._3">实时通讯</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h7"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._3"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._3">实时通讯</a>
       </h3>
 <p>
         一旦 websocket 连接建立，客户端和服务端都可以在任何时候发送消息给彼此，而不需要客户端重新实施请求(request)，启用了实时的、双向的通讯。
       </p>
 <h2>
-<a name="http-websocket-rpc-restful-at-cpp.h8"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp.rpc"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp.rpc">rpc</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h8"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.rpc"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.rpc">rpc</a>
       </h2>
 <p>
         rpc 是将服务端的远程资源调用像本机调用一样。http 是一次连接一次请求的模式，如果资源分配在多个服务器，就需要依次向每个服务器发送
@@ -111,8 +111,8 @@
         c++ boost::asio boost::beast 可以很容易写 rpc 程序。
       </p>
 <h2>
-<a name="http-websocket-rpc-restful-at-cpp.h9"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp.restful"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp.restful">RESTFUL</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h9"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.restful"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.restful">RESTFUL</a>
       </h2>
 <p>
         Restful 或者 rest 并不是一种协议，也不是一个标准，它是一种架构风格。在开发过程中，API
@@ -126,13 +126,13 @@
         不是一种协议，也不是标准。
       </p>
 <h3>
-<a name="http-websocket-rpc-restful-at-cpp.h10"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp.rest"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp.rest">REST
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h10"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.rest"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.rest">REST
         六大原则</a>
       </h3>
 <h4>
-<a name="http-websocket-rpc-restful-at-cpp.h11"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp.1"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp.1">1.
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h11"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.1"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.1">1.
         统一界面</a>
       </h4>
 <p>
@@ -141,16 +141,16 @@
         URI 来识别资源。
       </p>
 <h4>
-<a name="http-websocket-rpc-restful-at-cpp.h12"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp.2"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp.2">2.
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h12"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.2"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.2">2.
         客户端服务端</a>
       </h4>
 <p>
         分离用户界面 - 客户端，和数据存储 - 服务端，改经了用户界面跨越多个服务端的便携性，简化了服务端组件达到可伸缩性。
       </p>
 <h4>
-<a name="http-websocket-rpc-restful-at-cpp.h13"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp.3"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp.3">3.
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h13"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.3"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.3">3.
         无状态</a>
       </h4>
 <p>
@@ -158,8 +158,8 @@
         session 。
       </p>
 <h4>
-<a name="http-websocket-rpc-restful-at-cpp.h14"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp.4"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp.4">4.
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h14"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.4"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.4">4.
         可缓存标记</a>
       </h4>
 <p>
@@ -169,8 +169,8 @@
         如果响应是可缓存的，客户端应用可以在以后等效的请求和指定的时间期限内，重复使用响应数据。
       </p>
 <h4>
-<a name="http-websocket-rpc-restful-at-cpp.h15"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp.5"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp.5">5.
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h15"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.5"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.5">5.
         层叠系统</a>
       </h4>
 <p>
@@ -180,16 +180,16 @@
         例如，MVC 是一种层叠系统。
       </p>
 <h4>
-<a name="http-websocket-rpc-restful-at-cpp.h16"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp.6"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp.6">6.
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h16"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.6"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.6">6.
         代码随需应变 (可选的)</a>
       </h4>
 <p>
         客户端可以以 applet 或者 script 的形式下载和执行代码。
       </p>
 <h2>
-<a name="http-websocket-rpc-restful-at-cpp.h17"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp._4"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp._4">综上所述</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h17"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._4"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._4">综上所述</a>
       </h2>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
@@ -209,22 +209,22 @@
         在实际的应用和项目中，它们可以组合使用，一个项目用几个或者全部。
       </p>
 <h2>
-<a name="http-websocket-rpc-restful-at-cpp.h18"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp._5"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp._5">返回上级目录</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h18"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._5"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._5">返回上级目录</a>
       </h2>
 <p>
         <a class="link" href="networking-at-cpp.html" title="Networking 网络编程 @cpp">Networking 网络编程 @cpp</a>
       </p>
 <h2>
-<a name="http-websocket-rpc-restful-at-cpp.h19"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp._6"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp._6">走</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h19"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._6"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._6">走</a>
       </h2>
 <p>
         <a href="https://fayige.top" target="_top">首页：发一格 fayige.top</a> (<a href="." target="_top">点</a>)
       </p>
 <h2>
-<a name="http-websocket-rpc-restful-at-cpp.h20"></a>
-        <span class="phrase"><a name="http-websocket-rpc-restful-at-cpp._7"></a></span><a class="link" href="http-websocket-rpc-restful-at-cpp.html#http-websocket-rpc-restful-at-cpp._7">版权</a>
+<a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.h20"></a>
+        <span class="phrase"><a name="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._7"></a></span><a class="link" href="http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp.html#http-websocket-rpc-restful-%E5%8C%BA%E5%88%AB-at-cpp._7">版权</a>
       </h2>
 <p>
         Copyright 2024-2025 fayige.top

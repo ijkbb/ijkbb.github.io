@@ -4,10 +4,10 @@ std-vector-emplace_back-操作-at-cpp.html
 boost-signals2-at-cpp.html
 boost-signals2-missile-reviewer-导弹模型-at-cpp.html
 design-patterns-at-cpp.html
-bridge-pattern-at-cpp.html
-proxy-pattern-at-cpp.html
-adapter-pattern-at-cpp.html
-strategy-pattern-at-cpp.html
+bridge-pattern-桥接模式-at-cpp.html
+proxy-pattern-代理模式-at-cpp.html
+adapter-pattern-适配器模式-at-cpp.html
+strategy-pattern-策略模式-at-cpp.html
 networking-at-cpp.html
-http-websocket-rpc-restful-at-cpp.html
+http-websocket-rpc-restful-区别-at-cpp.html
 math-at-cpp.html

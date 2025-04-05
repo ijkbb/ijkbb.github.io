@@ -6,9 +6,9 @@
 	http://www.boost.org/LICENSE_1_0.txt)
 ]
 
-[article Proxy Pattern @cpp
+[article Proxy Pattern 代理模式 @cpp
 	[quickbook 1.7]
-	[id proxy-pattern-at-cpp]
+	[id proxy-pattern-代理模式-at-cpp]
 ]
 
 [h1 代理模式 - cpp]
