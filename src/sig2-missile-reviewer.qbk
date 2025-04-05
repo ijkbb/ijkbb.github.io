@@ -6,13 +6,14 @@
 	http://www.boost.org/LICENSE_1_0.txt)
 ]
 
-[article boost::signals2 missile reviewer @cpp
+[article boost::signals2 missile reviewer c++ 导弹模型 @cpp
 	[quickbook 1.7]
+	[id boost-signals2-missile-reviewer-导弹模型-at-cpp]
 ]
 
 [h1 boost::signals2 导弹和审查员 - cpp]
 
-cpp/c++ boost::signals2 
+c++ boost::signals2 
 
 boost::signals2 是一种设计模式观察者模式的实现。boost::signals2 用一种简单的方法实现了信号的任意发送，在代码中非常好用。
 
@@ -33,13 +34,9 @@ missile - 导弹
 [import ./cpp/sig2_missile_reviewer.cpp]
 [sig2_missile_reviewer_cpp]
 
-[h1 相关链接]
+[include share/up-sig2.inc.qbk]
 
-[link bridge_pattern_cpp c++桥接模式]
-
-[link adapter_pattern_cpp c++适配器模式]
-
-[include footer.inc.qbk]
+[include share/footer.inc.qbk]
 
 
 

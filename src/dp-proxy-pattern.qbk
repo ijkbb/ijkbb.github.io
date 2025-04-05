@@ -8,11 +8,12 @@
 
 [article Proxy Pattern @cpp
 	[quickbook 1.7]
+	[id proxy-pattern-at-cpp]
 ]
 
 [h1 代理模式 - cpp]
 
-cpp/c++ 设计模式之代理模式
+c++ 设计模式之代理模式
 
 我们在编程时有时会遇到这样一个问题，对于已有的系统, 我们发现有些不足，需要增加或者修改一些代码， 但是我们又不想改变已有的系统，因为它们很“浑圆一体”。这时可以使用代理模式，增加代理代码，而不需要动原来的代码。然后通过对代理代码的访问，来间接访问真正的目标。
 
@@ -39,13 +40,9 @@ c++ 代理模式代码比较简单
 [import ./cpp/dp_proxy_pattern.cpp]
 [dp_proxy_pattern_cpp]
 
-[h1 相关链接]
+[include share/up-dp.inc.qbk]
 
-[link bridge_pattern_cpp c++桥接模式]
-
-[link adapter_pattern_cpp c++适配器模式]
-
-[include footer.inc.qbk]
+[include share/footer.inc.qbk]
 
 
 

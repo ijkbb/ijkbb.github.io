@@ -8,11 +8,12 @@
 
 [article Bridge Pattern @cpp
 	[quickbook 1.7]
+	[id bridge-pattern-at-cpp]
 ]
 
 [h1 桥接模式 - cpp]
 
-cpp/c++ 设计模式之桥接模式
+c++ 设计模式之桥接模式
 
 桥接模式是一种 c++ 设计模式，它分离了业务逻辑的抽象和实现，并桥接它们。抽象和实现两个部分可以分别独立的变化和更新，而不需要改变另一个部分。
 
@@ -54,13 +55,9 @@ guided weapon : 制导武器
 * 如果基类里有 virtual 成员函数，那么指针或者引用的反向绑定也是多态 - 下行
 * 其它未提及的情况，比如侧行绑定请阅读文档，不再赘述
 
-[h1 相关链接]
+[include share/up-dp.inc.qbk]
 
-[link proxy_pattern_cpp c++代理模式]
-
-[link adapter_pattern_cpp c++适配器模式]
-
-[include footer.inc.qbk]
+[include share/footer.inc.qbk]
 
 
 

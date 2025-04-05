@@ -8,6 +8,7 @@
 
 [article http websocket rpc restful 的区别 @cpp
 	[quickbook 1.7]
+	[id http-websocket-rpc-restful-at-cpp]
 ]
 
 [h1 http websocket rpc restful 的区别 cpp 编程]
@@ -101,11 +102,9 @@ REST 定义了持久连接和统一界面，以便客户端和服务器交互。
 
 在实际的应用和项目中，它们可以组合使用，一个项目用几个或者全部。
 
-[h1 相关链接]
+[include share/up-net.inc.qbk]
 
-[link boost_cobalt_cpp boost::cobalt c++]
-
-[include footer.inc.qbk]
+[include share/footer.inc.qbk]
 
 
 

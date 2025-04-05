@@ -8,11 +8,12 @@
 
 [article Adapter Pattern @cpp
 	[quickbook 1.7]
+	[id adapter-pattern-at-cpp]
 ]
 
 [h1 适配器模式 - cpp]
 
-cpp/c++ 设计模式之适配器模式
+c++ 设计模式之适配器模式
 
 假如我们有一套系统，要把它们安装对接到另外一套系统上，可是两套系统完全不兼容，接口不一致。怎么办？我们可以做一个适配器，这个适配器做两件事：一件事是提供另外一套系统的接口，一件事是实际上会调用要用到的那一套系统的功能，这样两套系统就对接在一起了。
 
@@ -33,13 +34,9 @@ cpp/c++ 设计模式之适配器模式
 [import ./cpp/dp_adapter_pattern.cpp]
 [dp_adapter_pattern_cpp]
 
-[h1 相关链接]
+[include share/up-dp.inc.qbk]
 
-[link bridge_pattern_cpp c++桥接模式]
-
-[link proxy_pattern_cpp c++代理模式]
-
-[include footer.inc.qbk]
+[include share/footer.inc.qbk]
 
 
 

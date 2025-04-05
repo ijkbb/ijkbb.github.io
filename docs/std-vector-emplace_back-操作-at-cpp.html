@@ -1,0 +1,153 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>std::vector .emplace_back 操作 @cpp</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="发一格">
+<link rel="up" href="cpp-at-cpp.html" title="c++ @cpp">
+<link rel="prev" href="cpp-at-cpp.html" title="c++ @cpp">
+<link rel="next" href="boost-signals2-at-cpp.html" title="boost::signals2 @cpp">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="cpp-at-cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="cpp-at-cpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="boost-signals2-at-cpp.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="article">
+<div class="titlepage">
+<div><div><h2 class="title">
+<a name="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp"></a>std::vector .emplace_back 操作 @cpp</h2></div></div>
+<hr>
+</div>
+<h2>
+<a name="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.h0"></a>
+        <span class="phrase"><a name="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.std_vector_emplace_back_cpp"></a></span><a class="link" href="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.html#std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.std_vector_emplace_back_cpp">std::vector
+        .emplace_back - cpp</a>
+      </h2>
+<p>
+        std::vector 有个操作成员函数， .emplace_back，标准文档里对它的描述太晦涩了，毕竟标准文档是一种规范，需要审核的嘛。
+      </p>
+<p>
+        .emplace_back 其实非常简单。
+      </p>
+<p>
+        从代码开始吧：
+      </p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">vector</span><span class="special">&gt;</span>
+
+<span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">vector</span><span class="special">;</span>
+<span class="identifier">vector</span><span class="special">.</span><span class="identifier">push_back</span><span class="special">(</span><span class="number">2</span><span class="special">);</span>
+<span class="identifier">vector</span><span class="special">.</span><span class="identifier">push_back</span><span class="special">(</span><span class="number">7</span><span class="special">);</span>
+</pre>
+<p>
+        开了个 int 向量，我们向这个向量中 push 元素时可以用 .push_back
+        操作。
+      </p>
+<p>
+        然而，如果是个对象的向量呢？
+      </p>
+<p>
+        看 c++ 代码吧：
+      </p>
+<pre class="programlisting"><span class="keyword">class</span> <span class="identifier">my_class</span>
+<span class="special">{</span>
+<span class="keyword">private</span><span class="special">:</span>
+	<span class="keyword">int</span> <span class="identifier">x</span><span class="special">;</span>
+	<span class="keyword">float</span> <span class="identifier">y</span><span class="special">;</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="identifier">my_class</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">x__</span><span class="special">,</span> <span class="keyword">float</span> <span class="identifier">y__</span><span class="special">):</span>
+		<span class="identifier">x</span><span class="special">{</span><span class="identifier">x__</span><span class="special">},</span>
+		<span class="identifier">y</span><span class="special">{</span><span class="identifier">y__</span><span class="special">}</span>
+	<span class="special">{</span>
+	<span class="special">}</span>
+<span class="special">};</span>
+
+<span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="identifier">my_class</span><span class="special">&gt;</span> <span class="identifier">vector</span><span class="special">;</span>
+<span class="identifier">vector</span><span class="special">.</span><span class="identifier">push_back</span><span class="special">(</span><span class="identifier">my_class</span><span class="special">{</span><span class="number">3</span><span class="special">,</span> <span class="number">2.5f</span><span class="special">});</span>
+<span class="identifier">vector</span><span class="special">.</span><span class="identifier">push_back</span><span class="special">(</span><span class="identifier">my_class</span><span class="special">{</span><span class="number">25</span><span class="special">,</span> <span class="number">3.2f</span><span class="special">});</span>
+</pre>
+<p>
+        我们依然可以用 .push_back 来 push 元素。
+      </p>
+<p>
+        然而，是不是还有简化的空间？my_class 这个信息不是已经告诉给了程序了吗?
+      </p>
+<p>
+        std::vector&lt;my_class&gt;, 在这里，my_class 这个信息已经告诉了程序，
+        那么 push 元素的时候是不是可以不写 my_class 了呢？还真可以，这就是
+        .emplace_back 的功能，
+      </p>
+<pre class="programlisting"><span class="keyword">class</span> <span class="identifier">my_class</span>
+<span class="special">{</span>
+<span class="keyword">private</span><span class="special">:</span>
+	<span class="keyword">int</span> <span class="identifier">x</span><span class="special">;</span>
+	<span class="keyword">float</span> <span class="identifier">y</span><span class="special">;</span>
+<span class="keyword">public</span><span class="special">:</span>
+	<span class="identifier">my_class</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">x__</span><span class="special">,</span> <span class="keyword">float</span> <span class="identifier">y__</span><span class="special">):</span>
+		<span class="identifier">x</span><span class="special">{</span><span class="identifier">x__</span><span class="special">},</span>
+		<span class="identifier">y</span><span class="special">{</span><span class="identifier">y__</span><span class="special">}</span>
+	<span class="special">{</span>
+	<span class="special">}</span>
+<span class="special">};</span>
+
+<span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="identifier">my_class</span><span class="special">&gt;</span> <span class="identifier">vector</span><span class="special">;</span>
+<span class="identifier">vector</span><span class="special">.</span><span class="identifier">emplace_back</span><span class="special">(</span><span class="number">3</span><span class="special">,</span> <span class="number">2.5f</span><span class="special">);</span>
+<span class="identifier">vector</span><span class="special">.</span><span class="identifier">emplace_back</span><span class="special">(</span><span class="number">25</span><span class="special">,</span> <span class="number">3.2f</span><span class="special">);</span>
+</pre>
+<p>
+        .emplace_back 方法的参数列表必须跟 my_class 构造函数的参数列表一致。
+      </p>
+<p>
+        注意看清哦:
+      </p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+            vector.emplace_back(3, 2.5f); 有两个参数: 3, 2.5f 它们跟 my_class
+            构造函数参数列表格式保持一致。
+          </li>
+<li class="listitem">
+            vector.push_back(my_class{3, 2.5f}); 有一个参数：就是 my_class
+            的一个对象。
+          </li>
+</ul></div>
+<h2>
+<a name="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.h1"></a>
+        <span class="phrase"><a name="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp._"></a></span><a class="link" href="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.html#std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp._">写于</a>
+      </h2>
+<p>
+        写于2025年4月5日
+      </p>
+<h2>
+<a name="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.h2"></a>
+        <span class="phrase"><a name="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp._0"></a></span><a class="link" href="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.html#std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp._0">返回上级目录</a>
+      </h2>
+<p>
+        <a class="link" href="cpp-at-cpp.html" title="c++ @cpp">c++ @cpp</a>
+      </p>
+<h2>
+<a name="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.h3"></a>
+        <span class="phrase"><a name="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp._1"></a></span><a class="link" href="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.html#std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp._1">走</a>
+      </h2>
+<p>
+        <a href="https://fayige.top" target="_top">首页：发一格 fayige.top</a> (<a href="." target="_top">点</a>)
+      </p>
+<h2>
+<a name="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.h4"></a>
+        <span class="phrase"><a name="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp._2"></a></span><a class="link" href="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.html#std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp._2">版权</a>
+      </h2>
+<p>
+        Copyright 2024-2025 fayige.top
+      </p>
+<p>
+        Distributed under the Boost Software License, Version 1.0. <br> (See accompanying
+        file LICENSE_1_0.txt or copy at <br> http://www.boost.org/LICENSE_1_0.txt)
+      </p>
+</div>
+<div class="copyright-footer"></div>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="cpp-at-cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="cpp-at-cpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="boost-signals2-at-cpp.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

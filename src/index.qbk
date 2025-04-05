@@ -1,22 +1,20 @@
 [/
-	Copyright 2024 fayige.top
+	Copyright 2024-2025 fayige.top
 
 	Distributed under the Boost Software License, Version 1.0.
 	(See accompanying file LICENSE_1_0.txt or copy at
 	http://www.boost.org/LICENSE_1_0.txt)
 ]
 
-[book 发一格 @cpp
+[book 发一格
 	[quickbook 1.7]
 ]
 
-[include sycl.qbk]
-[include cobalt.qbk]
+[include cpp.qbk]
 [include sig2.qbk]
 [include dp.qbk]
 [include net.qbk]
 [include math.qbk]
-[include thinking.qbk]
 
 [h1 发一格 - fayige.top]
 
@@ -51,9 +49,9 @@ c++ 是一个高性能、通用、面向对象、简单易学、功能强大的�
 
 [h1 相关链接]
 
-[@https://fayige.top/static/math_calculus_linear.html 微积分的线性性: 为什么？]
+-
 
-[include footer.inc.qbk]
+[include share/footer.inc.qbk]
 
 
 

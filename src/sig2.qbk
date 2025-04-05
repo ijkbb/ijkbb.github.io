@@ -8,15 +8,18 @@
 
 [article boost::signals2 @cpp
 	[quickbook 1.7]
+	[id boost-signals2-at-cpp]
 ]
 
-[include sig2_missile_reviewer.qbk]
+[include sig2-missile-reviewer.qbk]
 
 [h1 boost::signals2 - cpp]
 
-cpp/c++ boost::signals2
+c++ boost::signals2
 
-[include footer.inc.qbk]
+[include share/up-index.inc.qbk]
+
+[include share/footer.inc.qbk]
 
 
 

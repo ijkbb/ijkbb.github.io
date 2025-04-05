@@ -1,21 +1,21 @@
 [/
-	Copyright 2024 fayige.top
+	Copyright 2025 fayige.top
 
 	Distributed under the Boost Software License, Version 1.0.
 	(See accompanying file LICENSE_1_0.txt or copy at
 	http://www.boost.org/LICENSE_1_0.txt)
 ]
 
-[article Networking 网络编程 @cpp
+[article c++ @cpp
 	[quickbook 1.7]
-	[id networking-at-cpp]
+	[id cpp-at-cpp]
 ]
 
-[include net-http-websocket-webhook-rpc-restful.qbk]
+[include cpp-std-vector-emplace_back.qbk]
 
-[h1 网络编程 - cpp]
+[h1:cpp c++ 编程 - c++]
 
-c++ networking 网络编程
+c++ 是一种最流行的完美编程语言。
 
 [include share/up-index.inc.qbk]
 

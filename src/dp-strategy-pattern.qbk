@@ -8,11 +8,12 @@
 
 [article Strategy Pattern @cpp
 	[quickbook 1.7]
+	[id strategy-pattern-at-cpp]
 ]
 
 [h1 策略模式 - cpp]
 
-cpp/c++ 设计模式之策略模式。
+c++ 设计模式之策略模式。
 
 策略模式将算法的实现和使用分离，当想要更换新算法时，使用接口保持不变。
 
@@ -25,15 +26,9 @@ cpp/c++ 设计模式之策略模式。
 [import ./cpp/dp_strategy_pattern.cpp]
 [dp_strategy_pattern_cpp]
 
-[h1 相关链接]
+[include share/up-dp.inc.qbk]
 
-[link bridge_pattern_cpp c++桥接模式]
-
-[link proxy_pattern_cpp c++代理模式]
-
-[link adapter_pattern_cpp c++适配器模式]
-
-[include footer.inc.qbk]
+[include share/footer.inc.qbk]
 
 
 

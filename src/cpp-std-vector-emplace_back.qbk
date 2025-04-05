@@ -1,0 +1,98 @@
+[/
+	Copyright 2024 fayige.top
+
+	Distributed under the Boost Software License, Version 1.0.
+	(See accompanying file LICENSE_1_0.txt or copy at
+	http://www.boost.org/LICENSE_1_0.txt)
+]
+
+[article std::vector .emplace_back 操作 @cpp
+	[quickbook 1.7]
+	[id std-vector-emplace_back-操作-at-cpp]
+]
+
+[h1 std::vector .emplace_back - cpp]
+
+std::vector 有个操作成员函数， .emplace_back，标准文档里对它的描述太晦涩了，毕竟标准文档是一种规范，需要审核的嘛。
+
+.emplace_back 其实非常简单。
+
+从代码开始吧：
+
+[!c++]
+```
+#include <vector>
+
+std::vector<int> vector;
+vector.push_back(2);
+vector.push_back(7);
+```
+
+开了个 int 向量，我们向这个向量中 push 元素时可以用 .push_back 操作。
+
+然而，如果是个对象的向量呢？
+
+看 c++ 代码吧：
+
+[!c++]
+```
+class my_class
+{
+private:
+	int x;
+	float y;
+public:
+	my_class(int x__, float y__):
+		x{x__},
+		y{y__}
+	{
+	}
+};
+
+std::vector<my_class> vector;
+vector.push_back(my_class{3, 2.5f});
+vector.push_back(my_class{25, 3.2f});
+```
+
+我们依然可以用 .push_back 来 push 元素。
+
+然而，是不是还有简化的空间？my_class 这个信息不是已经告诉给了程序了吗?
+
+std::vector<my_class>, 在这里，my_class 这个信息已经告诉了程序， 那么 push 元素的时候是不是可以不写 my_class 了呢？还真可以，这就是 .emplace_back 的功能，
+
+[!c++]
+```
+class my_class
+{
+private:
+	int x;
+	float y;
+public:
+	my_class(int x__, float y__):
+		x{x__},
+		y{y__}
+	{
+	}
+};
+
+std::vector<my_class> vector;
+vector.emplace_back(3, 2.5f);
+vector.emplace_back(25, 3.2f);
+```
+
+.emplace_back 方法的参数列表必须跟 my_class 构造函数的参数列表一致。
+
+注意看清哦:
+
+* vector.emplace_back(3, 2.5f); 有两个参数: 3, 2.5f 它们跟 my_class 构造函数参数列表格式保持一致。
+* vector.push_back(my_class{3, 2.5f}); 有一个参数：就是 my_class 的一个对象。
+
+[h1 写于]
+
+写于2025年4月5日
+
+[include share/up-cpp.inc.qbk]
+
+[include share/footer.inc.qbk]
+
+

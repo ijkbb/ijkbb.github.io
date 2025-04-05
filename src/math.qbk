@@ -8,6 +8,7 @@
 
 [article math 数学 @cpp
 	[quickbook 1.7]
+	[id math-at-cpp]
 ]
 
 [h1 数学 - cpp]
@@ -26,7 +27,9 @@ Mathematics 数学
 
 [@./static/math_e_x_int_op.html e^x 泰勒展开的积分算子法推导证（严谨一点点）]
 
-[include footer.inc.qbk]
+[include share/up-index.inc.qbk]
+
+[include share/footer.inc.qbk]
 
 
 
