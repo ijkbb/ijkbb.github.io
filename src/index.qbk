@@ -8,6 +8,7 @@
 
 [book 发一格
 	[quickbook 1.7]
+	[id fayige]
 ]
 
 [include cpp.qbk]
@@ -16,9 +17,9 @@
 [include net.qbk]
 [include math.qbk]
 
-[h1 发一格 - fayige.top]
+[h1:fayige 发一格 - fayige.top]
 
-[h2 发一格]
+[h2:fayige 发一格]
 
 发一格，c++
 
@@ -32,26 +33,23 @@
 
 [role red fayige.top] ([@https://fayige.top 点])
 
-[h2 github]
+[h2:github github]
 
 c++ 例子： [@https://github.com/ijkbb/cpp-examples]
 
-[h2 cpp]
+[h2:cpp c++]
 
 c++ 是一个高性能、通用、面向对象、简单易学、功能强大的编程语言。
 
-[@https://en.cppreference.com/w/cpp]
-
-[h1 记住本站]
+[h1:remember 记住本站]
 
 发一格：
 [@https://fayige.top fayige.top]
 
-[h1 相关链接]
+[h1:list 列表]
 
--
+* [@std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.html std::mt19937 c++ 随机数生成]
+
+* [@std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.html std::vector .emplace_back 操作]
 
 [include share/footer.inc.qbk]
-
-
-

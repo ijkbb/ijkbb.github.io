@@ -1,0 +1,84 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>std::mt19937 c++ 随机数生成 @cpp</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="发一格">
+<link rel="up" href="cpp-at-cpp.html" title="c++ @cpp">
+<link rel="prev" href="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.html" title="std::vector .emplace_back 操作 @cpp">
+<link rel="next" href="boost-signals2-at-cpp.html" title="boost::signals2 @cpp">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="cpp-at-cpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="boost-signals2-at-cpp.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="article">
+<div class="titlepage">
+<div><div><h2 class="title">
+<a name="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp"></a>std::mt19937 c++ 随机数生成 @cpp</h2></div></div>
+<hr>
+</div>
+<p>
+        c++ 随机数 std::mt19937
+      </p>
+<h2>
+<a name="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.h0"></a>
+        <span class="phrase"><a name="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.std-mt19937"></a></span><a class="link" href="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.html#std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.std-mt19937">std::mt19937
+        c++ 随机数</a>
+      </h2>
+<p>
+        立即使用：
+      </p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">random</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">()</span>
+<span class="special">{</span>
+	<span class="identifier">std</span><span class="special">::</span><span class="identifier">random_device</span> <span class="identifier">rd</span><span class="special">;</span>
+	<span class="identifier">std</span><span class="special">::</span><span class="identifier">mt19937</span> <span class="identifier">gen</span><span class="special">{</span><span class="identifier">rd</span><span class="special">()};</span>
+	<span class="keyword">int</span> <span class="identifier">x</span> <span class="special">=</span> <span class="identifier">gen</span><span class="special">();</span>	<span class="comment">// x 就是生成的随机数了</span>
+	<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"随机数："</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<h2>
+<a name="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.h1"></a>
+        <span class="phrase"><a name="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp._"></a></span><a class="link" href="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.html#std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp._">写于</a>
+      </h2>
+<p>
+        写于2025年4月7日
+      </p>
+<h2>
+<a name="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.h2"></a>
+        <span class="phrase"><a name="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp._0"></a></span><a class="link" href="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.html#std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp._0">返回上级目录</a>
+      </h2>
+<p>
+        <a class="link" href="cpp-at-cpp.html" title="c++ @cpp">c++ @cpp</a>
+      </p>
+<h2>
+<a name="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.h3"></a>
+        <span class="phrase"><a name="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.vbk"></a></span><a class="link" href="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.html#std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.vbk">走</a>
+      </h2>
+<p>
+        <a href="https://fayige.top" target="_top">首页：发一格 fayige.top</a> (<a href="." target="_top">点</a>)
+      </p>
+<h2>
+<a name="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.h4"></a>
+        <span class="phrase"><a name="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.copyright"></a></span><a class="link" href="std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.html#std-mt19937-%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90-at-cpp.copyright">版权</a>
+      </h2>
+<p>
+        Copyright 2024-2025 fayige.top
+      </p>
+<p>
+        Distributed under the Boost Software License, Version 1.0. <br> (See accompanying
+        file LICENSE_1_0.txt or copy at <br> http://www.boost.org/LICENSE_1_0.txt)
+      </p>
+</div>
+<div class="copyright-footer"></div>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="std-vector-emplace_back-%E6%93%8D%E4%BD%9C-at-cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="cpp-at-cpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="boost-signals2-at-cpp.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

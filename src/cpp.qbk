@@ -12,6 +12,7 @@
 ]
 
 [include cpp-std-vector-emplace_back.qbk]
+[include cpp-std-mt19937.qbk]
 
 [h1:cpp c++ 编程 - c++]
 

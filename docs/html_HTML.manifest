@@ -1,6 +1,7 @@
 index.html
 cpp-at-cpp.html
 std-vector-emplace_back-操作-at-cpp.html
+std-mt19937-随机数生成-at-cpp.html
 boost-signals2-at-cpp.html
 boost-signals2-missile-reviewer-导弹模型-at-cpp.html
 design-patterns-at-cpp.html
