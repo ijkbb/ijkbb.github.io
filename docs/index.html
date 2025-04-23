@@ -4,15 +4,100 @@
 <title>FayIge</title>
 <style>
 body {max-width:1200px;margin-left:auto;margin-right:auto}
-h1 {text-align:right}
+h1 {text-align:right;color:darkred}
+h2 {text-align:left;color:#750}
+h3 {text-align:left}
+h4 {text-align:left}
+h5 {text-align:left}
+h6 {text-align:left}
 #foot {text-align:center}
 #head {text-align:center}
+.codepre {border:1px solid #000;padding:10px;border-radius:5px;min-width:700px;width:70%;}
 </style>
 </head>
 <body>
 <h1>FayIge</h1>
 <p style="text-align:right">https://fayige.top</p>
+<!---------------------------------------------------------------------->
+<!---------------------------------------------------------------------->
+<!---------------------------------------------------------------------->
+<!---------------------------------------------------------------------->
 
+<h2>c++ programming language</h2>
+<p>
+c++ is the most popular and good programming langauge in the world. c++ is object-oriented.
+</p>
+
+<h2>c++ concepts</h2>
+
+c++ concepts make c++ template greatful.
+
+<pre class="codepre">
+template &lt;typename type_t&gt;
+concept has_size =
+	requires ()
+	{
+		type_t{}.size();
+	}
+;
+</pre>
+
+<pre class="codepre">
+template &lt;typename type_t&gt;
+concept has_type =
+	requires ()
+	{
+		typename type_t::type;
+	}
+;
+</pre>
+
+<h2>c++ template specialization</h2>
+
+<h3>&bull; Primary template: the first declaration</h3>
+<pre class="codepre">
+template &lt;typename the_type&gt;
+class my_class
+{
+public:
+	void print() const
+	{
+		std::cout << "I am general" << std::endl;
+	}
+};
+</pre>
+
+<h3>&bull; EX: Int specialization</h3>
+<pre class="codepre">
+template <>
+class my_class&lt;int&gt;
+{
+public:
+	void print() const
+	{
+		std::cout << "I am int" << std::endl;
+	}
+};
+</pre>
+
+<h3>&bull; EX: floating point specialization</h3>
+
+<pre class="codepre">
+template &lt;std::floating_point the_type&gt;
+class my_class&lt;the_type&gt;
+{
+public:
+	void print() const
+	{
+		std::cout << "I am some float type" << std::endl;
+	}
+};
+</pre>
+
+<!---------------------------------------------------------------------->
+<!---------------------------------------------------------------------->
+<!---------------------------------------------------------------------->
+<!---------------------------------------------------------------------->
 <div id="foot">
 <hr />
 <p>
