@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>c++ std::string, .data()</title>
+	<style>
+	body {margin-left:auto; margin-right:auto; width:700px}
+	pre {border:1px solid #000;padding:20px}
+	</style>
+</head>
+<body>
+<h1>c++ std::string, .data()</h1>
+<p>c++ std::string is a class, its object can be used to store text.</p>
+<p>It has a method .data() to return the underlying raw string.</p>
+<pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+int main()
+{
+	std::string str = "Hello, the world!";
+	std::cout << str << std::endl;
+	const char * raw = str.data();
+	std::cout << raw << std::endl;
+}
+</pre>
+<p><a href=".">Index</a></p>
+<p><a href="..">Home</a></p>
+</body>
+</html>
