@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>c++ std::vector, .emplace_back</title>
+</head>
+<body>
+<div style="width:1024px;margin-left:200px;">
+<h1>c++ std::vector, .emplace_back</h1>
+<p>Method .emplace_back, appends element at the end, by constructing.</p>
+<p><b>c++ exmple</b></p>
+<pre style="border:1pt solid #000;padding:20pt">
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+
+namespace dir
+{
+	class pet_president
+	{
+	private:
+		const int __id;
+		const int __name;
+	public:
+		pet_president(const int id__, const int name__):
+			__id{id__},
+			__name{name__}
+		{
+		}
+	public:
+		void print() const
+		{
+			std::cout &lt;&lt; __id  &lt;&lt; ", " &lt;&lt; __name &lt;&lt; std::endl;
+		}
+	};
+}
+
+int main()
+{
+	std::vector&lt;dir::pet_president&gt; presidents;
+	for (int i=-5; i&lt;=5; ++i)
+	{
+		presidents.emplace_back(i, i+10000);
+	}
+	for (dir::pet_president & president: presidents)
+	{
+		president.print();
+	}
+}
+</pre>
+<pre style="border:1pt solid #000;padding:50px;width:50%">
+-5, 9995
+-4, 9996
+-3, 9997
+-2, 9998
+-1, 9999
+0, 10000
+1, 10001
+2, 10002
+3, 10003
+4, 10004
+5, 10005
+</pre>
+<p><a href=".">Index</a></p>
+<p><a href="..">Home</a></p>
+</div>
+</body>
+</html>
