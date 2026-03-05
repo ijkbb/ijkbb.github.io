@@ -1,119 +1,262 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>FayIge</title>
+<meta charset="utf-8" />
+<title>发一格 | Fayige</title>
 <style>
-body {width:1200px;margin-left:auto;margin-right:auto}
-h1 {text-align:right;color:darkred}
-h2 {text-align:left;color:#750}
-h3 {text-align:left;margin-left:80px}
-h4 {text-align:left}
-h5 {text-align:left}
-h6 {text-align:left}
-#foot {text-align:center}
-#head {text-align:center}
-.codepre {border:1px solid #000;padding:10px;border-radius:5px;min-width:700px;width:70%;}
-#mybody p {margin-left:160px}
-#mybody pre {margin-left:240px}
-#mybody #subspace {width:600px;margin-left:auto;margin-right:auto;border:1px solid #ddd;text-align:left;padding-left:10px;}
+#h1 #h1i h1
+{
+	font-size:120%;
+	color:#080;
+}
+#h1 #h1i #h1p
+{
+	color:red;
+}
+#h1 #h1i
+{
+	width:300px;
+	text-align:right;
+	margin-right:50px;
+	float:right;
+	padding:5px;
+	border:0px solid #000;
+}
+#h1
+{
+	border-bottom:1px solid #000;
+}
+:root
+{
+	font-size:14px;
+	background:#fff;
+	color:#000;
+}
+a, a:visited
+{
+	color:darkcyan;
+}
+body
+{
+	max-width:1300px;
+	margin:auto;
+}
+footer
+{
+	text-align:center;
+	border-top:1px solid #000;
+	margin-bottom:600px;
+}
+#goon
+{
+	min-height:400px;
+}
+.section
+{
+	margin-bottom:60px;
+}
+.section .lang
+{
+	width:45%;
+	float:left;
+	border-right:2px solid #000;
+	border-left:2px solid #000;
+	padding:2px 7px;
+	margin:15px auto;
+}
+h2
+{
+	background:#973;
+	width:500px;
+	padding:2px 15px;
+	color:cyan;
+	font-size:200%;
+}
+#donate-qr-set
+{
+	margin:auto;
+	width:60%;
+}
+#donate-qr-set img
+{
+	width:320px;
+	margin:30px;
+	float:left;
+}
 </style>
 </head>
 <body>
-<h1>FayIge</h1>
-<p style="text-align:right">https://fayige.top</p>
-<!---------------------------------------------------------------------->
-<!---------------------------------------------------------------------->
-<div id="mybody">
-<!---------------------------------------------------------------------->
-<!---------------------------------------------------------------------->
+<div id="h1">
+	<div id="h1i">
+		<h1>发一格 Fayige</h1>
+		<div id="h1p">
+			fayige.top
+		</div>
+	</div>
+	<div style="clear:both"></div>
+</div>	<!-- id="h1" -->
 
-<h2>c++ programming language</h2>
+<!---------------------------------------->
+<!---------------------------------------->
+<div id="goon">
+<!---------------------------------------->
+<!---------------------------------------->
+
+<div class="section">
+<a name="projects"></a>
+<h2>开源项目 - Open-Source Projects</h2>
 <p>
-c++ is the most popular and good programming langauge in the world. c++ is object-oriented.
+即将开始
 </p>
-
-<h2>c++ concepts</h2>
-
-<p>c++ concepts make c++ template greatful.</p>
-
-<pre class="codepre">
-template &lt;typename type_t&gt;
-concept has_size =
-	requires ()
-	{
-		type_t{}.size();
-	}
-;
-</pre>
-
-<pre class="codepre">
-template &lt;typename type_t&gt;
-concept has_type =
-	requires ()
-	{
-		typename type_t::type;
-	}
-;
-</pre>
-
-<h2>c++ template specialization</h2>
-
-<h3>Primary template: the first declaration</h3>
-<pre class="codepre">
-template &lt;typename the_type&gt;
-class my_class
-{
-public:
-	void print() const
-	{
-		std::cout << "I am general" << std::endl;
-	}
-};
-</pre>
-
-<h3>EX: Int specialization</h3>
-<pre class="codepre">
-template <>
-class my_class&lt;int&gt;
-{
-public:
-	void print() const
-	{
-		std::cout << "I am int" << std::endl;
-	}
-};
-</pre>
-
-<h3>EX: floating point specialization</h3>
-
-<pre class="codepre">
-template &lt;std::floating_point the_type&gt;
-class my_class&lt;the_type&gt;
-{
-public:
-	void print() const
-	{
-		std::cout << "I am some float type" << std::endl;
-	}
-};
-</pre>
-
-<div id="subspace">
-<p><a href="cpp/cpp-std-vector-emplace_back.html">c++ std::vector, .emplace_back</a></p>
-<p><a href="cpp/cpp-std-string-data.html">c++ std::string, .data()</a><p>
-<p><a href="cpp">c++</a></p>
-</div>	<!-- id="subspace" -->
-
-<!---------------------------------------------------------------------->
-<!---------------------------------------------------------------------->
-</div>
-<!---------------------------------------------------------------------->
-<!---------------------------------------------------------------------->
-<div id="foot">
-<hr />
 <p>
-&copy; <a href="https://fayige.top">fayige.top</a>
+<a href="https://github.com/ijkbb">https://github.com/ijkbb</a>
+</p>
+</div>	<!-- class="section" -->
+
+<div class="section">
+<a name="archive"></a>
+<h2>归档 - Archive</h2>
+<p>
+<a href="ar">归档 Archive</a>
+</p>
+</div>	<!-- class="section" -->
+
+<div class="section">
+<a name="donation"></a>
+<h2>捐赠 - Donation</h2>
+<div class="lang">
+<p>
+开源项目捐赠不是贫困慈善捐赠，也不是工作报酬，而是对开源项目的帮助。这些项目是开源免费的，然而，我独自付出了个人的时间和精力，生活与生存也面临着被社会碾碎的压力，如果能提供资金帮助我的话，我将会有更多的时间和精力继续开源代码的开发和维护。
+</p>
+<p>
+如果你有特定的开发需求而又找不到特定的解决方案的话，也可以找我定制开发满足你的需求，并支付一定的报酬，报酬的多少过得去就行了。
+</p>
+<p>
+在此我顺便声明，报酬不是捐赠， 他们并不相同。
 </p>
 </div>
+<div class="lang">
+<p>
+Open-Source Project Donation is not poor charity donation, and it is not job salary, it is the help to the open-source project. These projects are open-source and free; however, I contribute my personal time and mental energy lonely, and my life and survival are under the threaten of crashed by the social presure. If you can donate some money to help me, I can make more time and mental energy to develop and maintain the open-source code.
+</p>
+<p>
+If you have some special code need, but you can not get specific solution, you can also contact me to work for your special need, and pay some wage, any reasonable wage is OK.
+</p>
+<p>
+And I declare by the way, wage is not donation, they are not the same.
+</p>
+</div>
+
+<div id="donate-qr-set">
+<img src="./donate-qr/cny-alipay-300x280.jpg" class="donate-code" />
+<img src="./donate-qr/usd-alipay-300x282.jpg" class="donate-code" />
+</div>
+
+<div style="clear:both"></div>
+
+<div class="lang">
+<p>
+更多的捐赠方式在构建中，也不是所有的捐赠方式都被列出，如果你有其它的未列出的捐赠方式可以私下联系我。
+</p>
+</div>
+<div class="lang">
+<p>
+More donation methods are on the building, not every methods are listed. If you have other method unlisted, please contact me privately.
+</p>
+</div>
+
+<div style="clear:both"></div>
+
+<div class="lang">
+<p>
+<b>隐私保护：</b>尽量不要追踪我的个人信息，如果你碰巧了解到我的个人信息，也不要随意保存和发给他人吧，大家相互尊重一下吧，这主要是为了防止垃圾骚扰。
+</p>
+</div>
+
+<div class="lang">
+<p>
+<b>Privacy Protection:</b> You'd better not trace my personal information. If you have learned my personal information accidently, please do not store or send to others. We'd better respect each other. Which is mainly for preventing spam harassment.
+</p>
+</div>
+
+<div style="clear:both"></div>
+</div>	<!-- class="section" -->
+
+<div class="section">
+<a name="politics-free"></a>
+<h2>无政治声明<br />- Politics-Free Declaration</h2>
+<div class="lang">
+<p>
+<b>本站保证：</b>这个网站(https://fayige.top), 以及它旗下的开源项目(https://github.com/ijkbb) 不包含也不允许有任何政治立场、政治言论、以及政治渗透。
+</p>
+</div>
+<div class="lang">
+<p>
+<b>Guarantee:</b> This website(https://fayige.top) and its controlled open-source projects (https://github.com/ijkbb) do not contain and do not allow to contain any political point, political speech, and political infiltration.
+</p>
+</div>
+<div style="clear:both"></div>
+</div>	<!-- class="section" -->
+
+<div class="section">
+<a name="backdoor-free-bug"></a>
+<h2>无后门、漏洞声明<br />- Backdoor-Free, Bug Declarations</h2>
+<div class="lang">
+<p>
+任何此站的代码项目绝不会植入后门，但是由于各种原因，代码漏洞在所难免，某时的漏洞也会在未来被修复，漏洞不是后门，也欢迎你提交漏洞修复。
+</p>
+</div>
+<div class="lang">
+<p>
+Any code project by this website will never be implanted backdoor, however, because of some reason, the code bug can not be avoided, the bug at sometime will be fixed in the future, bug is not backdoor, you are welcome to submit bug fix.
+</p>
+</div>
+<div style="clear:both"></div>
+</div>	<!-- class="section" -->
+
+<div class="section">
+<a name="anchor-list"></a>
+<h2>锚列表 - Anchor List</h2>
+<ul>
+<li><a href="#projects">#projects</a>
+<li><a href="#archive">#archive</a>
+<li><a href="#donation">#donation</a>
+<li><a href="#politics-free">#politics-free</a>
+<li><a href="#backdoor-free-bug">#backdoor-free-bug</a>
+<li><a href="#anchor-list">#anchor-list</a>
+</ul>
+</div>	<!-- class="section" -->
+
+<div class="section">
+<h2>联系我</h2>
+<p>
+<span style="font-weight:bold;color:red">fayige</span>
+&nbsp; &nbsp; &nbsp;
+{<{<{
+<span style="font-weight:bold;color:#FF0000">at</span>
+}>}>}
+&nbsp; &nbsp; &nbsp;
+<span style="font-weight:bold;color:red">
+proton
+</span>
+<span style="font-weight:bold;color:green;font-size:150%">
+.
+</span>
+<span style="font-weight:bold;color:red">
+me
+</span>
+</p>
+</div>	<!-- class="section" -->
+
+<!---------------------------------------->
+<!---------------------------------------->
+</div>	<!-- id="goon" -->
+<!---------------------------------------->
+<!---------------------------------------->
+
+<footer>
+<a href="https://fayige.top">&copy; fayige.top</a>
+</footer>
 </body>
 </html>
+
